@@ -10,3 +10,7 @@
 ### Teaching Stuff
 
 + [Geogerba Constructions](https://www.geogebra.org/u/fernando.sansegundo)
+
+### Medium Posts
+
++ Coming soon...
