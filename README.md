@@ -9,7 +9,10 @@
 
 ### Teaching Stuff
 
++ [Machine Learning](https://fsansegundo.github.io/MLMIC25_public/)
+
 + [Geogebra Constructions](https://www.geogebra.org/u/fernando.sansegundo)
+
 
 ### Medium Posts
 
