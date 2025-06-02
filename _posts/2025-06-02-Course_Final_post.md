@@ -13,7 +13,9 @@ But of course fate (or luck or whatever name you fancy for this kind of stuff) h
 
 [Hyndman, R.J., Athanasopoulos, G., Garza, A., Challu, C., Mergenthaler, M., & Olivares, K.G. (2024). Forecasting: Principles and Practice, the Pythonic Way. OTexts: Melbourne, Australia. Available at: OTexts.com/fpppy. Accessed on 2025-06-02.](https://otexts.com/fpppy/)
 
-![](https://otexts.com/fpppy/figs/fpppy_front_cover.jpg){width=20% fig-align="center" fig-alt="fpppy front cover"}
+<p align="center">
+  <img src="https://otexts.com/fpppy/figs/fpppy_front_cover.jpg" width="200" alt="My Image">
+</p>
 
 This change is a deal breaker for us, as we had been using the book as a reference for our R based courses for years. So I guess we will have to revisit our decision for next year, and probably switch to the nixtlaverse libraries.
 
