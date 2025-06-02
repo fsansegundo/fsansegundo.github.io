@@ -1,3 +1,8 @@
+---
+layout: post
+author: fsansegundo
+---
+
 # A classic reference goes pythonic: *Forecasting: Principles and Practice, the Pythonic Way*
 
 2025 Course is almost over, so let us return to this blog thing... This was our second year using Python for the Machine Learning course. And just as expected, the forecasting part remains the biggest challenge. There is a los of fragmenttion in Python forecasting libraries, and one if the hardest problems is to choose a library that strikes the right balance between ease of use, power, integration with other libraries, and an active support community. Before the beginning of the course, we narrowed it down to two options: [`sktime`](https://www.sktime.net/en/stable/) and the [`nixtlaverse`](https://nixtlaverse.nixtla.io/) family of libraries. We finally went with sktime, and it worked ok for most of our needs...
