@@ -1,11 +1,13 @@
 ---
 layout: post
 author: fsansegundo
+date: 2025-06-02
+tags: [forecasying, python, nixtlaverse, fppy, sktime]
 ---
 
 # A classic reference goes pythonic: *Forecasting: Principles and Practice, the Pythonic Way*
 
-2025 Course is almost over, so let us return to this blog thing... This was our second year using Python for the Machine Learning course. And just as expected, the forecasting part remains the biggest challenge. There is a los of fragmenttion in Python forecasting libraries, and one if the hardest problems is to choose a library that strikes the right balance between ease of use, power, integration with other libraries, and an active support community. Before the beginning of the course, we narrowed it down to two options: [`sktime`](https://www.sktime.net/en/stable/) and the [`nixtlaverse`](https://nixtlaverse.nixtla.io/) family of libraries. We finally went with sktime, and it worked ok for most of our needs...
+2025 Course is almost over, so let us return to this blog thing... This was our second year using Python for the Machine Learning course. And just as expected, the forecasting part remains the biggest challenge. There is a los of fragmenttion in Python forecasting libraries, and one of the hardest problems is to choose a library that strikes the right balance between ease of use, power, integration with other libraries, and an active support community. Before the beginning of the course, we narrowed it down to two options: [`sktime`](https://www.sktime.net/en/stable/) and the [`nixtlaverse`](https://nixtlaverse.nixtla.io/) family of libraries. We finally went with sktime, and it worked ok for most of our needs...
 
 But of course fate (or luck or whatever name you fancy for this kind of stuff) had other plans for us. As the course was coming to an end we learnt that our long time favorite reference book on forecasting, the one by Hyndman and Athanasopoulos, was being updated to a new edition. And the new edition uses the nixtlaverse libraries as the main reference for forecasting in Python. In particular the author list for this edition now adds members of the Nixtla team:
 
