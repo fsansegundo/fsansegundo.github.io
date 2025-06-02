@@ -13,6 +13,8 @@ But of course fate (or luck or whatever name you fancy for this kind of stuff) h
 
 [Hyndman, R.J., Athanasopoulos, G., Garza, A., Challu, C., Mergenthaler, M., & Olivares, K.G. (2024). Forecasting: Principles and Practice, the Pythonic Way. OTexts: Melbourne, Australia. Available at: OTexts.com/fpppy. Accessed on 2025-06-02.](https://otexts.com/fpppy/)
 
+![](https://otexts.com/fpppy/figs/fpppy_front_cover.jpg){width=80% fig-align="center" fig-alt="fpppy front cover"}
+
 This change is a like a deal breaker for us, as we had been using the book as a reference for our R based courses for years. So I guess we will have to revisit our decision for next year, and probably switch to the nixtlaverse libraries.
 
 Anyway, the good news is that the new edition of the book is available online for free, as the previous R based ones. So if you are already used to Python for your Data Science and Machine Learning work, now you can enjoy one of the best forecasting books out there without having to learn R.
