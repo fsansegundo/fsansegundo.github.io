@@ -2,7 +2,7 @@
 layout: post
 author: fsansegundo
 date: 2025-06-02
-tags: [forecasying, python, nixtlaverse, fppy, sktime]
+tags: [forecasting, python, nixtlaverse, fppy, sktime]
 ---
 
 # A classic reference goes pythonic: *Forecasting: Principles and Practice, the Pythonic Way*
