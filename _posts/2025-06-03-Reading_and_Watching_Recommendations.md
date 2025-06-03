@@ -3,7 +3,7 @@ layout: post
 title: Reading (and Watching) Recommendations (DRAFT)
 author: fsansegundo
 date: 2025-06-03
-tags: [forecasting, python, nixtlaverse, fppy, sktime]
+tags: [books, video, machine learning, deep learning]
 ---
 
 After finishing this year's course in Machine Learning, and looking forward to learn more about advanced topics, we have compiled a list of books, blogs and video reccommendations for you. The emphasis here is on conceptual understanding and intuition, rather than technical details or code implementation.
