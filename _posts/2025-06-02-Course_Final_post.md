@@ -1,7 +1,7 @@
 ---
 layout: post
 author: fsansegundo
-title: Course Final post
+title: Course Final Post
 date: 2025-06-02
 tags: [forecasting, python, nixtlaverse, fppy, sktime]
 ---
