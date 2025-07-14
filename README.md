@@ -13,6 +13,7 @@
 
 + [Geogebra Constructions](https://www.geogebra.org/u/fernando.sansegundo)
 
++ [Data science with AI](https://bit.ly/IA_AD)
 
 ### Medium Posts
 
