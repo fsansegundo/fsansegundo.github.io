@@ -15,9 +15,11 @@
 
 + [Data science with AI](https://bit.ly/IA_AD)
 
-### Medium Posts
++ [Forecasting sessions](https://fsansegundo.github.io/frcst_imat_public/)
 
-+ Coming soon...
+<!-- ### Medium Posts
+
++ Coming soon... -->
 
 ### GitHub Blog
 
