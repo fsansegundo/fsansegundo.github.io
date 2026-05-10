@@ -9,7 +9,8 @@
 
 ### Teaching Stuff
 
-+ [Machine Learning](https://ml-mic.github.io/MLMIIN_public/)  
++ Machine Learning:  
+[2026 Sessions](https://ml-mic.github.io/MLMIIN_public/)  
 [2025 Sessions](https://fsansegundo.github.io/MLMIC25_public/)
 
 
