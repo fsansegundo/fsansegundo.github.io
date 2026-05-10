@@ -9,13 +9,17 @@
 
 ### Teaching Stuff
 
-+ [Machine Learning](https://fsansegundo.github.io/MLMIC25_public/)
++ [Machine Learning](https://ml-mic.github.io/MLMIIN_public/)  
+[2025 Sessions](https://fsansegundo.github.io/MLMIC25_public/)
+
 
 + [Geogebra Constructions](https://www.geogebra.org/u/fernando.sansegundo)
 
 + [Data science with AI](https://bit.ly/IA_AD)
 
 + [Forecasting sessions](https://fsansegundo.github.io/frcst_imat_public/)
+
++ [Exam info (instructions to be displayed during exams)](https://fsansegundo.github.io/examinfo)
 
 <!-- ### Medium Posts
 
