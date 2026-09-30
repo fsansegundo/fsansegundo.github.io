@@ -20,6 +20,8 @@
 
 + [Forecasting sessions](https://fsansegundo.github.io/frcst_imat_public/)
 
++ [ODE sessions](https://fsansegundo.github.io/EDO_ICAI_pages/)
+
 + [Exam info (instructions to be displayed during exams)](https://fsansegundo.github.io/examinfo)
 
 <!-- ### Medium Posts
