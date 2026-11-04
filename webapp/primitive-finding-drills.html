@@ -1,0 +1,1636 @@
+<title>Primitive-Finding Drills</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#F4F5F0;
+  --surface:#FFFFFF;
+  --surface-2:#ECEEE6;
+  --fg:#1B2129;
+  --fg-muted:#5B6370;
+  --border:#DBDFD6;
+  --accent:#8F5A0C;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F1E2C2;
+  --accent-soft-ink:#6B4707;
+  --answer-bg:#FBF3E1;
+  --answer-border:#E2C381;
+  --focus:#2F6FB3;
+  --level-bg:#E8EEF6;
+  --level-border:#C6D6E8;
+  --level-ink:#2F5A86;
+
+  --font-display:'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  --font-body:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151B;
+    --surface:#181E27;
+    --surface-2:#1F2631;
+    --fg:#E7E9EC;
+    --fg-muted:#9AA3AF;
+    --border:#2A3240;
+    --accent:#E0A94E;
+    --accent-ink:#1B1304;
+    --accent-soft:#30260F;
+    --accent-soft-ink:#F0C877;
+    --answer-bg:#231B0E;
+    --answer-border:#584119;
+    --focus:#6FA8E0;
+    --level-bg:#19232E;
+    --level-border:#2C4258;
+    --level-ink:#8FB7DD;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151B;
+  --surface:#181E27;
+  --surface-2:#1F2631;
+  --fg:#E7E9EC;
+  --fg-muted:#9AA3AF;
+  --border:#2A3240;
+  --accent:#E0A94E;
+  --accent-ink:#1B1304;
+  --accent-soft:#30260F;
+  --accent-soft-ink:#F0C877;
+  --answer-bg:#231B0E;
+  --answer-border:#584119;
+  --focus:#6FA8E0;
+  --level-bg:#19232E;
+  --level-border:#2C4258;
+  --level-ink:#8FB7DD;
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--font-body);
+  line-height:1.5;
+}
+
+.page{
+  max-width:720px;
+  margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:40px 56px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.masthead{text-align:left;}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:11px;
+  letter-spacing:0.14em;
+  color:var(--fg-muted);
+  text-transform:uppercase;
+  margin:0 0 10px;
+}
+.masthead h1{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(28px, 5vw, 38px);
+  margin:0 0 10px;
+  text-wrap:balance;
+  letter-spacing:-0.01em;
+}
+.masthead .sub{
+  margin:0;
+  max-width:60ch;
+  color:var(--fg-muted);
+  font-size:15px;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.exnum{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:-0.01em;
+}
+.tag{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  letter-spacing:0.04em;
+  padding:5px 10px;
+  border-radius:999px;
+  background:var(--accent-soft);
+  color:var(--accent-soft-ink);
+  white-space:nowrap;
+}
+
+.level-section{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.level-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.level-pill{
+  font-family:var(--font-mono);
+  font-weight:600;
+  font-size:13px;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--fg-muted);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+}
+.level-pill.mixed{
+  width:auto;
+  height:34px;
+  border-radius:999px;
+  padding:0 14px;
+  font-size:12px;
+  letter-spacing:0.04em;
+}
+.level-pill:hover{background:var(--surface-2);}
+.level-pill:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.level-pill.active{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--accent-ink);
+}
+.level-label{
+  margin:0;
+  font-size:13px;
+  color:var(--level-ink);
+  background:var(--level-bg);
+  border:1px solid var(--level-border);
+  border-radius:8px;
+  padding:9px 12px;
+}
+.level-label b{font-family:var(--font-mono); font-weight:600; letter-spacing:0.02em;}
+
+.instruction{
+  margin:0;
+  font-style:italic;
+  color:var(--fg-muted);
+  font-family:var(--font-display);
+  font-size:15px;
+}
+
+.problem{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:22px 18px;
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:auto;
+}
+.problem svg{display:block;}
+
+.controls{
+  display:flex;
+  gap:12px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+}
+.select-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  flex:1 1 220px;
+  min-width:0;
+}
+.select-wrap span{
+  font-size:11.5px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  font-family:var(--font-mono);
+}
+select{
+  font-family:var(--font-body);
+  font-size:14.5px;
+  color:var(--fg);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px 12px;
+  width:100%;
+  min-width:0;
+}
+select:focus-visible{outline:2px solid var(--focus); outline-offset:1px;}
+
+.btn{
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:14.5px;
+  border-radius:8px;
+  padding:10px 16px;
+  border:1px solid transparent;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.btn.primary{
+  background:var(--accent);
+  color:var(--accent-ink);
+}
+.btn.primary:hover{filter:brightness(1.07);}
+.btn.ghost{
+  background:transparent;
+  color:var(--accent);
+  border-color:var(--border);
+}
+.btn.ghost:hover{background:var(--surface-2);}
+
+.reveal-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.answer-box, .steps-box{
+  border-radius:10px;
+  padding:18px;
+}
+.answer-box{
+  background:var(--answer-bg);
+  border:1px solid var(--answer-border);
+}
+.steps-box{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+}
+.answer-title, .steps-title{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  margin:0 0 14px;
+}
+.answer-content{overflow-x:auto; padding:4px 2px;}
+.answer-content svg{display:block;}
+
+.step-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.step-list li{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.step-num{
+  flex:0 0 auto;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--fg-muted);
+  font-family:var(--font-mono);
+  font-size:11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:2px;
+}
+.step-body{min-width:0; flex:1 1 auto;}
+.step-label{
+  font-size:13px;
+  color:var(--fg-muted);
+  margin:0 0 6px;
+}
+.step-math{overflow-x:auto; padding:2px 0;}
+.step-math svg{display:block;}
+
+.foot{
+  font-size:12.5px;
+  color:var(--fg-muted);
+  text-align:left;
+  max-width:60ch;
+}
+
+[hidden]{display:none!important;}
+mjx-assistive-mml{display:none!important;}
+
+@media (max-width:480px){
+  .card{padding:20px;}
+  .controls{flex-direction:column; align-items:stretch;}
+  .reveal-row .btn{flex:1 1 auto;}
+}
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <p class="eyebrow">Calculus: Antiderivatives (Primitivas)</p>
+    <h1>Primitive-Finding Drills</h1>
+    <p class="sub">Practice finding antiderivatives at eight progressive difficulty levels, from immediate table lookups through rational functions, trigonometric powers and trig/hyperbolic substitution &mdash; the full toolkit from Session 15 (Teorema Fundamental del C&aacute;lculo) and the C&aacute;lculo de Primitivas worksheet. Work the problem on paper, then reveal the answer and a full step-by-step solution.</p>
+  </header>
+
+  <main class="card" id="card">
+    <div class="card-top">
+      <div class="exnum" id="exnum">Exercise</div>
+      <div class="tag" id="tag">Power Rule</div>
+    </div>
+
+    <div class="level-section">
+      <div class="level-row" id="levelRow">
+        <button class="level-pill" data-level="1" type="button">1</button>
+        <button class="level-pill" data-level="2" type="button">2</button>
+        <button class="level-pill" data-level="3" type="button">3</button>
+        <button class="level-pill" data-level="4" type="button">4</button>
+        <button class="level-pill" data-level="5" type="button">5</button>
+        <button class="level-pill" data-level="6" type="button">6</button>
+        <button class="level-pill" data-level="7" type="button">7</button>
+        <button class="level-pill" data-level="8" type="button">8</button>
+        <button class="level-pill mixed" data-level="0" type="button">Mixed</button>
+      </div>
+      <p class="level-label" id="levelLabel"></p>
+    </div>
+
+    <p class="instruction">Find the following indefinite integral (antiderivative). Don't forget the constant of integration.</p>
+
+    <div class="problem" id="problem"></div>
+
+    <div class="controls">
+      <label class="select-wrap">
+        <span>Technique (within level)</span>
+        <select id="typeSelect"></select>
+      </label>
+      <button class="btn primary" id="newBtn" type="button">New Exercise</button>
+    </div>
+
+    <div class="reveal-row">
+      <button class="btn ghost" id="answerBtn" type="button">Show Answer</button>
+      <button class="btn ghost" id="stepsBtn" type="button">Show Step-by-Step Solution</button>
+      <button class="btn ghost" id="downloadBtn" type="button">Download This Exercise</button>
+    </div>
+
+    <div class="answer-box" id="answerBox" hidden>
+      <p class="answer-title">Answer</p>
+      <div class="answer-content" id="answerContent"></div>
+    </div>
+
+    <div class="steps-box" id="stepsBox" hidden>
+      <p class="steps-title">Step-by-Step Solution</p>
+      <div id="stepsContent"></div>
+    </div>
+  </main>
+
+  <footer class="foot">Covers eight progressive levels: immediate lookups, constant adjustment (u = ax + b), direct substitution, integration by parts, medium combinations, rational functions (partial fractions), trigonometric powers and products, and trigonometric/hyperbolic substitution &mdash; following Session 15 (Teorema Fundamental del C&aacute;lculo) and the C&aacute;lculo de Primitivas worksheet.<br><br>Created by <a href="https://web.comillas.edu/profesor/fsansegundo">Fernando San Segundo (ICAI)</a> using <a href="https://claude.com/es/product/claude-code">Claude Code</a></footer>
+
+</div>
+
+<script>
+window.MathJax = {
+  options: { enableAssistiveMml: false },
+  svg: { fontCache: 'local' },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- small LaTeX-building helpers ----------
+  function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+  function coefStr(n){ return n === 1 ? '' : String(n); }
+  // "x", "x+b" or "x-|b|" (a===1 case of a linear expression)
+  function linExpr(a, b){
+    var s = (a === 1 ? '' : String(a)) + 'x';
+    if (b > 0) s += ' + ' + b;
+    else if (b < 0) s += ' - ' + Math.abs(b);
+    return s;
+  }
+  // signed additive fragment, e.g. 3 -> " + 3", -3 -> " - 3"
+  function signedAdd(n){ return n >= 0 ? (' + ' + n) : (' - ' + Math.abs(n)); }
+  // a coefficient n over denominator d, rendered as a signed fraction (or signed integer if d===1)
+  function fracOrInt(n, d){
+    if (n === 0) return '0';
+    var neg = n < 0;
+    var a = Math.abs(n);
+    var body = d === 1 ? String(a) : ('\\dfrac{' + a + '}{' + d + '}');
+    return (neg ? '-' : '') + body;
+  }
+  function quadDenomTex(b, m){
+    var twob = 2 * b;
+    var c = b * b + m * m;
+    var s = 'x^{2}';
+    if (twob > 0) s += ' + ' + twob + 'x';
+    else if (twob < 0) s += ' - ' + Math.abs(twob) + 'x';
+    s += ' + ' + c;
+    return s;
+  }
+  function completedSquareTex(b, m){
+    return '(' + linExpr(1, b) + ')^{2} + ' + (m * m);
+  }
+
+  var LEVEL_INFO = {
+    1: { name: 'Immediate', desc: 'Read the antiderivative straight from the basic derivative table &mdash; no manipulation needed.' },
+    2: { name: 'Constant Adjustment', desc: 'The inner function is linear, u = ax + b. Substitute and fix up the constant factor.' },
+    3: { name: 'Direct Substitution', desc: 'Spot a composite function whose derivative (up to a constant factor) is already present.' },
+    4: { name: 'Integration by Parts', desc: 'Split the integrand as u and dv and apply &int;u dv = uv &minus; &int;v du once.' },
+    5: { name: 'Medium Mix', desc: 'Combine integration by parts with a substitution, or apply integration by parts twice.' },
+    6: { name: 'Rational Functions', desc: 'Decompose a rational function into partial fractions, or complete the square in the denominator.' },
+    7: { name: 'Trigonometric Powers', desc: 'Use Pythagorean or product-to-sum identities to turn a trig power/product into something integrable.' },
+    8: { name: 'Trig/Hyperbolic Substitution', desc: 'Substitute x in terms of sin, sinh or cosh to remove a square root of a quadratic.' }
+  };
+
+  // ---------- exercise type library ----------
+  var TYPES = [];
+  function addType(name, level, gen){
+    TYPES.push({ name: name, level: level, gen: gen });
+  }
+
+  // ===================== LEVEL 1: IMMEDIATE =====================
+
+  addType('Power Rule', 1, function(){
+    var n = randInt(2, 6);
+    return {
+      statement: '\\int x^{' + n + '}\\,dx',
+      answer: '\\dfrac{x^{' + (n + 1) + '}}{' + (n + 1) + '} + C',
+      steps: [
+        { label: 'Identify the exponent: n = ' + n + '.', tex: '\\int x^{' + n + '}\\,dx' },
+        { label: 'Apply the power rule for antiderivatives, \\int x^{n}\\,dx = \\dfrac{x^{n+1}}{n+1} + C (n \\neq -1).', tex: '= \\dfrac{x^{' + (n + 1) + '}}{' + (n + 1) + '} + C' }
+      ]
+    };
+  });
+
+  addType('Root Power', 1, function(){
+    var kind = choice(['sqrt', 'cbrt', 'invsqrt']);
+    if (kind === 'sqrt'){
+      return {
+        statement: '\\int \\sqrt{x}\\,dx',
+        answer: '\\dfrac{2}{3}x^{3/2} + C',
+        steps: [
+          { label: 'Rewrite the square root as a rational exponent.', tex: '\\int \\sqrt{x}\\,dx = \\int x^{1/2}\\,dx' },
+          { label: 'Apply the power rule with n = 1/2.', tex: '= \\dfrac{x^{3/2}}{3/2} + C = \\dfrac{2}{3}x^{3/2} + C' }
+        ]
+      };
+    }
+    if (kind === 'cbrt'){
+      return {
+        statement: '\\int \\sqrt[3]{x}\\,dx',
+        answer: '\\dfrac{3}{4}x^{4/3} + C',
+        steps: [
+          { label: 'Rewrite the cube root as a rational exponent.', tex: '\\int \\sqrt[3]{x}\\,dx = \\int x^{1/3}\\,dx' },
+          { label: 'Apply the power rule with n = 1/3.', tex: '= \\dfrac{x^{4/3}}{4/3} + C = \\dfrac{3}{4}x^{4/3} + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int \\dfrac{dx}{\\sqrt{x}}',
+      answer: '2\\sqrt{x} + C',
+      steps: [
+        { label: 'Rewrite the reciprocal square root as a rational exponent.', tex: '\\int \\dfrac{dx}{\\sqrt{x}} = \\int x^{-1/2}\\,dx' },
+        { label: 'Apply the power rule with n = -1/2.', tex: '= \\dfrac{x^{1/2}}{1/2} + C = 2\\sqrt{x} + C' }
+      ]
+    };
+  });
+
+  addType('Negative Power', 1, function(){
+    var n = randInt(2, 5);
+    return {
+      statement: '\\int \\dfrac{dx}{x^{' + n + '}}',
+      answer: '-\\dfrac{1}{' + (n - 1) + 'x^{' + (n - 1) + '}} + C',
+      steps: [
+        { label: 'Rewrite as a negative power.', tex: '\\int \\dfrac{dx}{x^{' + n + '}} = \\int x^{-' + n + '}\\,dx' },
+        { label: 'Apply the power rule with n = -' + n + '.', tex: '= \\dfrac{x^{-' + (n - 1) + '}}{-' + (n - 1) + '} + C = -\\dfrac{1}{' + (n - 1) + 'x^{' + (n - 1) + '}} + C' }
+      ]
+    };
+  });
+
+  addType('Polynomial', 1, function(){
+    var patterns = [[3, 2, 0], [3, 1, 0], [2, 1, 0], [4, 2, 1], [3, 2, 1], [4, 1, 0]];
+    var exps = choice(patterns);
+    var terms = exps.map(function(e){ return { e: e, c: randInt(1, 9), sign: Math.random() < 0.5 ? -1 : 1 }; });
+    terms[0].sign = 1;
+    function termTex(c, e){
+      if (e === 0) return String(c);
+      if (e === 1) return (c === 1 ? '' : c) + 'x';
+      return (c === 1 ? '' : c) + 'x^{' + e + '}';
+    }
+    function antiTermTex(c, e){
+      var ne = e + 1;
+      if (c % ne === 0){
+        var k = c / ne;
+        return termTex(k, ne);
+      }
+      var powStr = ne === 1 ? 'x' : ('x^{' + ne + '}');
+      return '\\dfrac{' + c + '}{' + ne + '}' + powStr;
+    }
+    function joinTerms(fn){
+      return terms.map(function(t, i){
+        var s = fn(t.c, t.e);
+        if (i === 0) return (t.sign < 0 ? '-' : '') + s;
+        return (t.sign < 0 ? ' - ' : ' + ') + s;
+      }).join('');
+    }
+    var stmtParts = joinTerms(termTex);
+    var ansParts = joinTerms(antiTermTex);
+    return {
+      statement: '\\int \\left(' + stmtParts + '\\right)dx',
+      answer: ansParts + ' + C',
+      steps: [
+        { label: 'Integrate each term separately using the power rule.', tex: '\\int \\left(' + stmtParts + '\\right)dx' },
+        { label: 'Apply \\int x^{n}\\,dx = \\dfrac{x^{n+1}}{n+1} to every term and add a single constant C.', tex: '= ' + ansParts + ' + C' }
+      ]
+    };
+  });
+
+  addType('Basic Exponential', 1, function(){
+    var c = randInt(2, 7) * choice([1, -1]);
+    var cAbs = Math.abs(c);
+    var sign = c < 0 ? '-' : '';
+    return {
+      statement: '\\int ' + sign + coefStr(cAbs) + 'e^{x}\\,dx',
+      answer: sign + coefStr(cAbs) + 'e^{x} + C',
+      steps: [
+        { label: 'Pull the constant factor out of the integral.', tex: '\\int ' + sign + coefStr(cAbs) + 'e^{x}\\,dx = ' + sign + coefStr(cAbs) + '\\int e^{x}\\,dx' },
+        { label: 'The antiderivative of e^{x} is e^{x} itself.', tex: '= ' + sign + coefStr(cAbs) + 'e^{x} + C' }
+      ]
+    };
+  });
+
+  addType('Basic Sine / Cosine', 1, function(){
+    var isSin = Math.random() < 0.5;
+    var c = randInt(2, 8);
+    if (isSin){
+      return {
+        statement: '\\int ' + c + '\\sin(x)\\,dx',
+        answer: '-' + c + '\\cos(x) + C',
+        steps: [
+          { label: 'Pull the constant factor out of the integral.', tex: '\\int ' + c + '\\sin(x)\\,dx = ' + c + '\\int \\sin(x)\\,dx' },
+          { label: 'Recall \\int \\sin(x)\\,dx = -\\cos(x) + C.', tex: '= -' + c + '\\cos(x) + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int ' + c + '\\cos(x)\\,dx',
+      answer: c + '\\sin(x) + C',
+      steps: [
+        { label: 'Pull the constant factor out of the integral.', tex: '\\int ' + c + '\\cos(x)\\,dx = ' + c + '\\int \\cos(x)\\,dx' },
+        { label: 'Recall \\int \\cos(x)\\,dx = \\sin(x) + C.', tex: '= ' + c + '\\sin(x) + C' }
+      ]
+    };
+  });
+
+  addType('Basic Reciprocal (1/x)', 1, function(){
+    var c = randInt(2, 9);
+    return {
+      statement: '\\int \\dfrac{' + c + '}{x}\\,dx',
+      answer: c + '\\ln|x| + C',
+      steps: [
+        { label: 'Pull the constant factor out of the integral.', tex: '\\int \\dfrac{' + c + '}{x}\\,dx = ' + c + '\\int \\dfrac{dx}{x}' },
+        { label: 'Recall \\int \\dfrac{dx}{x} = \\ln|x| + C.', tex: '= ' + c + '\\ln|x| + C' }
+      ]
+    };
+  });
+
+  addType('Basic Arctan / Arcsin', 1, function(){
+    var c = randInt(1, 5);
+    var isArctan = Math.random() < 0.5;
+    if (isArctan){
+      return {
+        statement: '\\int \\dfrac{' + coefStr(c) + 'dx}{1+x^{2}}',
+        answer: coefStr(c) + '\\arctan(x) + C',
+        steps: [
+          { label: 'Pull the constant factor out of the integral.', tex: '\\int \\dfrac{' + coefStr(c) + 'dx}{1+x^{2}} = ' + coefStr(c) + '\\int \\dfrac{dx}{1+x^{2}}' },
+          { label: 'Recall \\int \\dfrac{dx}{1+x^{2}} = \\arctan(x) + C.', tex: '= ' + coefStr(c) + '\\arctan(x) + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int \\dfrac{' + coefStr(c) + 'dx}{\\sqrt{1-x^{2}}}',
+      answer: coefStr(c) + '\\arcsin(x) + C',
+      steps: [
+        { label: 'Pull the constant factor out of the integral.', tex: '\\int \\dfrac{' + coefStr(c) + 'dx}{\\sqrt{1-x^{2}}} = ' + coefStr(c) + '\\int \\dfrac{dx}{\\sqrt{1-x^{2}}}' },
+        { label: 'Recall \\int \\dfrac{dx}{\\sqrt{1-x^{2}}} = \\arcsin(x) + C.', tex: '= ' + coefStr(c) + '\\arcsin(x) + C' }
+      ]
+    };
+  });
+
+  addType('Basic Secant-Squared', 1, function(){
+    var c = randInt(1, 6);
+    return {
+      statement: '\\int ' + coefStr(c) + '\\sec^{2}(x)\\,dx',
+      answer: coefStr(c) + '\\tan(x) + C',
+      steps: [
+        { label: 'Pull the constant factor out of the integral.', tex: '\\int ' + coefStr(c) + '\\sec^{2}(x)\\,dx = ' + coefStr(c) + '\\int \\sec^{2}(x)\\,dx' },
+        { label: 'Recall \\int \\sec^{2}(x)\\,dx = \\tan(x) + C (the derivative of \\tan(x) is \\sec^{2}(x)).', tex: '= ' + coefStr(c) + '\\tan(x) + C' }
+      ]
+    };
+  });
+
+  addType('Rational Simplify', 1, function(){
+    var a = randInt(1, 6), b = randInt(1, 6);
+    return {
+      statement: '\\int \\dfrac{x^{2}+' + a + 'x+' + b + '}{x}\\,dx',
+      answer: '\\dfrac{x^{2}}{2} + ' + a + 'x + ' + b + '\\ln|x| + C',
+      steps: [
+        { label: 'Split the fraction term by term before integrating.', tex: '\\int \\dfrac{x^{2}+' + a + 'x+' + b + '}{x}\\,dx = \\int \\left(x + ' + a + ' + \\dfrac{' + b + '}{x}\\right)dx' },
+        { label: 'Integrate each piece separately.', tex: '= \\dfrac{x^{2}}{2} + ' + a + 'x + ' + b + '\\ln|x| + C' }
+      ]
+    };
+  });
+
+  addType('Simplify the Exponent', 1, function(){
+    var a = randInt(1, 4), b = randInt(2, 4);
+    return {
+      statement: '\\int e^{' + a + '+' + b + '\\ln(x)}\\,dx',
+      answer: '\\dfrac{e^{' + a + '}x^{' + (b + 1) + '}}{' + (b + 1) + '} + C',
+      steps: [
+        { label: 'Split the exponent and simplify e^{b\\ln(x)} = x^{b}.', tex: 'e^{' + a + '+' + b + '\\ln(x)} = e^{' + a + '}\\cdot e^{' + b + '\\ln(x)} = e^{' + a + '}x^{' + b + '}' },
+        { label: 'Now it is a constant times a power of x; apply the power rule.', tex: '\\int e^{' + a + '}x^{' + b + '}\\,dx = e^{' + a + '}\\cdot\\dfrac{x^{' + (b + 1) + '}}{' + (b + 1) + '} + C' }
+      ]
+    };
+  });
+
+  addType('Basic Hyperbolic', 1, function(){
+    var isCosh = Math.random() < 0.5;
+    var c = randInt(1, 6);
+    if (isCosh){
+      return {
+        statement: '\\int ' + coefStr(c) + '\\operatorname{ch}(x)\\,dx',
+        answer: coefStr(c) + '\\operatorname{sh}(x) + C',
+        steps: [
+          { label: 'Pull the constant factor out of the integral.', tex: '\\int ' + coefStr(c) + '\\operatorname{ch}(x)\\,dx = ' + coefStr(c) + '\\int \\operatorname{ch}(x)\\,dx' },
+          { label: 'Recall \\int \\operatorname{ch}(x)\\,dx = \\operatorname{sh}(x) + C.', tex: '= ' + coefStr(c) + '\\operatorname{sh}(x) + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int ' + coefStr(c) + '\\operatorname{sh}(x)\\,dx',
+      answer: coefStr(c) + '\\operatorname{ch}(x) + C',
+      steps: [
+        { label: 'Pull the constant factor out of the integral.', tex: '\\int ' + coefStr(c) + '\\operatorname{sh}(x)\\,dx = ' + coefStr(c) + '\\int \\operatorname{sh}(x)\\,dx' },
+        { label: 'Recall \\int \\operatorname{sh}(x)\\,dx = \\operatorname{ch}(x) + C.', tex: '= ' + coefStr(c) + '\\operatorname{ch}(x) + C' }
+      ]
+    };
+  });
+
+  // ===================== LEVEL 2: CONSTANT ADJUSTMENT =====================
+
+  addType('Linear Power', 2, function(){
+    var a = randInt(2, 5), b = randInt(-4, 4), n = randInt(2, 5);
+    var inner = linExpr(a, b);
+    return {
+      statement: '\\int (' + inner + ')^{' + n + '}\\,dx',
+      answer: '\\dfrac{(' + inner + ')^{' + (n + 1) + '}}{' + (a * (n + 1)) + '} + C',
+      steps: [
+        { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad du = ' + a + '\\,dx \\quad\\Rightarrow\\quad dx = \\dfrac{du}{' + a + '}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int (' + inner + ')^{' + n + '}\\,dx = \\dfrac{1}{' + a + '}\\int u^{' + n + '}\\,du' },
+        { label: 'Apply the power rule in u.', tex: '= \\dfrac{1}{' + a + '}\\cdot\\dfrac{u^{' + (n + 1) + '}}{' + (n + 1) + '} + C' },
+        { label: 'Undo the substitution.', tex: '= \\dfrac{(' + inner + ')^{' + (n + 1) + '}}{' + (a * (n + 1)) + '} + C' }
+      ]
+    };
+  });
+
+  addType('Linear Reciprocal Power', 2, function(){
+    var a = randInt(2, 5), b = randInt(-4, 4), n = randInt(2, 4);
+    var inner = linExpr(a, b);
+    return {
+      statement: '\\int \\dfrac{dx}{(' + inner + ')^{' + n + '}}',
+      answer: '-\\dfrac{1}{' + (a * (n - 1)) + '(' + inner + ')^{' + (n - 1) + '}} + C',
+      steps: [
+        { label: 'Substitute u = ' + inner + ' and write the integrand as u^{-' + n + '}.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad dx = \\dfrac{du}{' + a + '}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int (' + inner + ')^{-' + n + '}\\,dx = \\dfrac{1}{' + a + '}\\int u^{-' + n + '}\\,du' },
+        { label: 'Apply the power rule in u.', tex: '= \\dfrac{1}{' + a + '}\\cdot\\dfrac{u^{-' + (n - 1) + '}}{-' + (n - 1) + '} + C = -\\dfrac{1}{' + (a * (n - 1)) + '\\,u^{' + (n - 1) + '}} + C' },
+        { label: 'Undo the substitution.', tex: '= -\\dfrac{1}{' + (a * (n - 1)) + '(' + inner + ')^{' + (n - 1) + '}} + C' }
+      ]
+    };
+  });
+
+  addType('Linear Square Root', 2, function(){
+    var a = randInt(2, 6), b = randInt(-4, 4);
+    var inner = linExpr(a, b);
+    return {
+      statement: '\\int \\sqrt{' + inner + '}\\,dx',
+      answer: '\\dfrac{2(' + inner + ')^{3/2}}{' + (3 * a) + '} + C',
+      steps: [
+        { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad dx = \\dfrac{du}{' + a + '}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\sqrt{' + inner + '}\\,dx = \\dfrac{1}{' + a + '}\\int u^{1/2}\\,du' },
+        { label: 'Apply the power rule in u.', tex: '= \\dfrac{1}{' + a + '}\\cdot\\dfrac{2}{3}u^{3/2} + C = \\dfrac{2}{' + (3 * a) + '}u^{3/2} + C' },
+        { label: 'Undo the substitution.', tex: '= \\dfrac{2(' + inner + ')^{3/2}}{' + (3 * a) + '} + C' }
+      ]
+    };
+  });
+
+  addType('Linear Exponential', 2, function(){
+    var a = randInt(2, 5), b = randInt(-4, 4);
+    var inner = linExpr(a, b);
+    return {
+      statement: '\\int e^{' + inner + '}\\,dx',
+      answer: '\\dfrac{1}{' + a + '}e^{' + inner + '} + C',
+      steps: [
+        { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad dx = \\dfrac{du}{' + a + '}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int e^{' + inner + '}\\,dx = \\dfrac{1}{' + a + '}\\int e^{u}\\,du' },
+        { label: 'Integrate and undo the substitution.', tex: '= \\dfrac{1}{' + a + '}e^{u} + C = \\dfrac{1}{' + a + '}e^{' + inner + '} + C' }
+      ]
+    };
+  });
+
+  addType('Linear Sine / Cosine', 2, function(){
+    var a = randInt(2, 6), b = randInt(-4, 4);
+    var inner = linExpr(a, b);
+    var isSin = Math.random() < 0.5;
+    if (isSin){
+      return {
+        statement: '\\int \\sin(' + inner + ')\\,dx',
+        answer: '-\\dfrac{1}{' + a + '}\\cos(' + inner + ') + C',
+        steps: [
+          { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad dx = \\dfrac{du}{' + a + '}' },
+          { label: 'Rewrite the integral in terms of u.', tex: '\\int \\sin(' + inner + ')\\,dx = \\dfrac{1}{' + a + '}\\int \\sin(u)\\,du' },
+          { label: 'Integrate and undo the substitution.', tex: '= -\\dfrac{1}{' + a + '}\\cos(u) + C = -\\dfrac{1}{' + a + '}\\cos(' + inner + ') + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int \\cos(' + inner + ')\\,dx',
+      answer: '\\dfrac{1}{' + a + '}\\sin(' + inner + ') + C',
+      steps: [
+        { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad dx = \\dfrac{du}{' + a + '}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\cos(' + inner + ')\\,dx = \\dfrac{1}{' + a + '}\\int \\cos(u)\\,du' },
+        { label: 'Integrate and undo the substitution.', tex: '= \\dfrac{1}{' + a + '}\\sin(u) + C = \\dfrac{1}{' + a + '}\\sin(' + inner + ') + C' }
+      ]
+    };
+  });
+
+  addType('Linear Reciprocal', 2, function(){
+    var a = randInt(2, 6), b = randInt(-5, 5), c = randInt(1, 9);
+    var inner = linExpr(a, b);
+    return {
+      statement: '\\int \\dfrac{' + c + '}{' + inner + '}\\,dx',
+      answer: '\\dfrac{' + c + '}{' + a + '}\\ln|' + inner + '| + C',
+      steps: [
+        { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad dx = \\dfrac{du}{' + a + '}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{' + c + '}{' + inner + '}\\,dx = \\dfrac{' + c + '}{' + a + '}\\int \\dfrac{du}{u}' },
+        { label: 'Integrate and undo the substitution.', tex: '= \\dfrac{' + c + '}{' + a + '}\\ln|u| + C = \\dfrac{' + c + '}{' + a + '}\\ln|' + inner + '| + C' }
+      ]
+    };
+  });
+
+  addType('Linear-over-Linear', 2, function(){
+    var a = randInt(2, 5), b = randInt(1, 5), d = randInt(b + 1, b + 6);
+    var num = linExpr(a, d), den = linExpr(a, b), diff = d - b;
+    return {
+      statement: '\\int \\dfrac{' + num + '}{' + den + '}\\,dx',
+      answer: 'x + \\dfrac{' + diff + '}{' + a + '}\\ln|' + den + '| + C',
+      steps: [
+        { label: 'Since the numerator and denominator share the same leading term, do a quick division first.', tex: '\\dfrac{' + num + '}{' + den + '} = 1 + \\dfrac{' + diff + '}{' + den + '}' },
+        { label: 'Integrate the resulting sum.', tex: '\\int \\dfrac{' + num + '}{' + den + '}\\,dx = \\int 1\\,dx + ' + diff + '\\int \\dfrac{dx}{' + den + '}' },
+        { label: 'The second integral needs the substitution u = ' + den + ' (constant adjustment).', tex: '= x + \\dfrac{' + diff + '}{' + a + '}\\ln|' + den + '| + C' }
+      ]
+    };
+  });
+
+  // ===================== LEVEL 3: DIRECT SUBSTITUTION =====================
+
+  addType('Power of a Quadratic', 3, function(){
+    var a = randInt(1, 6), n = randInt(2, 5);
+    return {
+      statement: '\\int x\\,(x^{2}+' + a + ')^{' + n + '}\\,dx',
+      answer: '\\dfrac{(x^{2}+' + a + ')^{' + (n + 1) + '}}{' + (2 * (n + 1)) + '} + C',
+      steps: [
+        { label: 'The factor x is (up to a constant) the derivative of x^2 + ' + a + '; substitute u = x^{2}+' + a + '.', tex: 'u = x^{2}+' + a + ' \\quad\\Rightarrow\\quad du = 2x\\,dx \\quad\\Rightarrow\\quad x\\,dx = \\dfrac{du}{2}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int x\\,(x^{2}+' + a + ')^{' + n + '}\\,dx = \\dfrac{1}{2}\\int u^{' + n + '}\\,du' },
+        { label: 'Apply the power rule in u.', tex: '= \\dfrac{1}{2}\\cdot\\dfrac{u^{' + (n + 1) + '}}{' + (n + 1) + '} + C' },
+        { label: 'Undo the substitution.', tex: '= \\dfrac{(x^{2}+' + a + ')^{' + (n + 1) + '}}{' + (2 * (n + 1)) + '} + C' }
+      ]
+    };
+  });
+
+  addType('Logarithmic Substitution', 3, function(){
+    var a = randInt(1, 9);
+    return {
+      statement: '\\int \\dfrac{x}{x^{2}+' + a + '}\\,dx',
+      answer: '\\dfrac{1}{2}\\ln(x^{2}+' + a + ') + C',
+      steps: [
+        { label: 'The numerator x is (up to a constant) the derivative of the denominator; substitute u = x^{2}+' + a + '.', tex: 'u = x^{2}+' + a + ' \\quad\\Rightarrow\\quad du = 2x\\,dx \\quad\\Rightarrow\\quad x\\,dx = \\dfrac{du}{2}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{x}{x^{2}+' + a + '}\\,dx = \\dfrac{1}{2}\\int \\dfrac{du}{u}' },
+        { label: 'Integrate (u = x^2+' + a + ' > 0, so no absolute value is needed) and undo the substitution.', tex: '= \\dfrac{1}{2}\\ln(u) + C = \\dfrac{1}{2}\\ln(x^{2}+' + a + ') + C' }
+      ]
+    };
+  });
+
+  addType('Tangent', 3, function(){
+    return {
+      statement: '\\int \\tan(x)\\,dx',
+      answer: '-\\ln|\\cos(x)| + C',
+      steps: [
+        { label: 'Rewrite tangent as a quotient.', tex: '\\int \\tan(x)\\,dx = \\int \\dfrac{\\sin(x)}{\\cos(x)}\\,dx' },
+        { label: 'The numerator is (up to a sign) the derivative of the denominator; substitute u = \\cos(x).', tex: 'u = \\cos(x) \\quad\\Rightarrow\\quad du = -\\sin(x)\\,dx \\quad\\Rightarrow\\quad \\sin(x)\\,dx = -du' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{\\sin(x)}{\\cos(x)}\\,dx = -\\int \\dfrac{du}{u}' },
+        { label: 'Integrate and undo the substitution.', tex: '= -\\ln|u| + C = -\\ln|\\cos(x)| + C' }
+      ]
+    };
+  });
+
+  addType('Square Root of a Quadratic', 3, function(){
+    var a = randInt(1, 6);
+    return {
+      statement: '\\int x\\sqrt{x^{2}+' + a + '}\\,dx',
+      answer: '\\dfrac{(x^{2}+' + a + ')^{3/2}}{3} + C',
+      steps: [
+        { label: 'The factor x is (up to a constant) the derivative of x^2 + ' + a + '; substitute u = x^{2}+' + a + '.', tex: 'u = x^{2}+' + a + ' \\quad\\Rightarrow\\quad x\\,dx = \\dfrac{du}{2}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int x\\sqrt{x^{2}+' + a + '}\\,dx = \\dfrac{1}{2}\\int u^{1/2}\\,du' },
+        { label: 'Apply the power rule in u.', tex: '= \\dfrac{1}{2}\\cdot\\dfrac{2}{3}u^{3/2} + C = \\dfrac{1}{3}u^{3/2} + C' },
+        { label: 'Undo the substitution.', tex: '= \\dfrac{(x^{2}+' + a + ')^{3/2}}{3} + C' }
+      ]
+    };
+  });
+
+  addType('Power of a Cubic', 3, function(){
+    var a = randInt(1, 6);
+    return {
+      statement: '\\int x^{2}\\sqrt{x^{3}+' + a + '}\\,dx',
+      answer: '\\dfrac{2(x^{3}+' + a + ')^{3/2}}{9} + C',
+      steps: [
+        { label: 'The factor x^2 is (up to a constant) the derivative of x^3 + ' + a + '; substitute u = x^{3}+' + a + '.', tex: 'u = x^{3}+' + a + ' \\quad\\Rightarrow\\quad du = 3x^{2}\\,dx \\quad\\Rightarrow\\quad x^{2}\\,dx = \\dfrac{du}{3}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int x^{2}\\sqrt{x^{3}+' + a + '}\\,dx = \\dfrac{1}{3}\\int u^{1/2}\\,du' },
+        { label: 'Apply the power rule in u.', tex: '= \\dfrac{1}{3}\\cdot\\dfrac{2}{3}u^{3/2} + C = \\dfrac{2}{9}u^{3/2} + C' },
+        { label: 'Undo the substitution.', tex: '= \\dfrac{2(x^{3}+' + a + ')^{3/2}}{9} + C' }
+      ]
+    };
+  });
+
+  addType('Trig Power Substitution', 3, function(){
+    var n = randInt(2, 4);
+    var sinBased = Math.random() < 0.5;
+    if (sinBased){
+      return {
+        statement: '\\int \\sin^{' + n + '}(x)\\cos(x)\\,dx',
+        answer: '\\dfrac{\\sin^{' + (n + 1) + '}(x)}{' + (n + 1) + '} + C',
+        steps: [
+          { label: 'The factor \\cos(x) is the derivative of \\sin(x); substitute u = \\sin(x).', tex: 'u = \\sin(x) \\quad\\Rightarrow\\quad du = \\cos(x)\\,dx' },
+          { label: 'Rewrite the integral in terms of u.', tex: '\\int \\sin^{' + n + '}(x)\\cos(x)\\,dx = \\int u^{' + n + '}\\,du' },
+          { label: 'Apply the power rule and undo the substitution.', tex: '= \\dfrac{u^{' + (n + 1) + '}}{' + (n + 1) + '} + C = \\dfrac{\\sin^{' + (n + 1) + '}(x)}{' + (n + 1) + '} + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int \\cos^{' + n + '}(x)\\sin(x)\\,dx',
+      answer: '-\\dfrac{\\cos^{' + (n + 1) + '}(x)}{' + (n + 1) + '} + C',
+      steps: [
+        { label: 'The factor \\sin(x) is (up to a sign) the derivative of \\cos(x); substitute u = \\cos(x).', tex: 'u = \\cos(x) \\quad\\Rightarrow\\quad du = -\\sin(x)\\,dx' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\cos^{' + n + '}(x)\\sin(x)\\,dx = -\\int u^{' + n + '}\\,du' },
+        { label: 'Apply the power rule and undo the substitution.', tex: '= -\\dfrac{u^{' + (n + 1) + '}}{' + (n + 1) + '} + C = -\\dfrac{\\cos^{' + (n + 1) + '}(x)}{' + (n + 1) + '} + C' }
+      ]
+    };
+  });
+
+  addType('Exponential-Inner Substitution', 3, function(){
+    var a = randInt(0, 5);
+    var inner = a === 0 ? 'x^{2}' : ('x^{2}+' + a);
+    return {
+      statement: '\\int x\\,e^{-(' + inner + ')}\\,dx',
+      answer: '-\\dfrac{1}{2}e^{-(' + inner + ')} + C',
+      steps: [
+        { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad du = 2x\\,dx \\quad\\Rightarrow\\quad x\\,dx = \\dfrac{du}{2}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int x\\,e^{-(' + inner + ')}\\,dx = \\dfrac{1}{2}\\int e^{-u}\\,du' },
+        { label: 'Integrate and undo the substitution.', tex: '= -\\dfrac{1}{2}e^{-u} + C = -\\dfrac{1}{2}e^{-(' + inner + ')} + C' }
+      ]
+    };
+  });
+
+  addType('Quotient to Arctan (cubic inner)', 3, function(){
+    var a = choice([1, 2, 3, 4]);
+    var a2 = a * a;
+    var denom = a2 === 1 ? '1+x^{6}' : (a2 + '+x^{6}');
+    var arctanArg = a === 1 ? 'x^{3}' : ('\\dfrac{x^{3}}{' + a + '}');
+    return {
+      statement: '\\int \\dfrac{x^{2}}{' + denom + '}\\,dx',
+      answer: '\\dfrac{1}{' + (3 * a) + '}\\arctan\\!\\left(' + arctanArg + '\\right) + C',
+      steps: [
+        { label: 'Notice x^{6} = (x^{3})^{2}; substitute u = x^{3}.', tex: 'u = x^{3} \\quad\\Rightarrow\\quad du = 3x^{2}\\,dx \\quad\\Rightarrow\\quad x^{2}\\,dx = \\dfrac{du}{3}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{x^{2}}{' + denom + '}\\,dx = \\dfrac{1}{3}\\int \\dfrac{du}{' + a2 + '+u^{2}}' },
+        { label: 'Recall \\int \\dfrac{du}{a^{2}+u^{2}} = \\dfrac{1}{a}\\arctan\\!\\left(\\dfrac{u}{a}\\right) with a = ' + a + '.', tex: '= \\dfrac{1}{3' + a + '}\\arctan\\!\\left(\\dfrac{u}{' + a + '}\\right) + C' },
+        { label: 'Undo the substitution.', tex: '= \\dfrac{1}{' + (3 * a) + '}\\arctan\\!\\left(' + arctanArg + '\\right) + C' }
+      ]
+    };
+  });
+
+  addType('Logarithmic-Inner Composite', 3, function(){
+    var kind = choice(['sin', 'tan', 'cube']);
+    if (kind === 'sin'){
+      return {
+        statement: '\\int \\dfrac{\\sin(\\ln(x))}{x}\\,dx',
+        answer: '-\\cos(\\ln(x)) + C',
+        steps: [
+          { label: 'Substitute u = \\ln(x).', tex: 'u = \\ln(x) \\quad\\Rightarrow\\quad du = \\dfrac{dx}{x}' },
+          { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{\\sin(\\ln(x))}{x}\\,dx = \\int \\sin(u)\\,du' },
+          { label: 'Integrate and undo the substitution.', tex: '= -\\cos(u) + C = -\\cos(\\ln(x)) + C' }
+        ]
+      };
+    }
+    if (kind === 'tan'){
+      return {
+        statement: '\\int \\dfrac{\\tan(\\ln(x))}{x}\\,dx',
+        answer: '-\\ln|\\cos(\\ln(x))| + C',
+        steps: [
+          { label: 'Substitute u = \\ln(x).', tex: 'u = \\ln(x) \\quad\\Rightarrow\\quad du = \\dfrac{dx}{x}' },
+          { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{\\tan(\\ln(x))}{x}\\,dx = \\int \\tan(u)\\,du' },
+          { label: 'Recall \\int \\tan(u)\\,du = -\\ln|\\cos(u)| (Level 3, Tangent) and undo the substitution.', tex: '= -\\ln|\\cos(u)| + C = -\\ln|\\cos(\\ln(x))| + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int \\dfrac{(\\ln(x))^{3}}{x}\\,dx',
+      answer: '\\dfrac{(\\ln(x))^{4}}{4} + C',
+      steps: [
+        { label: 'Substitute u = \\ln(x).', tex: 'u = \\ln(x) \\quad\\Rightarrow\\quad du = \\dfrac{dx}{x}' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{(\\ln(x))^{3}}{x}\\,dx = \\int u^{3}\\,du' },
+        { label: 'Apply the power rule and undo the substitution.', tex: '= \\dfrac{u^{4}}{4} + C = \\dfrac{(\\ln(x))^{4}}{4} + C' }
+      ]
+    };
+  });
+
+  // ===================== LEVEL 4: INTEGRATION BY PARTS (SIMPLE) =====================
+
+  addType('x times Exponential', 4, function(){
+    var a = randInt(1, 4);
+    var e = a === 1 ? 'x' : (a + 'x');
+    var a2 = a * a;
+    return {
+      statement: '\\int x\\,e^{' + e + '}\\,dx',
+      answer: '\\dfrac{e^{' + e + '}}{' + a2 + '}\\left(' + (a === 1 ? 'x - 1' : (a + 'x - 1')) + '\\right) + C',
+      steps: [
+        { label: 'Choose u = x (it simplifies on differentiation) and dv = e^{' + e + '}\\,dx.', tex: 'u = x \\qquad dv = e^{' + e + '}\\,dx' },
+        { label: 'Then du = dx and v = \\dfrac{1}{' + a + '}e^{' + e + '}.', tex: 'du = dx \\qquad v = \\dfrac{1}{' + a + '}e^{' + e + '}' },
+        { label: 'Apply integration by parts: \\int u\\,dv = uv - \\int v\\,du.', tex: '\\int x\\,e^{' + e + '}\\,dx = \\dfrac{x}{' + a + '}e^{' + e + '} - \\int \\dfrac{1}{' + a + '}e^{' + e + '}\\,dx' },
+        { label: 'Integrate what remains.', tex: '= \\dfrac{x}{' + a + '}e^{' + e + '} - \\dfrac{1}{' + a2 + '}e^{' + e + '} + C' },
+        { label: 'Factor e^{' + e + '} out.', tex: '= \\dfrac{e^{' + e + '}}{' + a2 + '}\\left(' + (a === 1 ? 'x - 1' : (a + 'x - 1')) + '\\right) + C' }
+      ]
+    };
+  });
+
+  addType('x times Natural Log', 4, function(){
+    return {
+      statement: '\\int x\\ln(x)\\,dx',
+      answer: '\\dfrac{x^{2}}{2}\\ln(x) - \\dfrac{x^{2}}{4} + C',
+      steps: [
+        { label: 'Choose u = \\ln(x) and dv = x\\,dx.', tex: 'u = \\ln(x) \\qquad dv = x\\,dx' },
+        { label: 'Then du = \\dfrac{dx}{x} and v = \\dfrac{x^{2}}{2}.', tex: 'du = \\dfrac{dx}{x} \\qquad v = \\dfrac{x^{2}}{2}' },
+        { label: 'Apply integration by parts.', tex: '\\int x\\ln(x)\\,dx = \\dfrac{x^{2}}{2}\\ln(x) - \\int \\dfrac{x^{2}}{2}\\cdot\\dfrac{1}{x}\\,dx' },
+        { label: 'Simplify the remaining integral.', tex: '= \\dfrac{x^{2}}{2}\\ln(x) - \\int \\dfrac{x}{2}\\,dx' },
+        { label: 'Integrate.', tex: '= \\dfrac{x^{2}}{2}\\ln(x) - \\dfrac{x^{2}}{4} + C' }
+      ]
+    };
+  });
+
+  addType('Natural Log Alone', 4, function(){
+    return {
+      statement: '\\int \\ln(x)\\,dx',
+      answer: 'x\\ln(x) - x + C',
+      steps: [
+        { label: 'Choose u = \\ln(x) and dv = dx.', tex: 'u = \\ln(x) \\qquad dv = dx' },
+        { label: 'Then du = \\dfrac{dx}{x} and v = x.', tex: 'du = \\dfrac{dx}{x} \\qquad v = x' },
+        { label: 'Apply integration by parts.', tex: '\\int \\ln(x)\\,dx = x\\ln(x) - \\int x\\cdot\\dfrac{1}{x}\\,dx' },
+        { label: 'Simplify the remaining integral.', tex: '= x\\ln(x) - \\int 1\\,dx' },
+        { label: 'Integrate.', tex: '= x\\ln(x) - x + C' }
+      ]
+    };
+  });
+
+  addType('x times Secant-Squared', 4, function(){
+    return {
+      statement: '\\int \\dfrac{x}{\\cos^{2}(x)}\\,dx',
+      answer: 'x\\tan(x) + \\ln|\\cos(x)| + C',
+      steps: [
+        { label: 'Rewrite 1/\\cos^2(x) = \\sec^2(x), then choose u = x and dv = \\sec^{2}(x)\\,dx.', tex: 'u = x \\qquad dv = \\sec^{2}(x)\\,dx' },
+        { label: 'Then du = dx and v = \\tan(x).', tex: 'du = dx \\qquad v = \\tan(x)' },
+        { label: 'Apply integration by parts.', tex: '\\int \\dfrac{x}{\\cos^{2}(x)}\\,dx = x\\tan(x) - \\int \\tan(x)\\,dx' },
+        { label: 'Recall \\int \\tan(x)\\,dx = -\\ln|\\cos(x)| (Level 3, Tangent).', tex: '= x\\tan(x) - (-\\ln|\\cos(x)|) + C' },
+        { label: 'Simplify.', tex: '= x\\tan(x) + \\ln|\\cos(x)| + C' }
+      ]
+    };
+  });
+
+  // ===================== LEVEL 5: MEDIUM MIX =====================
+
+  addType('x times Sine / Cosine (by parts)', 5, function(){
+    var a = randInt(1, 3);
+    var e = a === 1 ? 'x' : (a + 'x');
+    var a2 = a * a;
+    var isSin = Math.random() < 0.5;
+    if (isSin){
+      return {
+        statement: '\\int x\\,\\sin(' + e + ')\\,dx',
+        answer: '-\\dfrac{x}{' + a + '}\\cos(' + e + ') + \\dfrac{1}{' + a2 + '}\\sin(' + e + ') + C',
+        steps: [
+          { label: 'Choose u = x and dv = \\sin(' + e + ')\\,dx.', tex: 'u = x \\qquad dv = \\sin(' + e + ')\\,dx' },
+          { label: 'Then du = dx and v = -\\dfrac{1}{' + a + '}\\cos(' + e + ').', tex: 'du = dx \\qquad v = -\\dfrac{1}{' + a + '}\\cos(' + e + ')' },
+          { label: 'Apply integration by parts.', tex: '\\int x\\sin(' + e + ')\\,dx = -\\dfrac{x}{' + a + '}\\cos(' + e + ') + \\int \\dfrac{1}{' + a + '}\\cos(' + e + ')\\,dx' },
+          { label: 'Integrate what remains (constant adjustment).', tex: '= -\\dfrac{x}{' + a + '}\\cos(' + e + ') + \\dfrac{1}{' + a2 + '}\\sin(' + e + ') + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int x\\,\\cos(' + e + ')\\,dx',
+      answer: '\\dfrac{x}{' + a + '}\\sin(' + e + ') + \\dfrac{1}{' + a2 + '}\\cos(' + e + ') + C',
+      steps: [
+        { label: 'Choose u = x and dv = \\cos(' + e + ')\\,dx.', tex: 'u = x \\qquad dv = \\cos(' + e + ')\\,dx' },
+        { label: 'Then du = dx and v = \\dfrac{1}{' + a + '}\\sin(' + e + ').', tex: 'du = dx \\qquad v = \\dfrac{1}{' + a + '}\\sin(' + e + ')' },
+        { label: 'Apply integration by parts.', tex: '\\int x\\cos(' + e + ')\\,dx = \\dfrac{x}{' + a + '}\\sin(' + e + ') - \\int \\dfrac{1}{' + a + '}\\sin(' + e + ')\\,dx' },
+        { label: 'Integrate what remains (constant adjustment).', tex: '= \\dfrac{x}{' + a + '}\\sin(' + e + ') + \\dfrac{1}{' + a2 + '}\\cos(' + e + ') + C' }
+      ]
+    };
+  });
+
+  addType('Quadratic times Exponential (parts twice)', 5, function(){
+    var A = randInt(1, 3), B = randInt(1, 5);
+    var Ax2 = (A === 1 ? '' : A) + 'x^{2}';
+    var twoA = 2 * A;
+    return {
+      statement: '\\int \\left(' + Ax2 + ' + ' + B + '\\right)e^{x}\\,dx',
+      answer: '\\left(' + Ax2 + ' - ' + twoA + 'x + ' + (B + twoA) + '\\right)e^{x} + C',
+      steps: [
+        { label: 'First application: choose u = ' + Ax2 + '+' + B + ' and dv = e^{x}\\,dx.', tex: 'u = ' + Ax2 + '+' + B + ' \\qquad dv = e^{x}\\,dx' },
+        { label: 'Then du = ' + twoA + 'x\\,dx and v = e^{x}.', tex: 'du = ' + twoA + 'x\\,dx \\qquad v = e^{x}' },
+        { label: 'Apply integration by parts once.', tex: '\\int\\left(' + Ax2 + '+' + B + '\\right)e^{x}\\,dx = \\left(' + Ax2 + '+' + B + '\\right)e^{x} - \\int ' + twoA + 'x\\,e^{x}\\,dx' },
+        { label: 'The remaining integral needs parts again: choose u = ' + twoA + 'x, dv = e^{x}\\,dx, so du = ' + twoA + '\\,dx, v = e^{x}.', tex: '\\int ' + twoA + 'x\\,e^{x}\\,dx = ' + twoA + 'x\\,e^{x} - \\int ' + twoA + 'e^{x}\\,dx = ' + twoA + 'x\\,e^{x} - ' + twoA + 'e^{x}' },
+        { label: 'Substitute this back.', tex: '= \\left(' + Ax2 + '+' + B + '\\right)e^{x} - ' + twoA + 'x\\,e^{x} + ' + twoA + 'e^{x} + C' },
+        { label: 'Factor e^{x} out and simplify.', tex: '= \\left(' + Ax2 + ' - ' + twoA + 'x + ' + (B + twoA) + '\\right)e^{x} + C' }
+      ]
+    };
+  });
+
+  addType('Arctangent (parts + substitution)', 5, function(){
+    return {
+      statement: '\\int \\arctan(x)\\,dx',
+      answer: 'x\\arctan(x) - \\dfrac{1}{2}\\ln(1+x^{2}) + C',
+      steps: [
+        { label: 'Choose u = \\arctan(x) and dv = dx.', tex: 'u = \\arctan(x) \\qquad dv = dx' },
+        { label: 'Then du = \\dfrac{dx}{1+x^{2}} and v = x.', tex: 'du = \\dfrac{dx}{1+x^{2}} \\qquad v = x' },
+        { label: 'Apply integration by parts.', tex: '\\int \\arctan(x)\\,dx = x\\arctan(x) - \\int \\dfrac{x}{1+x^{2}}\\,dx' },
+        { label: 'The remaining integral is a direct substitution: let w = 1+x^{2}.', tex: 'w = 1+x^{2} \\quad\\Rightarrow\\quad dw = 2x\\,dx \\quad\\Rightarrow\\quad x\\,dx = \\dfrac{dw}{2}' },
+        { label: 'Compute that integral.', tex: '\\int \\dfrac{x}{1+x^{2}}\\,dx = \\dfrac{1}{2}\\int \\dfrac{dw}{w} = \\dfrac{1}{2}\\ln(1+x^{2})' },
+        { label: 'Combine both pieces.', tex: '\\int \\arctan(x)\\,dx = x\\arctan(x) - \\dfrac{1}{2}\\ln(1+x^{2}) + C' }
+      ]
+    };
+  });
+
+  addType('Arcsine (parts + substitution)', 5, function(){
+    return {
+      statement: '\\int \\arcsin(x)\\,dx',
+      answer: 'x\\arcsin(x) + \\sqrt{1-x^{2}} + C',
+      steps: [
+        { label: 'Choose u = \\arcsin(x) and dv = dx.', tex: 'u = \\arcsin(x) \\qquad dv = dx' },
+        { label: 'Then du = \\dfrac{dx}{\\sqrt{1-x^{2}}} and v = x.', tex: 'du = \\dfrac{dx}{\\sqrt{1-x^{2}}} \\qquad v = x' },
+        { label: 'Apply integration by parts.', tex: '\\int \\arcsin(x)\\,dx = x\\arcsin(x) - \\int \\dfrac{x}{\\sqrt{1-x^{2}}}\\,dx' },
+        { label: 'The remaining integral is a direct substitution: let w = 1-x^{2}.', tex: 'w = 1-x^{2} \\quad\\Rightarrow\\quad dw = -2x\\,dx \\quad\\Rightarrow\\quad x\\,dx = -\\dfrac{dw}{2}' },
+        { label: 'Compute that integral.', tex: '\\int \\dfrac{x}{\\sqrt{1-x^{2}}}\\,dx = -\\dfrac{1}{2}\\int w^{-1/2}\\,dw = -\\sqrt{w} = -\\sqrt{1-x^{2}}' },
+        { label: 'Combine both pieces.', tex: '\\int \\arcsin(x)\\,dx = x\\arcsin(x) + \\sqrt{1-x^{2}} + C' }
+      ]
+    };
+  });
+
+  addType('x times Sine-Squared / Cosine-Squared', 5, function(){
+    var isCos = Math.random() < 0.5;
+    if (isCos){
+      return {
+        statement: '\\int x\\cos^{2}(x)\\,dx',
+        answer: '\\dfrac{x^{2}}{4} + \\dfrac{x\\sin(2x)}{4} + \\dfrac{\\cos(2x)}{8} + C',
+        steps: [
+          { label: 'Rewrite \\cos^2(x) with the double-angle identity.', tex: '\\cos^{2}(x) = \\dfrac{1+\\cos(2x)}{2}' },
+          { label: 'Split the integral into two pieces.', tex: '\\int x\\cos^{2}(x)\\,dx = \\int \\dfrac{x}{2}\\,dx + \\dfrac{1}{2}\\int x\\cos(2x)\\,dx' },
+          { label: 'The first piece is immediate: \\int \\dfrac{x}{2}\\,dx = \\dfrac{x^{2}}{4}.', tex: '\\int \\dfrac{x}{2}\\,dx = \\dfrac{x^{2}}{4}' },
+          { label: 'The second piece needs parts: u=x, dv=\\cos(2x)\\,dx \\Rightarrow du=dx, v=\\tfrac{1}{2}\\sin(2x).', tex: '\\int x\\cos(2x)\\,dx = \\dfrac{x\\sin(2x)}{2} - \\int \\dfrac{\\sin(2x)}{2}\\,dx = \\dfrac{x\\sin(2x)}{2} + \\dfrac{\\cos(2x)}{4}' },
+          { label: 'Combine both pieces (the second one carries the outer factor of 1/2).', tex: '= \\dfrac{x^{2}}{4} + \\dfrac{x\\sin(2x)}{4} + \\dfrac{\\cos(2x)}{8} + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int x\\sin^{2}(x)\\,dx',
+      answer: '\\dfrac{x^{2}}{4} - \\dfrac{x\\sin(2x)}{4} - \\dfrac{\\cos(2x)}{8} + C',
+      steps: [
+        { label: 'Rewrite \\sin^2(x) with the double-angle identity.', tex: '\\sin^{2}(x) = \\dfrac{1-\\cos(2x)}{2}' },
+        { label: 'Split the integral into two pieces.', tex: '\\int x\\sin^{2}(x)\\,dx = \\int \\dfrac{x}{2}\\,dx - \\dfrac{1}{2}\\int x\\cos(2x)\\,dx' },
+        { label: 'The first piece is immediate: \\int \\dfrac{x}{2}\\,dx = \\dfrac{x^{2}}{4}.', tex: '\\int \\dfrac{x}{2}\\,dx = \\dfrac{x^{2}}{4}' },
+        { label: 'The second piece needs parts: u=x, dv=\\cos(2x)\\,dx \\Rightarrow du=dx, v=\\tfrac{1}{2}\\sin(2x).', tex: '\\int x\\cos(2x)\\,dx = \\dfrac{x\\sin(2x)}{2} - \\int \\dfrac{\\sin(2x)}{2}\\,dx = \\dfrac{x\\sin(2x)}{2} + \\dfrac{\\cos(2x)}{4}' },
+        { label: 'Combine both pieces (the second one carries a leading minus sign).', tex: '= \\dfrac{x^{2}}{4} - \\dfrac{x\\sin(2x)}{4} - \\dfrac{\\cos(2x)}{8} + C' }
+      ]
+    };
+  });
+
+  addType('Quadratic times Sine (parts twice)', 5, function(){
+    var a = randInt(2, 4);
+    var ae = a + 'x';
+    var a2 = a * a, a3 = a * a * a;
+    return {
+      statement: '\\int x^{2}\\sin(' + ae + ')\\,dx',
+      answer: '\\left(\\dfrac{2}{' + a3 + '} - \\dfrac{x^{2}}{' + a + '}\\right)\\cos(' + ae + ') + \\dfrac{2x}{' + a2 + '}\\sin(' + ae + ') + C',
+      steps: [
+        { label: 'First application: choose u = x^{2} and dv = \\sin(' + ae + ')\\,dx.', tex: 'u = x^{2} \\qquad dv = \\sin(' + ae + ')\\,dx' },
+        { label: 'Then du = 2x\\,dx and v = -\\dfrac{1}{' + a + '}\\cos(' + ae + ').', tex: 'du = 2x\\,dx \\qquad v = -\\dfrac{1}{' + a + '}\\cos(' + ae + ')' },
+        { label: 'Apply integration by parts once.', tex: '\\int x^{2}\\sin(' + ae + ')\\,dx = -\\dfrac{x^{2}}{' + a + '}\\cos(' + ae + ') + \\dfrac{2}{' + a + '}\\int x\\cos(' + ae + ')\\,dx' },
+        { label: 'The remaining integral needs parts again: u=x, dv=\\cos(' + ae + ')\\,dx \\Rightarrow du=dx, v=\\tfrac{1}{' + a + '}\\sin(' + ae + ').', tex: '\\int x\\cos(' + ae + ')\\,dx = \\dfrac{x}{' + a + '}\\sin(' + ae + ') + \\dfrac{1}{' + a2 + '}\\cos(' + ae + ')' },
+        { label: 'Substitute this back (remember the outer factor of 2/' + a + ').', tex: '= -\\dfrac{x^{2}}{' + a + '}\\cos(' + ae + ') + \\dfrac{2x}{' + a2 + '}\\sin(' + ae + ') + \\dfrac{2}{' + a3 + '}\\cos(' + ae + ') + C' },
+        { label: 'Group the cosine terms.', tex: '= \\left(\\dfrac{2}{' + a3 + '} - \\dfrac{x^{2}}{' + a + '}\\right)\\cos(' + ae + ') + \\dfrac{2x}{' + a2 + '}\\sin(' + ae + ') + C' }
+      ]
+    };
+  });
+
+  addType('Exponential times Sine / Cosine (cyclic)', 5, function(){
+    var isSin = Math.random() < 0.5;
+    if (isSin){
+      return {
+        statement: '\\int e^{x}\\sin(x)\\,dx',
+        answer: '\\dfrac{e^{x}(\\sin(x)-\\cos(x))}{2} + C',
+        steps: [
+          { label: 'Call the integral I and apply parts with u=e^{x}, dv=\\sin(x)\\,dx \\Rightarrow du=e^{x}dx, v=-\\cos(x).', tex: 'I = \\int e^{x}\\sin(x)\\,dx = -e^{x}\\cos(x) + \\int e^{x}\\cos(x)\\,dx' },
+          { label: 'Apply parts again to the new integral (call it J) with u=e^{x}, dv=\\cos(x)\\,dx \\Rightarrow du=e^{x}dx, v=\\sin(x).', tex: 'J = \\int e^{x}\\cos(x)\\,dx = e^{x}\\sin(x) - \\int e^{x}\\sin(x)\\,dx = e^{x}\\sin(x) - I' },
+          { label: 'Substitute J back into the first equation: I reappears on the right-hand side.', tex: 'I = -e^{x}\\cos(x) + e^{x}\\sin(x) - I' },
+          { label: 'Solve for I algebraically.', tex: '2I = e^{x}(\\sin(x)-\\cos(x)) \\quad\\Rightarrow\\quad I = \\dfrac{e^{x}(\\sin(x)-\\cos(x))}{2} + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int e^{x}\\cos(x)\\,dx',
+      answer: '\\dfrac{e^{x}(\\sin(x)+\\cos(x))}{2} + C',
+      steps: [
+        { label: 'Call the integral I and apply parts with u=e^{x}, dv=\\cos(x)\\,dx \\Rightarrow du=e^{x}dx, v=\\sin(x).', tex: 'I = \\int e^{x}\\cos(x)\\,dx = e^{x}\\sin(x) - \\int e^{x}\\sin(x)\\,dx' },
+        { label: 'Apply parts again to the new integral (call it J) with u=e^{x}, dv=\\sin(x)\\,dx \\Rightarrow du=e^{x}dx, v=-\\cos(x).', tex: 'J = \\int e^{x}\\sin(x)\\,dx = -e^{x}\\cos(x) + \\int e^{x}\\cos(x)\\,dx = -e^{x}\\cos(x) + I' },
+        { label: 'Substitute J back into the first equation: I reappears on the right-hand side.', tex: 'I = e^{x}\\sin(x) + e^{x}\\cos(x) - I' },
+        { label: 'Solve for I algebraically.', tex: '2I = e^{x}(\\sin(x)+\\cos(x)) \\quad\\Rightarrow\\quad I = \\dfrac{e^{x}(\\sin(x)+\\cos(x))}{2} + C' }
+      ]
+    };
+  });
+
+  // ===================== LEVEL 6: RATIONAL FUNCTIONS (PARTIAL FRACTIONS) =====================
+
+  addType('Distinct Linear Factors', 6, function(){
+    var k = randInt(2, 6);
+    return {
+      statement: '\\int \\dfrac{dx}{x^{2}+' + k + 'x}',
+      answer: '\\dfrac{1}{' + k + '}\\ln\\left|\\dfrac{x}{x+' + k + '}\\right| + C',
+      steps: [
+        { label: 'Factor the denominator.', tex: 'x^{2}+' + k + 'x = x(x+' + k + ')' },
+        { label: 'Decompose into partial fractions: \\dfrac{1}{x(x+' + k + ')} = \\dfrac{A}{x} + \\dfrac{B}{x+' + k + '}. Solving gives A = 1/' + k + ', B = -1/' + k + '.', tex: '\\dfrac{1}{x(x+' + k + ')} = \\dfrac{1}{' + k + '}\\cdot\\dfrac{1}{x} - \\dfrac{1}{' + k + '}\\cdot\\dfrac{1}{x+' + k + '}' },
+        { label: 'Integrate each simple fraction.', tex: '\\int \\dfrac{dx}{x^{2}+' + k + 'x} = \\dfrac{1}{' + k + '}\\ln|x| - \\dfrac{1}{' + k + '}\\ln|x+' + k + '| + C' },
+        { label: 'Combine the logarithms.', tex: '= \\dfrac{1}{' + k + '}\\ln\\left|\\dfrac{x}{x+' + k + '}\\right| + C' }
+      ]
+    };
+  });
+
+  addType('Repeated Linear Factor', 6, function(){
+    var q = randInt(1, 6), p = randInt(-3, 6);
+    var num = linExpr(1, p);
+    var sum = p + q;
+    return {
+      statement: '\\int \\dfrac{' + num + '}{(x-' + q + ')^{2}}\\,dx',
+      answer: '\\ln|x-' + q + '| ' + (sum >= 0 ? '- \\dfrac{' + sum + '}{x-' + q + '}' : '+ \\dfrac{' + Math.abs(sum) + '}{x-' + q + '}') + ' + C',
+      steps: [
+        { label: 'Decompose into partial fractions: \\dfrac{' + num + '}{(x-' + q + ')^{2}} = \\dfrac{A}{x-' + q + '} + \\dfrac{B}{(x-' + q + ')^{2}}.', tex: num + ' = A(x-' + q + ') + B' },
+        { label: 'Matching coefficients gives A = 1 and B = ' + sum + ' (set x = ' + q + ' to see B directly).', tex: '\\dfrac{' + num + '}{(x-' + q + ')^{2}} = \\dfrac{1}{x-' + q + '} + \\dfrac{' + sum + '}{(x-' + q + ')^{2}}' },
+        { label: 'Integrate each piece.', tex: '\\int \\dfrac{' + num + '}{(x-' + q + ')^{2}}\\,dx = \\ln|x-' + q + '| - \\dfrac{' + sum + '}{x-' + q + '} + C' }
+      ]
+    };
+  });
+
+  addType('Irreducible Quadratic (complete the square)', 6, function(){
+    var b = randInt(1, 4), m = randInt(1, 4);
+    var denom = quadDenomTex(b, m);
+    var sq = completedSquareTex(b, m);
+    var inner = linExpr(1, b);
+    return {
+      statement: '\\int \\dfrac{dx}{' + denom + '}',
+      answer: '\\dfrac{1}{' + m + '}\\arctan\\!\\left(\\dfrac{' + inner + '}{' + m + '}\\right) + C',
+      steps: [
+        { label: 'Complete the square in the denominator (it has no real roots).', tex: denom + ' = ' + sq },
+        { label: 'Substitute u = ' + inner + '.', tex: 'u = ' + inner + ' \\quad\\Rightarrow\\quad du = dx' },
+        { label: 'Rewrite the integral in terms of u.', tex: '\\int \\dfrac{dx}{' + denom + '} = \\int \\dfrac{du}{u^{2}+' + (m * m) + '}' },
+        { label: 'Recall \\int \\dfrac{du}{u^{2}+m^{2}} = \\dfrac{1}{m}\\arctan\\!\\left(\\dfrac{u}{m}\\right) with m = ' + m + ', then undo the substitution.', tex: '= \\dfrac{1}{' + m + '}\\arctan\\!\\left(\\dfrac{' + inner + '}{' + m + '}\\right) + C' }
+      ]
+    };
+  });
+
+  addType('Linear over Irreducible Quadratic', 6, function(){
+    var b = randInt(1, 4) * choice([1, -1]);
+    var m = randInt(1, 4);
+    var p = randInt(-4, 6);
+    if (p === b) p = p + 1;
+    var denom = quadDenomTex(b, m);
+    var sq = completedSquareTex(b, m);
+    var num = linExpr(1, p);
+    var inner = linExpr(1, b);
+    var diff = p - b;
+    return {
+      statement: '\\int \\dfrac{' + num + '}{' + denom + '}\\,dx',
+      answer: '\\dfrac{1}{2}\\ln\\left(' + denom + '\\right) + ' + fracOrInt(diff, m) + '\\arctan\\!\\left(\\dfrac{' + inner + '}{' + m + '}\\right) + C',
+      steps: [
+        { label: 'Complete the square in the denominator.', tex: denom + ' = ' + sq },
+        { label: 'Write the numerator in terms of (' + inner + '), since that is what the log-rule needs.', tex: num + ' = (' + inner + ')' + signedAdd(diff) },
+        { label: 'Split the integral into a logarithmic piece and an arctangent piece.', tex: '\\int \\dfrac{' + num + '}{' + denom + '}\\,dx = \\int \\dfrac{' + inner + '}{' + denom + '}\\,dx' + signedAdd(diff) + '\\int \\dfrac{dx}{' + denom + '}' },
+        { label: 'The first piece is logarithmic (the numerator is half the derivative of the denominator).', tex: '\\int \\dfrac{' + inner + '}{' + denom + '}\\,dx = \\dfrac{1}{2}\\ln\\left(' + denom + '\\right)' },
+        { label: 'The second piece is the arctangent form from Level 6, Irreducible Quadratic.', tex: '\\int \\dfrac{dx}{' + denom + '} = \\dfrac{1}{' + m + '}\\arctan\\!\\left(\\dfrac{' + inner + '}{' + m + '}\\right)' },
+        { label: 'Combine both pieces.', tex: '= \\dfrac{1}{2}\\ln\\left(' + denom + '\\right) + ' + fracOrInt(diff, m) + '\\arctan\\!\\left(\\dfrac{' + inner + '}{' + m + '}\\right) + C' }
+      ]
+    };
+  });
+
+  // ===================== LEVEL 7: TRIGONOMETRIC POWERS & PRODUCTS =====================
+
+  addType('Odd Power Split', 7, function(){
+    var cosOdd = Math.random() < 0.5;
+    var n = randInt(1, 4);
+    if (cosOdd){
+      return {
+        statement: '\\int \\cos^{3}(x)\\sin^{' + n + '}(x)\\,dx',
+        answer: '\\dfrac{\\sin^{' + (n + 1) + '}(x)}{' + (n + 1) + '} - \\dfrac{\\sin^{' + (n + 3) + '}(x)}{' + (n + 3) + '} + C',
+        steps: [
+          { label: 'Split off one cosine and use \\cos^{2}(x) = 1-\\sin^{2}(x) on the rest.', tex: '\\cos^{3}(x) = (1-\\sin^{2}(x))\\cos(x)' },
+          { label: 'Substitute u = \\sin(x), du = \\cos(x)\\,dx.', tex: '\\int \\cos^{3}(x)\\sin^{' + n + '}(x)\\,dx = \\int (1-u^{2})\\,u^{' + n + '}\\,du' },
+          { label: 'Expand and integrate term by term.', tex: '= \\int u^{' + n + '}\\,du - \\int u^{' + (n + 2) + '}\\,du = \\dfrac{u^{' + (n + 1) + '}}{' + (n + 1) + '} - \\dfrac{u^{' + (n + 3) + '}}{' + (n + 3) + '}' },
+          { label: 'Undo the substitution.', tex: '= \\dfrac{\\sin^{' + (n + 1) + '}(x)}{' + (n + 1) + '} - \\dfrac{\\sin^{' + (n + 3) + '}(x)}{' + (n + 3) + '} + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int \\sin^{3}(x)\\cos^{' + n + '}(x)\\,dx',
+      answer: '\\dfrac{\\cos^{' + (n + 3) + '}(x)}{' + (n + 3) + '} - \\dfrac{\\cos^{' + (n + 1) + '}(x)}{' + (n + 1) + '} + C',
+      steps: [
+        { label: 'Split off one sine and use \\sin^{2}(x) = 1-\\cos^{2}(x) on the rest.', tex: '\\sin^{3}(x) = (1-\\cos^{2}(x))\\sin(x)' },
+        { label: 'Substitute u = \\cos(x), du = -\\sin(x)\\,dx.', tex: '\\int \\sin^{3}(x)\\cos^{' + n + '}(x)\\,dx = -\\int (1-u^{2})\\,u^{' + n + '}\\,du' },
+        { label: 'Expand and integrate term by term.', tex: '= -\\int u^{' + n + '}\\,du + \\int u^{' + (n + 2) + '}\\,du = -\\dfrac{u^{' + (n + 1) + '}}{' + (n + 1) + '} + \\dfrac{u^{' + (n + 3) + '}}{' + (n + 3) + '}' },
+        { label: 'Undo the substitution.', tex: '= \\dfrac{\\cos^{' + (n + 3) + '}(x)}{' + (n + 3) + '} - \\dfrac{\\cos^{' + (n + 1) + '}(x)}{' + (n + 1) + '} + C' }
+      ]
+    };
+  });
+
+  addType('Tangent Cubed', 7, function(){
+    return {
+      statement: '\\int \\tan^{3}(x)\\,dx',
+      answer: '\\dfrac{\\tan^{2}(x)}{2} + \\ln|\\cos(x)| + C',
+      steps: [
+        { label: 'Split off \\tan^{2}(x) = \\sec^{2}(x) - 1.', tex: '\\tan^{3}(x) = \\tan(x)\\left(\\sec^{2}(x)-1\\right) = \\tan(x)\\sec^{2}(x) - \\tan(x)' },
+        { label: 'Integrate the two pieces separately.', tex: '\\int \\tan^{3}(x)\\,dx = \\int \\tan(x)\\sec^{2}(x)\\,dx - \\int \\tan(x)\\,dx' },
+        { label: 'First piece: substitute u = \\tan(x), du = \\sec^{2}(x)\\,dx.', tex: '\\int \\tan(x)\\sec^{2}(x)\\,dx = \\int u\\,du = \\dfrac{u^{2}}{2} = \\dfrac{\\tan^{2}(x)}{2}' },
+        { label: 'Second piece: recall \\int \\tan(x)\\,dx = -\\ln|\\cos(x)| (Level 3, Tangent).', tex: '\\int \\tan(x)\\,dx = -\\ln|\\cos(x)|' },
+        { label: 'Combine both pieces.', tex: '= \\dfrac{\\tan^{2}(x)}{2} - (-\\ln|\\cos(x)|) + C = \\dfrac{\\tan^{2}(x)}{2} + \\ln|\\cos(x)| + C' }
+      ]
+    };
+  });
+
+  addType('Even Power Secant/Tangent', 7, function(){
+    var k = randInt(2, 4);
+    var denom = 2 * k;
+    var answerByK = {
+      2: '\\dfrac{\\tan^{3}(x)}{3} + C',
+      3: '\\dfrac{\\tan^{3}(x)}{3} + \\dfrac{\\tan^{5}(x)}{5} + C',
+      4: '\\dfrac{\\tan^{3}(x)}{3} + \\dfrac{2\\tan^{5}(x)}{5} + \\dfrac{\\tan^{7}(x)}{7} + C'
+    };
+    var expandByK = {
+      2: 'u^{2}',
+      3: 'u^{2}(1+u^{2}) = u^{2}+u^{4}',
+      4: 'u^{2}(1+u^{2})^{2} = u^{2}+2u^{4}+u^{6}'
+    };
+    return {
+      statement: '\\int \\dfrac{\\sin^{2}(x)}{\\cos^{' + denom + '}(x)}\\,dx',
+      answer: answerByK[k],
+      steps: [
+        { label: 'Rewrite using \\tan(x) = \\sin(x)/\\cos(x) and \\sec^{2}(x) = 1+\\tan^{2}(x), saving one \\sec^{2}(x) for the substitution.', tex: '\\dfrac{\\sin^{2}(x)}{\\cos^{' + denom + '}(x)} = \\tan^{2}(x)\\,\\sec^{' + (denom - 2) + '}(x) = \\tan^{2}(x)\\left(1+\\tan^{2}(x)\\right)^{' + (k - 2) + '}\\sec^{2}(x)' },
+        { label: 'Substitute u = \\tan(x), du = \\sec^{2}(x)\\,dx.', tex: '\\int \\dfrac{\\sin^{2}(x)}{\\cos^{' + denom + '}(x)}\\,dx = \\int u^{2}(1+u^{2})^{' + (k - 2) + '}\\,du' },
+        { label: 'Expand the integrand.', tex: '= \\int \\left(' + expandByK[k] + '\\right)du' },
+        { label: 'Integrate term by term and undo the substitution.', tex: '= ' + answerByK[k] }
+      ]
+    };
+  });
+
+  addType('Product-to-Sum', 7, function(){
+    var a = randInt(2, 5), b = randInt(1, a - 1);
+    var sum = a + b, diff = a - b;
+    return {
+      statement: '\\int \\sin(' + a + 'x)\\cos(' + b + 'x)\\,dx',
+      answer: '-\\dfrac{1}{2}\\left(\\dfrac{\\cos(' + sum + 'x)}{' + sum + '} + \\dfrac{\\cos(' + diff + 'x)}{' + diff + '}\\right) + C',
+      steps: [
+        { label: 'Apply the product-to-sum identity \\sin(A)\\cos(B) = \\tfrac{1}{2}\\left[\\sin(A+B)+\\sin(A-B)\\right].', tex: '\\sin(' + a + 'x)\\cos(' + b + 'x) = \\dfrac{1}{2}\\Big[\\sin(' + sum + 'x) + \\sin(' + diff + 'x)\\Big]' },
+        { label: 'Split the integral and integrate each sine (constant adjustment).', tex: '\\int \\sin(' + a + 'x)\\cos(' + b + 'x)\\,dx = \\dfrac{1}{2}\\int \\sin(' + sum + 'x)\\,dx + \\dfrac{1}{2}\\int \\sin(' + diff + 'x)\\,dx' },
+        { label: 'Integrate.', tex: '= -\\dfrac{\\cos(' + sum + 'x)}{' + (2 * sum) + '} - \\dfrac{\\cos(' + diff + 'x)}{' + (2 * diff) + '} + C' },
+        { label: 'Factor out -1/2.', tex: '= -\\dfrac{1}{2}\\left(\\dfrac{\\cos(' + sum + 'x)}{' + sum + '} + \\dfrac{\\cos(' + diff + 'x)}{' + diff + '}\\right) + C' }
+      ]
+    };
+  });
+
+  // ===================== LEVEL 8: TRIG / HYPERBOLIC SUBSTITUTION =====================
+
+  addType('Square Root of a² - x² (trig substitution)', 8, function(){
+    var a = randInt(2, 5), a2 = a * a;
+    return {
+      statement: '\\int \\sqrt{' + a2 + ' - x^{2}}\\,dx',
+      answer: '\\dfrac{' + a2 + '}{2}\\arcsin\\!\\left(\\dfrac{x}{' + a + '}\\right) + \\dfrac{x}{2}\\sqrt{' + a2 + ' - x^{2}} + C',
+      steps: [
+        { label: 'Substitute x = ' + a + '\\sin(t), so dx = ' + a + '\\cos(t)\\,dt and \\sqrt{' + a2 + '-x^{2}} = ' + a + '\\cos(t).', tex: 'x = ' + a + '\\sin(t) \\quad\\Rightarrow\\quad dx = ' + a + '\\cos(t)\\,dt' },
+        { label: 'Rewrite the integral in terms of t.', tex: '\\int \\sqrt{' + a2 + '-x^{2}}\\,dx = \\int ' + a + '\\cos(t)\\cdot ' + a + '\\cos(t)\\,dt = ' + a2 + '\\int \\cos^{2}(t)\\,dt' },
+        { label: 'Use the double-angle identity and integrate.', tex: '= ' + a2 + '\\left(\\dfrac{t}{2}+\\dfrac{\\sin(2t)}{4}\\right) + C = \\dfrac{' + a2 + '}{2}t + \\dfrac{' + a2 + '}{2}\\sin(t)\\cos(t) + C' },
+        { label: 'Back-substitute: t = \\arcsin(x/' + a + '), \\sin(t)=x/' + a + ', \\cos(t)=\\sqrt{' + a2 + '-x^{2}}/' + a + '.', tex: '= \\dfrac{' + a2 + '}{2}\\arcsin\\!\\left(\\dfrac{x}{' + a + '}\\right) + \\dfrac{x}{2}\\sqrt{' + a2 + '-x^{2}} + C' }
+      ]
+    };
+  });
+
+  addType('Square Root of a² + x² (hyperbolic substitution)', 8, function(){
+    var a = randInt(1, 4), a2 = a * a;
+    return {
+      statement: '\\int \\sqrt{x^{2} + ' + a2 + '}\\,dx',
+      answer: '\\dfrac{' + a2 + '}{2}\\ln\\!\\left(x+\\sqrt{x^{2}+' + a2 + '}\\right) + \\dfrac{x}{2}\\sqrt{x^{2}+' + a2 + '} + C',
+      steps: [
+        { label: 'Substitute x = ' + a + '\\operatorname{sh}(t), so dx = ' + a + '\\operatorname{ch}(t)\\,dt and \\sqrt{x^{2}+' + a2 + '} = ' + a + '\\operatorname{ch}(t).', tex: 'x = ' + a + '\\operatorname{sh}(t) \\quad\\Rightarrow\\quad dx = ' + a + '\\operatorname{ch}(t)\\,dt' },
+        { label: 'Rewrite the integral in terms of t.', tex: '\\int \\sqrt{x^{2}+' + a2 + '}\\,dx = ' + a2 + '\\int \\operatorname{ch}^{2}(t)\\,dt' },
+        { label: 'Use \\operatorname{ch}^{2}(t) = \\tfrac{1+\\operatorname{ch}(2t)}{2} and integrate.', tex: '= \\dfrac{' + a2 + '}{2}t + \\dfrac{' + a2 + '}{2}\\operatorname{sh}(t)\\operatorname{ch}(t) + C' },
+        { label: 'Back-substitute using \\operatorname{sh}(t)=x/' + a + ', \\operatorname{ch}(t)=\\sqrt{x^{2}+' + a2 + '}/' + a + ', and t = \\ln\\!\\left(x+\\sqrt{x^{2}+' + a2 + '}\\right) - \\ln(' + a + ') (the -\\ln(' + a + ') is a constant, absorbed into C).', tex: '= \\dfrac{' + a2 + '}{2}\\ln\\!\\left(x+\\sqrt{x^{2}+' + a2 + '}\\right) + \\dfrac{x}{2}\\sqrt{x^{2}+' + a2 + '} + C' }
+      ]
+    };
+  });
+
+  addType('Square Root of x² - a² (hyperbolic substitution)', 8, function(){
+    var a = randInt(1, 4), a2 = a * a;
+    return {
+      statement: '\\int \\sqrt{x^{2} - ' + a2 + '}\\,dx',
+      answer: '\\dfrac{x}{2}\\sqrt{x^{2}-' + a2 + '} - \\dfrac{' + a2 + '}{2}\\ln\\!\\left(x+\\sqrt{x^{2}-' + a2 + '}\\right) + C',
+      steps: [
+        { label: 'Substitute x = ' + a + '\\operatorname{ch}(t), so dx = ' + a + '\\operatorname{sh}(t)\\,dt and \\sqrt{x^{2}-' + a2 + '} = ' + a + '\\operatorname{sh}(t).', tex: 'x = ' + a + '\\operatorname{ch}(t) \\quad\\Rightarrow\\quad dx = ' + a + '\\operatorname{sh}(t)\\,dt' },
+        { label: 'Rewrite the integral in terms of t.', tex: '\\int \\sqrt{x^{2}-' + a2 + '}\\,dx = ' + a2 + '\\int \\operatorname{sh}^{2}(t)\\,dt' },
+        { label: 'Use \\operatorname{sh}^{2}(t) = \\tfrac{\\operatorname{ch}(2t)-1}{2} and integrate.', tex: '= \\dfrac{' + a2 + '}{2}\\operatorname{sh}(t)\\operatorname{ch}(t) - \\dfrac{' + a2 + '}{2}t + C' },
+        { label: 'Back-substitute using \\operatorname{ch}(t)=x/' + a + ', \\operatorname{sh}(t)=\\sqrt{x^{2}-' + a2 + '}/' + a + ', and t = \\ln\\!\\left(x+\\sqrt{x^{2}-' + a2 + '}\\right) - \\ln(' + a + ') (the -\\ln(' + a + ') is a constant, absorbed into C).', tex: '= \\dfrac{x}{2}\\sqrt{x^{2}-' + a2 + '} - \\dfrac{' + a2 + '}{2}\\ln\\!\\left(x+\\sqrt{x^{2}-' + a2 + '}\\right) + C' }
+      ]
+    };
+  });
+
+  addType('Exponential Substitution (t = eˣ)', 8, function(){
+    var simple = Math.random() < 0.5;
+    if (simple){
+      return {
+        statement: '\\int \\dfrac{dx}{e^{x}+1}',
+        answer: 'x - \\ln(e^{x}+1) + C',
+        steps: [
+          { label: 'Substitute t = e^{x}, so dt = e^{x}\\,dx = t\\,dx, i.e. dx = dt/t.', tex: 't = e^{x} \\quad\\Rightarrow\\quad dx = \\dfrac{dt}{t}' },
+          { label: 'Rewrite the integral in terms of t.', tex: '\\int \\dfrac{dx}{e^{x}+1} = \\int \\dfrac{dt}{t(t+1)}' },
+          { label: 'Decompose into partial fractions (as in Level 6): \\dfrac{1}{t(t+1)} = \\dfrac{1}{t} - \\dfrac{1}{t+1}.', tex: '\\int \\dfrac{dt}{t(t+1)} = \\ln|t| - \\ln|t+1| + C' },
+          { label: 'Undo the substitution (t = e^{x} > 0, so no absolute value is needed).', tex: '= x - \\ln(e^{x}+1) + C' }
+        ]
+      };
+    }
+    return {
+      statement: '\\int \\dfrac{dx}{e^{2x}+1}',
+      answer: 'x - \\dfrac{1}{2}\\ln(e^{2x}+1) + C',
+      steps: [
+        { label: 'Substitute t = e^{x}, so e^{2x}=t^{2} and dx = dt/t.', tex: 't = e^{x} \\quad\\Rightarrow\\quad dx = \\dfrac{dt}{t}' },
+        { label: 'Rewrite the integral in terms of t.', tex: '\\int \\dfrac{dx}{e^{2x}+1} = \\int \\dfrac{dt}{t(t^{2}+1)}' },
+        { label: 'Decompose into partial fractions: \\dfrac{1}{t(t^{2}+1)} = \\dfrac{1}{t} - \\dfrac{t}{t^{2}+1}.', tex: '\\int \\dfrac{dt}{t(t^{2}+1)} = \\ln|t| - \\dfrac{1}{2}\\ln(t^{2}+1) + C' },
+        { label: 'Undo the substitution (t = e^{x} > 0, so no absolute value is needed).', tex: '= x - \\dfrac{1}{2}\\ln(e^{2x}+1) + C' }
+      ]
+    };
+  });
+
+  // ---------- math rendering (serialized through one queue) ----------
+  var mathQueue = Promise.resolve();
+  function renderMath(el, tex, display){
+    mathQueue = mathQueue
+      .then(function(){ return MathJax.startup.promise; })
+      .then(function(){ return MathJax.tex2svgPromise(tex, { display: !!display }); })
+      .then(function(node){ el.innerHTML = ''; el.appendChild(node); })
+      .catch(function(){ el.textContent = tex; });
+    return mathQueue;
+  }
+
+  // ---------- app state & wiring ----------
+  var typeSelect = document.getElementById('typeSelect');
+  var newBtn = document.getElementById('newBtn');
+  var answerBtn = document.getElementById('answerBtn');
+  var stepsBtn = document.getElementById('stepsBtn');
+  var downloadBtn = document.getElementById('downloadBtn');
+  var exnumEl = document.getElementById('exnum');
+  var tagEl = document.getElementById('tag');
+  var levelRow = document.getElementById('levelRow');
+  var levelLabelEl = document.getElementById('levelLabel');
+  var problemEl = document.getElementById('problem');
+  var answerBox = document.getElementById('answerBox');
+  var stepsBox = document.getElementById('stepsBox');
+  var answerContent = document.getElementById('answerContent');
+  var stepsContent = document.getElementById('stepsContent');
+
+  var NUM_LEVELS = 8;
+  var currentLevel = 1;
+
+  function updateLevelLabel(level){
+    if (level === 0){
+      levelLabelEl.innerHTML = '<b>Mixed</b> &mdash; exercises drawn from all ' + NUM_LEVELS + ' levels.';
+    } else {
+      levelLabelEl.innerHTML = '<b>Level ' + level + ' &middot; ' + LEVEL_INFO[level].name + '</b> &mdash; ' + LEVEL_INFO[level].desc;
+    }
+  }
+
+  function buildTypeOptions(level){
+    typeSelect.innerHTML = '';
+    var randomOpt = document.createElement('option');
+    randomOpt.value = '-1';
+    randomOpt.textContent = 'Random';
+    typeSelect.appendChild(randomOpt);
+
+    if (level === 0){
+      for (var lvl = 1; lvl <= NUM_LEVELS; lvl++){
+        var og = document.createElement('optgroup');
+        og.label = 'Level ' + lvl + ' · ' + LEVEL_INFO[lvl].name;
+        TYPES.forEach(function(t, i){
+          if (t.level === lvl){
+            var opt = document.createElement('option');
+            opt.value = String(i);
+            opt.textContent = t.name;
+            og.appendChild(opt);
+          }
+        });
+        typeSelect.appendChild(og);
+      }
+    } else {
+      TYPES.forEach(function(t, i){
+        if (t.level === level){
+          var opt = document.createElement('option');
+          opt.value = String(i);
+          opt.textContent = t.name;
+          typeSelect.appendChild(opt);
+        }
+      });
+    }
+  }
+
+  function setLevel(level){
+    currentLevel = level;
+    Array.prototype.forEach.call(levelRow.querySelectorAll('.level-pill'), function(btn){
+      btn.classList.toggle('active', parseInt(btn.dataset.level, 10) === level);
+    });
+    updateLevelLabel(level);
+    buildTypeOptions(level);
+  }
+
+  levelRow.addEventListener('click', function(e){
+    var btn = e.target.closest('.level-pill');
+    if (!btn) return;
+    setLevel(parseInt(btn.dataset.level, 10));
+    newExercise();
+  });
+
+  var exerciseNumber = 1;
+
+  function pickType(){
+    var v = typeSelect.value;
+    if (v !== '-1') return TYPES[parseInt(v, 10)];
+    var pool = currentLevel === 0 ? TYPES : TYPES.filter(function(t){ return t.level === currentLevel; });
+    return choice(pool);
+  }
+
+  function buildAnswerContent(data){
+    answerContent.innerHTML = '';
+    renderMath(answerContent, data.statement + ' = ' + data.answer, true);
+  }
+
+  function buildStepsContent(data){
+    stepsContent.innerHTML = '';
+    var ol = document.createElement('ol');
+    ol.className = 'step-list';
+    data.steps.forEach(function(step, idx){
+      var li = document.createElement('li');
+      var num = document.createElement('div');
+      num.className = 'step-num';
+      num.textContent = String(idx + 1);
+      var body = document.createElement('div');
+      body.className = 'step-body';
+      var label = document.createElement('p');
+      label.className = 'step-label';
+      label.textContent = step.label;
+      var math = document.createElement('div');
+      math.className = 'step-math';
+      body.appendChild(label);
+      body.appendChild(math);
+      li.appendChild(num);
+      li.appendChild(body);
+      ol.appendChild(li);
+      renderMath(math, step.tex, true);
+    });
+    stepsContent.appendChild(ol);
+  }
+
+  function newExercise(){
+    var type = pickType();
+    var data = type.gen();
+    data.level = type.level;
+
+    exnumEl.textContent = 'Exercise ' + exerciseNumber;
+    exerciseNumber = exerciseNumber >= 80 ? 1 : exerciseNumber + 1;
+    tagEl.textContent = 'L' + type.level + ' · ' + type.name;
+
+    renderMath(problemEl, data.statement, true);
+    buildAnswerContent(data);
+    buildStepsContent(data);
+
+    answerBox.hidden = true;
+    stepsBox.hidden = true;
+    answerBtn.textContent = 'Show Answer';
+    stepsBtn.textContent = 'Show Step-by-Step Solution';
+  }
+
+  newBtn.addEventListener('click', newExercise);
+  answerBtn.addEventListener('click', function(){
+    answerBox.hidden = !answerBox.hidden;
+    answerBtn.textContent = answerBox.hidden ? 'Show Answer' : 'Hide Answer';
+  });
+  stepsBtn.addEventListener('click', function(){
+    stepsBox.hidden = !stepsBox.hidden;
+    stepsBtn.textContent = stepsBox.hidden ? 'Show Step-by-Step Solution' : 'Hide Step-by-Step Solution';
+  });
+
+  function slugify(s){
+    return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+
+  // Builds a self-contained HTML snapshot of the current exercise (problem,
+  // answer, full steps) by reusing the live page's own style block, masthead
+  // and footer, so the downloaded file always matches whatever is on screen.
+  function buildDownloadHtml(){
+    var styleTag = document.querySelector('style').outerHTML;
+    var mastheadHtml = document.querySelector('.masthead').outerHTML;
+    var footHtml = document.querySelector('.foot').outerHTML;
+    var exnum = exnumEl.textContent;
+    var tag = tagEl.textContent;
+    var levelHtml = levelLabelEl.outerHTML;
+
+    return '<!doctype html>\n' +
+      '<html lang="en">\n<head>\n<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      '<title>Primitive-Finding Drills — ' + exnum + '</title>\n' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+      '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">\n' +
+      styleTag + '\n' +
+      '</head>\n<body>\n' +
+      '<div class="page">\n' +
+      mastheadHtml + '\n' +
+      '<main class="card">\n' +
+      '<div class="card-top"><div class="exnum">' + exnum + '</div><div class="tag">' + tag + '</div></div>\n' +
+      levelHtml + '\n' +
+      '<p class="instruction">Find the following indefinite integral (antiderivative). Don’t forget the constant of integration.</p>\n' +
+      '<div class="problem">' + problemEl.innerHTML + '</div>\n' +
+      '<div class="answer-box"><p class="answer-title">Answer</p><div class="answer-content">' + answerContent.innerHTML + '</div></div>\n' +
+      '<div class="steps-box"><p class="steps-title">Step-by-Step Solution</p><div>' + stepsContent.innerHTML + '</div></div>\n' +
+      '</main>\n' +
+      footHtml + '\n' +
+      '</div>\n</body>\n</html>';
+  }
+
+  downloadBtn.addEventListener('click', function(){
+    var html = buildDownloadHtml();
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'primitive-exercise-' + slugify(tagEl.textContent) + '-' + exnumEl.textContent.replace(/[^0-9]/g,'') + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  });
+
+  setLevel(1);
+  newExercise();
+})();
+</script>
