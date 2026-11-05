@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Partial Derivative Drills</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,6 +143,32 @@ body{
   background:var(--accent-soft);
   color:var(--accent-soft-ink);
   white-space:nowrap;
+}
+
+.tab-row, .level-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.tab-btn, .level-pill{
+  font-family:var(--font-mono);
+  font-weight:600;
+  font-size:12.5px;
+  letter-spacing:0.03em;
+  padding:9px 16px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--fg-muted);
+  cursor:pointer;
+}
+.level-pill{padding:7px 14px;}
+.tab-btn:hover, .level-pill:hover{background:var(--surface-2);}
+.tab-btn:focus-visible, .level-pill:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.tab-btn.active, .level-pill.active{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--accent-ink);
 }
 
 .instruction{
@@ -336,10 +363,19 @@ mjx-assistive-mml{display:none!important;}
   <header class="masthead">
     <p class="eyebrow">Calculus: Partial Derivatives</p>
     <h1>Partial Derivative Drills</h1>
-    <p class="sub">Problems built in the style of a standard "compute the first-order partial derivatives" exercise set. Work the problem on paper, then reveal the answer and a full step-by-step solution.</p>
+    <p class="sub">Problems built in the style of a standard "compute the partial derivatives" exercise set, with tabs for first-order and second/third-order derivatives. Work the problem on paper, then reveal the answer and a full step-by-step solution.</p>
   </header>
 
   <main class="card" id="card">
+    <div class="tab-row" id="tabRow">
+      <button class="tab-btn active" data-mode="first" type="button">1st-Order Derivatives</button>
+      <button class="tab-btn" data-mode="higher" type="button">2nd &amp; 3rd-Order Derivatives</button>
+    </div>
+    <div class="level-row" id="orderRow" hidden>
+      <button class="level-pill active" data-order="2" type="button">2nd Order</button>
+      <button class="level-pill" data-order="3" type="button">3rd Order</button>
+    </div>
+
     <div class="card-top">
       <div class="exnum" id="exnum">Exercise</div>
       <div class="tag" id="tag">Power Rule</div>
@@ -407,9 +443,36 @@ window.MathJax = {
     return c + vs;
   }
   function frac(num, den){ return '\\frac{' + num + '}{' + den + '}'; }
+  // Like term(), but collapses to a bare "0" instead of a zero-coefficient
+  // monomial (useful once coefficients like a(a-1)(a-2) can vanish).
+  function termOrZero(coef, parts){ return coef === 0 ? '0' : term(coef, parts); }
 
   var VAR_TEX = { theta: '\\theta' };
   function vtex(v){ return VAR_TEX[v] || v; }
+
+  // Build a LaTeX label for a higher-order partial derivative from a list of
+  // differentiation variables, e.g. ['x','x','y'] -> \frac{\partial^{3} z}{\partial x^{2}\partial y}.
+  var VAR_PRIORITY = ['x','y','z','r','h','u','v','w','t','theta','k'];
+  function partialLabel(outVar, varsArr){
+    var order = varsArr.length;
+    var counts = {}, seen = [];
+    varsArr.forEach(function(v){
+      if (!(v in counts)){ counts[v] = 0; seen.push(v); }
+      counts[v]++;
+    });
+    seen.sort(function(a, b){
+      var ia = VAR_PRIORITY.indexOf(a), ib = VAR_PRIORITY.indexOf(b);
+      if (ia < 0) ia = 99;
+      if (ib < 0) ib = 99;
+      return ia - ib;
+    });
+    var denom = seen.map(function(v){
+      var e = counts[v], vt = vtex(v);
+      return e === 1 ? ('\\partial ' + vt) : ('\\partial ' + vt + '^{' + e + '}');
+    }).join('');
+    var numOrder = order === 1 ? '' : ('^{' + order + '}');
+    return '\\frac{\\partial' + numOrder + ' ' + outVar + '}{' + denom + '}';
+  }
 
   // ---------- exercise type library ----------
   var TYPES = [];
@@ -1038,6 +1101,337 @@ window.MathJax = {
     };
   });
 
+  // ---------- second/third-order exercise type library ----------
+  // Kept deliberately simple (2-variable, mostly polynomial/exponential/trig
+  // building blocks) — this tab targets first-year life-sciences students,
+  // not an engineering calculus audience.
+  var TYPES2 = [];
+  function addType2(group, name, order, gen){
+    TYPES2.push({ group: group, name: name, order: order, gen: gen });
+  }
+
+  // --- order 2 ---
+
+  addType2('Polynomials', 'Quadratic Form', 2, function(){
+    var A = randInt(1, 5), B = randInt(1, 5), C = randInt(1, 5);
+    return {
+      outVar: 'z',
+      statement: 'z = ' + A + 'x^{2} + ' + B + 'xy + ' + C + 'y^{2}',
+      items: [
+        {
+          vars: ['x', 'x'],
+          answer: String(2 * A),
+          steps: [
+            { label: 'Differentiate once with respect to x.', tex: '\\frac{\\partial z}{\\partial x} = ' + (2 * A) + 'x + ' + B + 'y' },
+            { label: 'Differentiate again with respect to x; the y-term is now constant.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + (2 * A) }
+          ]
+        },
+        {
+          vars: ['y', 'y'],
+          answer: String(2 * C),
+          steps: [
+            { label: 'Differentiate once with respect to y.', tex: '\\frac{\\partial z}{\\partial y} = ' + B + 'x + ' + (2 * C) + 'y' },
+            { label: 'Differentiate again with respect to y; the x-term is now constant.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = ' + (2 * C) }
+          ]
+        },
+        {
+          vars: ['x', 'y'],
+          answer: String(B),
+          note: 'Because z is quadratic, every second-order partial derivative is a constant — the surface has the same curvature everywhere.',
+          steps: [
+            { label: 'Start from the x-derivative and differentiate it with respect to y.', tex: '\\frac{\\partial z}{\\partial x} = ' + (2 * A) + 'x + ' + B + 'y \\quad\\Rightarrow\\quad \\frac{\\partial^{2} z}{\\partial x\\partial y} = ' + B },
+            { label: 'Check: starting from the y-derivative and differentiating with respect to x gives the same result (Clairaut\'s theorem).', tex: '\\frac{\\partial z}{\\partial y} = ' + B + 'x + ' + (2 * C) + 'y \\quad\\Rightarrow\\quad \\frac{\\partial^{2} z}{\\partial y\\partial x} = ' + B }
+          ]
+        }
+      ]
+    };
+  });
+
+  addType2('Polynomials', 'Sum of Powers', 2, function(){
+    var a = randInt(3, 6), b = randInt(3, 6);
+    return {
+      outVar: 'z',
+      statement: 'z = x^{' + a + '} + y^{' + b + '}',
+      items: [
+        {
+          vars: ['x', 'x'],
+          answer: term(a * (a - 1), [['x', a - 2]]),
+          steps: [
+            { label: 'Differentiate once with respect to x (the y-term is constant).', tex: '\\frac{\\partial z}{\\partial x} = ' + term(a, [['x', a - 1]]) },
+            { label: 'Differentiate again with respect to x.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(a * (a - 1), [['x', a - 2]]) }
+          ]
+        },
+        {
+          vars: ['y', 'y'],
+          answer: term(b * (b - 1), [['y', b - 2]]),
+          steps: [
+            { label: 'Differentiate once with respect to y (the x-term is constant).', tex: '\\frac{\\partial z}{\\partial y} = ' + term(b, [['y', b - 1]]) },
+            { label: 'Differentiate again with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = ' + term(b * (b - 1), [['y', b - 2]]) }
+          ]
+        },
+        {
+          vars: ['x', 'y'],
+          answer: '0',
+          note: 'Since z is a sum of a function of x alone and a function of y alone, the variables never interact — the mixed partial is always 0.',
+          steps: [
+            { label: 'The x-derivative depends only on x.', tex: '\\frac{\\partial z}{\\partial x} = ' + term(a, [['x', a - 1]]) },
+            { label: 'Differentiating that with respect to y gives 0, since it has no y in it.', tex: '\\frac{\\partial^{2} z}{\\partial x\\partial y} = 0' }
+          ]
+        }
+      ]
+    };
+  });
+
+  addType2('Polynomials', 'Product of Powers', 2, function(){
+    var a = randInt(2, 4), b = randInt(2, 4);
+    return {
+      outVar: 'z',
+      statement: 'z = x^{' + a + '}y^{' + b + '}',
+      items: [
+        {
+          vars: ['x', 'x'],
+          answer: term(a * (a - 1), [['x', a - 2], ['y', b]]),
+          steps: [
+            { label: 'Differentiate once with respect to x; y^{' + b + '} is a constant factor.', tex: '\\frac{\\partial z}{\\partial x} = ' + term(a, [['x', a - 1], ['y', b]]) },
+            { label: 'Differentiate again with respect to x.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(a * (a - 1), [['x', a - 2], ['y', b]]) }
+          ]
+        },
+        {
+          vars: ['y', 'y'],
+          answer: term(b * (b - 1), [['x', a], ['y', b - 2]]),
+          steps: [
+            { label: 'Differentiate once with respect to y; x^{' + a + '} is a constant factor.', tex: '\\frac{\\partial z}{\\partial y} = ' + term(b, [['x', a], ['y', b - 1]]) },
+            { label: 'Differentiate again with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = ' + term(b * (b - 1), [['x', a], ['y', b - 2]]) }
+          ]
+        },
+        {
+          vars: ['x', 'y'],
+          answer: term(a * b, [['x', a - 1], ['y', b - 1]]),
+          steps: [
+            { label: 'Start from the x-derivative.', tex: '\\frac{\\partial z}{\\partial x} = ' + term(a, [['x', a - 1], ['y', b]]) },
+            { label: 'Differentiate that with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial x\\partial y} = ' + term(a * b, [['x', a - 1], ['y', b - 1]]) }
+          ]
+        }
+      ]
+    };
+  });
+
+  addType2('Trigonometric', 'Sine Plus Cosine', 2, function(){
+    var a = randInt(1, 4), b = randInt(1, 4);
+    var innerX = coefStr(a) + 'x', innerY = coefStr(b) + 'y';
+    return {
+      outVar: 'z',
+      statement: 'z = \\sin(' + innerX + ') + \\cos(' + innerY + ')',
+      items: [
+        {
+          vars: ['x', 'x'],
+          answer: '-' + coefStr(a * a) + '\\sin(' + innerX + ')',
+          steps: [
+            { label: 'Differentiate once with respect to x.', tex: '\\frac{\\partial z}{\\partial x} = ' + coefStr(a) + '\\cos(' + innerX + ')' },
+            { label: 'Differentiate again with respect to x.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = -' + coefStr(a * a) + '\\sin(' + innerX + ')' }
+          ]
+        },
+        {
+          vars: ['y', 'y'],
+          answer: '-' + coefStr(b * b) + '\\cos(' + innerY + ')',
+          steps: [
+            { label: 'Differentiate once with respect to y.', tex: '\\frac{\\partial z}{\\partial y} = -' + coefStr(b) + '\\sin(' + innerY + ')' },
+            { label: 'Differentiate again with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = -' + coefStr(b * b) + '\\cos(' + innerY + ')' }
+          ]
+        },
+        {
+          vars: ['x', 'y'],
+          answer: '0',
+          note: 'The two terms depend on different variables, so differentiating the x-part with respect to y (or vice versa) always gives 0.',
+          steps: [
+            { label: 'The x-derivative depends only on x.', tex: '\\frac{\\partial z}{\\partial x} = ' + coefStr(a) + '\\cos(' + innerX + ')' },
+            { label: 'Differentiating with respect to y gives 0.', tex: '\\frac{\\partial^{2} z}{\\partial x\\partial y} = 0' }
+          ]
+        }
+      ]
+    };
+  });
+
+  addType2('Exponential', 'Exponential of a Product', 2, function(){
+    var k = randInt(1, 3);
+    var exponent = coefStr(k) + 'xy';
+    var fx = term(k, [['y', 1]]) + 'e^{' + exponent + '}';
+    var fy = term(k, [['x', 1]]) + 'e^{' + exponent + '}';
+    return {
+      outVar: 'z',
+      statement: 'z = e^{' + exponent + '}',
+      items: [
+        {
+          vars: ['x', 'x'],
+          answer: term(k * k, [['y', 2]]) + 'e^{' + exponent + '}',
+          steps: [
+            { label: 'Differentiate once with respect to x (chain rule).', tex: '\\frac{\\partial z}{\\partial x} = ' + fx },
+            { label: 'Differentiate again with respect to x (y is constant, but e^{' + exponent + '} still depends on x — chain rule again).', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(k, [['y', 1]]) + '\\cdot ' + term(k, [['y', 1]]) + 'e^{' + exponent + '} = ' + term(k * k, [['y', 2]]) + 'e^{' + exponent + '}' }
+          ]
+        },
+        {
+          vars: ['y', 'y'],
+          answer: term(k * k, [['x', 2]]) + 'e^{' + exponent + '}',
+          steps: [
+            { label: 'Differentiate once with respect to y (chain rule).', tex: '\\frac{\\partial z}{\\partial y} = ' + fy },
+            { label: 'Differentiate again with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = ' + term(k, [['x', 1]]) + '\\cdot ' + term(k, [['x', 1]]) + 'e^{' + exponent + '} = ' + term(k * k, [['x', 2]]) + 'e^{' + exponent + '}' }
+          ]
+        },
+        {
+          vars: ['x', 'y'],
+          answer: coefStr(k) + 'e^{' + exponent + '}\\left(1+' + exponent + '\\right)',
+          steps: [
+            { label: 'Start from the x-derivative, which is itself a product of ' + term(k, [['y', 1]]) + ' and e^{' + exponent + '}.', tex: '\\frac{\\partial z}{\\partial x} = ' + fx },
+            { label: 'Differentiate that with respect to y using the product rule.', tex: '\\frac{\\partial^{2} z}{\\partial x\\partial y} = ' + coefStr(k) + 'e^{' + exponent + '} + ' + term(k, [['y', 1]]) + '\\cdot ' + term(k, [['x', 1]]) + 'e^{' + exponent + '}' },
+            { label: 'Factor e^{' + exponent + '} out and simplify.', tex: '= ' + coefStr(k) + 'e^{' + exponent + '}\\left(1+' + exponent + '\\right)' }
+          ]
+        }
+      ]
+    };
+  });
+
+  addType2('Exponential', 'Power times Exponential', 2, function(){
+    var n = randInt(2, 4);
+    return {
+      outVar: 'z',
+      statement: 'z = x^{' + n + '}e^{y}',
+      items: [
+        {
+          vars: ['x', 'x'],
+          answer: term(n * (n - 1), [['x', n - 2]]) + 'e^{y}',
+          steps: [
+            { label: 'Differentiate once with respect to x; e^{y} is a constant factor.', tex: '\\frac{\\partial z}{\\partial x} = ' + term(n, [['x', n - 1]]) + 'e^{y}' },
+            { label: 'Differentiate again with respect to x.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(n * (n - 1), [['x', n - 2]]) + 'e^{y}' }
+          ]
+        },
+        {
+          vars: ['y', 'y'],
+          answer: 'x^{' + n + '}e^{y}',
+          steps: [
+            { label: 'Differentiate once with respect to y; x^{' + n + '} is a constant factor.', tex: '\\frac{\\partial z}{\\partial y} = x^{' + n + '}e^{y}' },
+            { label: 'Differentiate again with respect to y (e^{y} reproduces itself).', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = x^{' + n + '}e^{y}' }
+          ]
+        },
+        {
+          vars: ['x', 'y'],
+          answer: term(n, [['x', n - 1]]) + 'e^{y}',
+          steps: [
+            { label: 'Start from the x-derivative.', tex: '\\frac{\\partial z}{\\partial x} = ' + term(n, [['x', n - 1]]) + 'e^{y}' },
+            { label: 'Differentiate that with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial x\\partial y} = ' + term(n, [['x', n - 1]]) + 'e^{y}' }
+          ]
+        }
+      ]
+    };
+  });
+
+  addType2('Logarithmic', 'Natural Log of a Sum', 2, function(){
+    return {
+      outVar: 'z',
+      statement: 'z = \\ln(x+y)',
+      items: [
+        {
+          vars: ['x', 'x'],
+          answer: '-\\frac{1}{(x+y)^{2}}',
+          steps: [
+            { label: 'Differentiate once with respect to x.', tex: '\\frac{\\partial z}{\\partial x} = \\frac{1}{x+y}' },
+            { label: 'Differentiate again with respect to x (power/chain rule on (x+y)^{-1}).', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = -\\frac{1}{(x+y)^{2}}' }
+          ]
+        },
+        {
+          vars: ['y', 'y'],
+          answer: '-\\frac{1}{(x+y)^{2}}',
+          steps: [
+            { label: 'Differentiate once with respect to y.', tex: '\\frac{\\partial z}{\\partial y} = \\frac{1}{x+y}' },
+            { label: 'Differentiate again with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = -\\frac{1}{(x+y)^{2}}' }
+          ]
+        },
+        {
+          vars: ['x', 'y'],
+          answer: '-\\frac{1}{(x+y)^{2}}',
+          note: 'All three second-order partials happen to be equal here, because x and y play a perfectly symmetric role in \\ln(x+y).',
+          steps: [
+            { label: 'Start from the x-derivative.', tex: '\\frac{\\partial z}{\\partial x} = \\frac{1}{x+y}' },
+            { label: 'Differentiate that with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial x\\partial y} = -\\frac{1}{(x+y)^{2}}' }
+          ]
+        }
+      ]
+    };
+  });
+
+  // --- order 3 (kept to two gentle, purely-polynomial examples) ---
+
+  addType2('Third Order', 'Polynomial (3rd order)', 3, function(){
+    var a = randInt(1, 4), b = randInt(1, 4), c = randInt(1, 4);
+    return {
+      outVar: 'z',
+      statement: 'z = ' + term(a, [['x', 3]]) + ' + ' + term(b, [['x', 2], ['y', 1]]) + ' + ' + term(c, [['y', 3]]),
+      items: [
+        {
+          vars: ['x', 'x', 'x'],
+          answer: String(6 * a),
+          steps: [
+            { label: 'Differentiate with respect to x.', tex: '\\frac{\\partial z}{\\partial x} = ' + term(3 * a, [['x', 2]]) + ' + ' + term(2 * b, [['x', 1], ['y', 1]]) },
+            { label: 'Differentiate again with respect to x.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(6 * a, [['x', 1]]) + ' + ' + term(2 * b, [['y', 1]]) },
+            { label: 'Differentiate a third time with respect to x; the y-term is now constant.', tex: '\\frac{\\partial^{3} z}{\\partial x^{3}} = ' + (6 * a) }
+          ]
+        },
+        {
+          vars: ['x', 'x', 'y'],
+          answer: String(2 * b),
+          steps: [
+            { label: 'Start from the second x-derivative.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(6 * a, [['x', 1]]) + ' + ' + term(2 * b, [['y', 1]]) },
+            { label: 'Differentiate that once with respect to y; the x-term is now constant.', tex: '\\frac{\\partial^{3} z}{\\partial x^{2}\\partial y} = ' + (2 * b) }
+          ]
+        },
+        {
+          vars: ['y', 'y', 'y'],
+          answer: String(6 * c),
+          steps: [
+            { label: 'Differentiate with respect to y.', tex: '\\frac{\\partial z}{\\partial y} = ' + term(b, [['x', 2]]) + ' + ' + term(3 * c, [['y', 2]]) },
+            { label: 'Differentiate again with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = ' + term(6 * c, [['y', 1]]) },
+            { label: 'Differentiate a third time with respect to y.', tex: '\\frac{\\partial^{3} z}{\\partial y^{3}} = ' + (6 * c) }
+          ]
+        }
+      ]
+    };
+  });
+
+  addType2('Third Order', 'Product of Powers (3rd order)', 3, function(){
+    var a = randInt(2, 4), b = randInt(2, 4);
+    return {
+      outVar: 'z',
+      statement: 'z = x^{' + a + '}y^{' + b + '}',
+      items: [
+        {
+          vars: ['x', 'x', 'x'],
+          answer: termOrZero(a * (a - 1) * (a - 2), [['x', a - 3], ['y', b]]),
+          steps: [
+            { label: 'Differentiate with respect to x.', tex: '\\frac{\\partial z}{\\partial x} = ' + term(a, [['x', a - 1], ['y', b]]) },
+            { label: 'Differentiate again with respect to x.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(a * (a - 1), [['x', a - 2], ['y', b]]) },
+            { label: 'Differentiate a third time with respect to x.', tex: '\\frac{\\partial^{3} z}{\\partial x^{3}} = ' + termOrZero(a * (a - 1) * (a - 2), [['x', a - 3], ['y', b]]) }
+          ]
+        },
+        {
+          vars: ['x', 'x', 'y'],
+          answer: term(a * (a - 1) * b, [['x', a - 2], ['y', b - 1]]),
+          steps: [
+            { label: 'Start from the second x-derivative.', tex: '\\frac{\\partial^{2} z}{\\partial x^{2}} = ' + term(a * (a - 1), [['x', a - 2], ['y', b]]) },
+            { label: 'Differentiate that once with respect to y.', tex: '\\frac{\\partial^{3} z}{\\partial x^{2}\\partial y} = ' + term(a * (a - 1) * b, [['x', a - 2], ['y', b - 1]]) }
+          ]
+        },
+        {
+          vars: ['y', 'y', 'y'],
+          answer: termOrZero(b * (b - 1) * (b - 2), [['x', a], ['y', b - 3]]),
+          steps: [
+            { label: 'Differentiate with respect to y.', tex: '\\frac{\\partial z}{\\partial y} = ' + term(b, [['x', a], ['y', b - 1]]) },
+            { label: 'Differentiate again with respect to y.', tex: '\\frac{\\partial^{2} z}{\\partial y^{2}} = ' + term(b * (b - 1), [['x', a], ['y', b - 2]]) },
+            { label: 'Differentiate a third time with respect to y.', tex: '\\frac{\\partial^{3} z}{\\partial y^{3}} = ' + termOrZero(b * (b - 1) * (b - 2), [['x', a], ['y', b - 3]]) }
+          ]
+        }
+      ]
+    };
+  });
+
   // ---------- math rendering (serialized through one queue) ----------
   var mathQueue = Promise.resolve();
   function renderMath(el, tex, display){
@@ -1062,9 +1456,15 @@ window.MathJax = {
   var stepsBox = document.getElementById('stepsBox');
   var answerContent = document.getElementById('answerContent');
   var stepsContent = document.getElementById('stepsContent');
+  var tabRow = document.getElementById('tabRow');
+  var orderRow = document.getElementById('orderRow');
+  var instructionEl = document.querySelector('.instruction');
 
-  // populate select: Random + grouped options
-  (function buildSelect(){
+  var currentMode = 'first'; // 'first' | 'higher'
+  var currentOrder = 2;      // used when currentMode === 'higher'
+
+  function buildTypeOptionsFirst(){
+    typeSelect.innerHTML = '';
     var randomOpt = document.createElement('option');
     randomOpt.value = '-1';
     randomOpt.textContent = 'Random';
@@ -1087,14 +1487,85 @@ window.MathJax = {
       });
       typeSelect.appendChild(og);
     });
-  })();
+  }
+
+  function buildTypeOptionsHigher(order){
+    typeSelect.innerHTML = '';
+    var randomOpt = document.createElement('option');
+    randomOpt.value = '-1';
+    randomOpt.textContent = 'Random';
+    typeSelect.appendChild(randomOpt);
+
+    var groups = {};
+    var grpOrder = [];
+    TYPES2.forEach(function(t, i){
+      if (t.order !== order) return;
+      if (!groups[t.group]) { groups[t.group] = []; grpOrder.push(t.group); }
+      groups[t.group].push(i);
+    });
+    grpOrder.forEach(function(g){
+      var og = document.createElement('optgroup');
+      og.label = g;
+      groups[g].forEach(function(i){
+        var opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = TYPES2[i].name;
+        og.appendChild(opt);
+      });
+      typeSelect.appendChild(og);
+    });
+  }
+
+  function setOrder(order){
+    currentOrder = order;
+    Array.prototype.forEach.call(orderRow.querySelectorAll('.level-pill'), function(btn){
+      btn.classList.toggle('active', parseInt(btn.dataset.order, 10) === order);
+    });
+    instructionEl.textContent = order === 2
+      ? 'Compute all three distinct second-order partial derivatives (∂²z/∂x², ∂²z/∂y² and the mixed partial ∂²z/∂x∂y). The mixed partial does not depend on the order of differentiation — check it both ways.'
+      : 'Compute the three indicated third-order partial derivatives, one variable at a time.';
+    buildTypeOptionsHigher(order);
+  }
+
+  function setMode(mode){
+    currentMode = mode;
+    Array.prototype.forEach.call(tabRow.querySelectorAll('.tab-btn'), function(btn){
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+    orderRow.hidden = (mode !== 'higher');
+    if (mode === 'first'){
+      instructionEl.textContent = 'Compute the first-order partial derivatives.';
+      buildTypeOptionsFirst();
+    } else {
+      setOrder(currentOrder);
+    }
+  }
+
+  tabRow.addEventListener('click', function(e){
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    setMode(btn.dataset.mode);
+    newExercise();
+  });
+  orderRow.addEventListener('click', function(e){
+    var btn = e.target.closest('.level-pill');
+    if (!btn) return;
+    setOrder(parseInt(btn.dataset.order, 10));
+    newExercise();
+  });
 
   var exerciseNumber = 13;
 
   function pickType(){
-    var v = typeSelect.value;
-    if (v === '-1') return choice(TYPES);
-    return TYPES[parseInt(v, 10)];
+    if (currentMode === 'first'){
+      var v = typeSelect.value;
+      if (v === '-1') return choice(TYPES);
+      return TYPES[parseInt(v, 10)];
+    }
+    var pool = TYPES2.filter(function(t){ return t.order === currentOrder; });
+    var v2 = typeSelect.value;
+    if (v2 === '-1') return choice(pool);
+    return TYPES2[parseInt(v2, 10)];
   }
 
   function buildAnswerContent(data){
@@ -1151,17 +1622,86 @@ window.MathJax = {
     });
   }
 
+  function buildAnswerContent2(data){
+    answerContent.innerHTML = '';
+    data.items.forEach(function(item){
+      var line = document.createElement('div');
+      line.className = 'answer-line';
+      answerContent.appendChild(line);
+      renderMath(line, partialLabel(data.outVar, item.vars) + ' = ' + item.answer, true);
+    });
+  }
+
+  var ORDINAL_BADGE = { 2: '2ND PARTIAL', 3: '3RD PARTIAL' };
+  function buildStepsContent2(data){
+    stepsContent.innerHTML = '';
+    data.items.forEach(function(item){
+      var block = document.createElement('div');
+      block.className = 'var-block';
+
+      var head = document.createElement('div');
+      head.className = 'var-head';
+      var badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = ORDINAL_BADGE[item.vars.length] || (item.vars.length + 'TH PARTIAL');
+      var vhMath = document.createElement('div');
+      vhMath.className = 'vh-math';
+      head.appendChild(badge);
+      head.appendChild(vhMath);
+      block.appendChild(head);
+      renderMath(vhMath, partialLabel(data.outVar, item.vars), false);
+
+      if (item.note){
+        var noteP = document.createElement('p');
+        noteP.className = 'step-label';
+        noteP.style.fontStyle = 'italic';
+        noteP.textContent = item.note;
+        block.appendChild(noteP);
+      }
+
+      var ol = document.createElement('ol');
+      ol.className = 'step-list';
+      item.steps.forEach(function(step, idx){
+        var li = document.createElement('li');
+        var num = document.createElement('div');
+        num.className = 'step-num';
+        num.textContent = String(idx + 1);
+        var body = document.createElement('div');
+        body.className = 'step-body';
+        var label = document.createElement('p');
+        label.className = 'step-label';
+        label.textContent = step.label;
+        var math = document.createElement('div');
+        math.className = 'step-math';
+        body.appendChild(label);
+        body.appendChild(math);
+        li.appendChild(num);
+        li.appendChild(body);
+        ol.appendChild(li);
+        renderMath(math, step.tex, true);
+      });
+      block.appendChild(ol);
+      stepsContent.appendChild(block);
+    });
+  }
+
   function newExercise(){
     var type = pickType();
     var data = type.gen();
 
     exnumEl.textContent = 'Exercise ' + exerciseNumber;
     exerciseNumber = exerciseNumber >= 40 ? 13 : exerciseNumber + 1;
-    tagEl.textContent = type.name;
 
     renderMath(problemEl, data.statement, true);
-    buildAnswerContent(data);
-    buildStepsContent(data);
+    if (currentMode === 'first'){
+      tagEl.textContent = type.name;
+      buildAnswerContent(data);
+      buildStepsContent(data);
+    } else {
+      tagEl.textContent = (currentOrder === 2 ? '2nd Order' : '3rd Order') + ' · ' + type.name;
+      buildAnswerContent2(data);
+      buildStepsContent2(data);
+    }
 
     answerBox.hidden = true;
     stepsBox.hidden = true;
@@ -1206,7 +1746,7 @@ window.MathJax = {
       mastheadHtml + '\n' +
       '<main class="card">\n' +
       '<div class="card-top"><div class="exnum">' + exnum + '</div><div class="tag">' + tag + '</div></div>\n' +
-      '<p class="instruction">Compute the first-order partial derivatives.</p>\n' +
+      '<p class="instruction">' + instructionEl.textContent + '</p>\n' +
       '<div class="problem">' + problemEl.innerHTML + '</div>\n' +
       '<div class="answer-box"><p class="answer-title">Answer</p><div class="answer-content">' + answerContent.innerHTML + '</div></div>\n' +
       '<div class="steps-box"><p class="steps-title">Step-by-Step Solution</p><div>' + stepsContent.innerHTML + '</div></div>\n' +
@@ -1228,6 +1768,7 @@ window.MathJax = {
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   });
 
+  setMode('first');
   newExercise();
 })();
 </script>

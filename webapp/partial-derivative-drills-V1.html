@@ -1,0 +1,1233 @@
+<title>Partial Derivative Drills</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+/*
+  Layout concept: a worked page from a calculus problem set — a single
+  "exercise card" centered on a desk-like page, with the exercise number
+  set large in the margin the way a textbook numbers its drills, and the
+  answer/solution revealed progressively, like flipping to the back of
+  the book.
+*/
+:root{
+  --bg:#F4F5F0;
+  --surface:#FFFFFF;
+  --surface-2:#ECEEE6;
+  --fg:#1B2129;
+  --fg-muted:#5B6370;
+  --border:#DBDFD6;
+  --accent:#8F5A0C;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F1E2C2;
+  --accent-soft-ink:#6B4707;
+  --answer-bg:#FBF3E1;
+  --answer-border:#E2C381;
+  --focus:#2F6FB3;
+
+  --font-display:'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  --font-body:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151B;
+    --surface:#181E27;
+    --surface-2:#1F2631;
+    --fg:#E7E9EC;
+    --fg-muted:#9AA3AF;
+    --border:#2A3240;
+    --accent:#E0A94E;
+    --accent-ink:#1B1304;
+    --accent-soft:#30260F;
+    --accent-soft-ink:#F0C877;
+    --answer-bg:#231B0E;
+    --answer-border:#584119;
+    --focus:#6FA8E0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151B;
+  --surface:#181E27;
+  --surface-2:#1F2631;
+  --fg:#E7E9EC;
+  --fg-muted:#9AA3AF;
+  --border:#2A3240;
+  --accent:#E0A94E;
+  --accent-ink:#1B1304;
+  --accent-soft:#30260F;
+  --accent-soft-ink:#F0C877;
+  --answer-bg:#231B0E;
+  --answer-border:#584119;
+  --focus:#6FA8E0;
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--font-body);
+  line-height:1.5;
+}
+
+.page{
+  max-width:720px;
+  margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:40px 56px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.masthead{text-align:left;}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:11px;
+  letter-spacing:0.14em;
+  color:var(--fg-muted);
+  text-transform:uppercase;
+  margin:0 0 10px;
+}
+.masthead h1{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(28px, 5vw, 38px);
+  margin:0 0 10px;
+  text-wrap:balance;
+  letter-spacing:-0.01em;
+}
+.masthead .sub{
+  margin:0;
+  max-width:60ch;
+  color:var(--fg-muted);
+  font-size:15px;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.exnum{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:-0.01em;
+}
+.tag{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  letter-spacing:0.04em;
+  padding:5px 10px;
+  border-radius:999px;
+  background:var(--accent-soft);
+  color:var(--accent-soft-ink);
+  white-space:nowrap;
+}
+
+.instruction{
+  margin:0;
+  font-style:italic;
+  color:var(--fg-muted);
+  font-family:var(--font-display);
+  font-size:15px;
+}
+
+.problem{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:22px 18px;
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:auto;
+}
+.problem svg{display:block;}
+
+.controls{
+  display:flex;
+  gap:12px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+}
+.select-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  flex:1 1 220px;
+  min-width:0;
+}
+.select-wrap span{
+  font-size:11.5px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  font-family:var(--font-mono);
+}
+select{
+  font-family:var(--font-body);
+  font-size:14.5px;
+  color:var(--fg);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px 12px;
+  width:100%;
+  min-width:0;
+}
+select:focus-visible{outline:2px solid var(--focus); outline-offset:1px;}
+
+.btn{
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:14.5px;
+  border-radius:8px;
+  padding:10px 16px;
+  border:1px solid transparent;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.btn.primary{
+  background:var(--accent);
+  color:var(--accent-ink);
+}
+.btn.primary:hover{filter:brightness(1.07);}
+.btn.ghost{
+  background:transparent;
+  color:var(--accent);
+  border-color:var(--border);
+}
+.btn.ghost:hover{background:var(--surface-2);}
+
+.reveal-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.answer-box, .steps-box{
+  border-radius:10px;
+  padding:18px;
+}
+.answer-box{
+  background:var(--answer-bg);
+  border:1px solid var(--answer-border);
+}
+.steps-box{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+}
+.answer-title, .steps-title{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  margin:0 0 14px;
+}
+.answer-content{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.answer-line{
+  overflow-x:auto;
+  padding:4px 2px;
+}
+.answer-line svg{display:block;}
+
+.var-block + .var-block{
+  margin-top:20px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+}
+.var-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+}
+.var-head .badge{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--fg-muted);
+  letter-spacing:0.04em;
+}
+.var-head .vh-math{overflow-x:auto;}
+.var-head .vh-math svg{display:block;}
+
+.step-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.step-list li{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.step-num{
+  flex:0 0 auto;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--fg-muted);
+  font-family:var(--font-mono);
+  font-size:11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:2px;
+}
+.step-body{min-width:0; flex:1 1 auto;}
+.step-label{
+  font-size:13px;
+  color:var(--fg-muted);
+  margin:0 0 6px;
+}
+.step-math{overflow-x:auto; padding:2px 0;}
+.step-math svg{display:block;}
+
+.foot{
+  font-size:12.5px;
+  color:var(--fg-muted);
+  text-align:left;
+  max-width:60ch;
+}
+
+[hidden]{display:none!important;}
+mjx-assistive-mml{display:none!important;}
+
+@media (max-width:480px){
+  .card{padding:20px;}
+  .controls{flex-direction:column; align-items:stretch;}
+  .reveal-row .btn{flex:1 1 auto;}
+}
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <p class="eyebrow">Calculus: Partial Derivatives</p>
+    <h1>Partial Derivative Drills</h1>
+    <p class="sub">Problems built in the style of a standard "compute the first-order partial derivatives" exercise set. Work the problem on paper, then reveal the answer and a full step-by-step solution.</p>
+  </header>
+
+  <main class="card" id="card">
+    <div class="card-top">
+      <div class="exnum" id="exnum">Exercise</div>
+      <div class="tag" id="tag">Power Rule</div>
+    </div>
+    <p class="instruction">Compute the first-order partial derivatives.</p>
+
+    <div class="problem" id="problem"></div>
+
+    <div class="controls">
+      <label class="select-wrap">
+        <span>Exercise type</span>
+        <select id="typeSelect"></select>
+      </label>
+      <button class="btn primary" id="newBtn" type="button">New Exercise</button>
+    </div>
+
+    <div class="reveal-row">
+      <button class="btn ghost" id="answerBtn" type="button">Show Answer</button>
+      <button class="btn ghost" id="stepsBtn" type="button">Show Step-by-Step Solution</button>
+      <button class="btn ghost" id="downloadBtn" type="button">Download This Exercise</button>
+    </div>
+
+    <div class="answer-box" id="answerBox" hidden>
+      <p class="answer-title">Answer</p>
+      <div class="answer-content" id="answerContent"></div>
+    </div>
+
+    <div class="steps-box" id="stepsBox" hidden>
+      <p class="steps-title">Step-by-Step Solution</p>
+      <div id="stepsContent"></div>
+    </div>
+  </main>
+
+  <footer class="foot">Covers power, product, quotient, chain, logarithmic, exponential, trigonometric and hyperbolic rules across two- and three-variable functions.</br></br>Created by <a href="https://web.comillas.edu/profesor/fsansegundo">Fernando San Segundo (ICAI)</a> using <a href="https://claude.com/es/product/claude-code">Claude Code</a></footer>
+
+</div>
+
+<script>
+window.MathJax = {
+  options: { enableAssistiveMml: false },
+  svg: { fontCache: 'local' },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- small LaTeX-building helpers ----------
+  function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+  function coefStr(n){ return n === 1 ? '' : String(n); }
+
+  // Build a monomial "coef * v1^e1 * v2^e2 ..." as LaTeX. Coef must be >= 0 here;
+  // callers place the sign explicitly so sums read unambiguously.
+  function term(coef, parts){
+    var c = coef === 1 ? '' : String(coef);
+    var vs = parts
+      .filter(function(p){ return p[1] !== 0; })
+      .map(function(p){ return p[1] === 1 ? p[0] : (p[0] + '^{' + p[1] + '}'); })
+      .join('');
+    if (vs === '') return c === '' ? '1' : c;
+    return c + vs;
+  }
+  function frac(num, den){ return '\\frac{' + num + '}{' + den + '}'; }
+
+  var VAR_TEX = { theta: '\\theta' };
+  function vtex(v){ return VAR_TEX[v] || v; }
+
+  // ---------- exercise type library ----------
+  var TYPES = [];
+
+  function addType(group, name, gen){
+    TYPES.push({ group: group, name: name, gen: gen });
+  }
+
+  // 1. Sum of powers
+  addType('Power & Product Rule', 'Sum of Powers', function(){
+    var a = randInt(2,6), b = randInt(2,6);
+    return {
+      outVar: 'z',
+      statement: 'z = x^{' + a + '} + y^{' + b + '}',
+      vars: ['x','y'],
+      answer: { x: term(a,[['x',a-1]]), y: term(b,[['y',b-1]]) },
+      steps: {
+        x: [
+          { label: 'Differentiate term by term, treating y as a constant.', tex: '\\frac{\\partial z}{\\partial x} = \\frac{\\partial}{\\partial x}\\big[x^{'+a+'}\\big] + \\frac{\\partial}{\\partial x}\\big[y^{'+b+'}\\big]' },
+          { label: 'Apply the power rule to x; the y-term is constant, so its derivative is 0.', tex: '= ' + term(a,[['x',a-1]]) + ' + 0' },
+          { label: 'Simplify.', tex: '= ' + term(a,[['x',a-1]]) }
+        ],
+        y: [
+          { label: 'Differentiate term by term, treating x as a constant.', tex: '\\frac{\\partial z}{\\partial y} = \\frac{\\partial}{\\partial y}\\big[x^{'+a+'}\\big] + \\frac{\\partial}{\\partial y}\\big[y^{'+b+'}\\big]' },
+          { label: 'The x-term is constant; apply the power rule to y.', tex: '= 0 + ' + term(b,[['y',b-1]]) },
+          { label: 'Simplify.', tex: '= ' + term(b,[['y',b-1]]) }
+        ]
+      }
+    };
+  });
+
+  // 2. Product of powers
+  addType('Power & Product Rule', 'Product of Powers', function(){
+    var a = randInt(2,5), b = randInt(2,5);
+    var ansX = term(a,[['x',a-1],['y',b]]);
+    var ansY = term(b,[['x',a],['y',b-1]]);
+    return {
+      outVar: 'z',
+      statement: 'z = x^{' + a + '}y^{' + b + '}',
+      vars: ['x','y'],
+      answer: { x: ansX, y: ansY },
+      steps: {
+        x: [
+          { label: 'Hold y fixed; y^{'+b+'} is a constant factor.', tex: '\\frac{\\partial z}{\\partial x} = y^{'+b+'}\\frac{\\partial}{\\partial x}\\big[x^{'+a+'}\\big]' },
+          { label: 'Apply the power rule to x.', tex: '= y^{'+b+'}\\cdot ' + term(a,[['x',a-1]]) },
+          { label: 'Simplify.', tex: '= ' + ansX }
+        ],
+        y: [
+          { label: 'Hold x fixed; x^{'+a+'} is a constant factor.', tex: '\\frac{\\partial z}{\\partial y} = x^{'+a+'}\\frac{\\partial}{\\partial y}\\big[y^{'+b+'}\\big]' },
+          { label: 'Apply the power rule to y.', tex: '= x^{'+a+'}\\cdot ' + term(b,[['y',b-1]]) },
+          { label: 'Simplify.', tex: '= ' + ansY }
+        ]
+      }
+    };
+  });
+
+  // 3. Mixed power terms with a negative exponent
+  addType('Power & Product Rule', 'Mixed Power Terms', function(){
+    var a = randInt(2,5), b = randInt(2,4);
+    var ansX = term(a,[['x',a-1],['y',1]]) + ' + y^{-' + b + '}';
+    var ansY = 'x^{' + a + '} - ' + term(b,[['x',1],['y',-(b+1)]]);
+    return {
+      outVar: 'z',
+      statement: 'z = x^{' + a + '}y + xy^{-' + b + '}',
+      vars: ['x','y'],
+      answer: { x: ansX, y: ansY },
+      steps: {
+        x: [
+          { label: 'Differentiate each term with respect to x, holding y constant.', tex: '\\frac{\\partial z}{\\partial x} = \\frac{\\partial}{\\partial x}\\big[x^{'+a+'}y\\big] + \\frac{\\partial}{\\partial x}\\big[xy^{-'+b+'}\\big]' },
+          { label: 'Apply the power rule to x in each term; y and y^{-'+b+'} are constant factors.', tex: '= ' + term(a,[['x',a-1],['y',1]]) + ' + y^{-'+b+'}' },
+          { label: 'Simplify.', tex: '= ' + ansX }
+        ],
+        y: [
+          { label: 'Differentiate each term with respect to y, holding x constant.', tex: '\\frac{\\partial z}{\\partial y} = \\frac{\\partial}{\\partial y}\\big[x^{'+a+'}y\\big] + \\frac{\\partial}{\\partial y}\\big[xy^{-'+b+'}\\big]' },
+          { label: 'The first term is linear in y; apply the power rule to y^{-'+b+'} in the second.', tex: '= x^{'+a+'} + x\\cdot(-'+b+')y^{-'+(b+1)+'}' },
+          { label: 'Simplify.', tex: '= ' + ansY }
+        ]
+      }
+    };
+  });
+
+  // 4. Volume formula (cylinder / cone)
+  addType('Power & Product Rule', 'Volume Formula', function(){
+    var cone = Math.random() < 0.5;
+    var statement = cone ? 'V = \\frac{1}{3}\\pi r^{2} h' : 'V = \\pi r^{2} h';
+    var ansR = cone ? '\\frac{2}{3}\\pi r h' : '2\\pi r h';
+    var ansH = cone ? '\\frac{1}{3}\\pi r^{2}' : '\\pi r^{2}';
+    return {
+      outVar: 'V',
+      statement: statement,
+      vars: ['r','h'],
+      answer: { r: ansR, h: ansH },
+      steps: {
+        r: [
+          { label: 'Hold h fixed (and \\pi is a constant); apply the power rule to r.', tex: '\\frac{\\partial V}{\\partial r} = ' + (cone ? '\\frac{1}{3}' : '') + '\\pi h\\cdot\\frac{\\partial}{\\partial r}\\big[r^{2}\\big]' },
+          { label: 'Differentiate r^{2}.', tex: '= ' + (cone ? '\\frac{1}{3}' : '') + '\\pi h\\cdot 2r' },
+          { label: 'Simplify.', tex: '= ' + ansR }
+        ],
+        h: [
+          { label: 'Hold r fixed; V is linear in h, so the r-dependent factor is constant.', tex: '\\frac{\\partial V}{\\partial h} = ' + (cone ? '\\frac{1}{3}' : '') + '\\pi r^{2}\\cdot\\frac{\\partial}{\\partial h}\\big[h\\big]' },
+          { label: 'The derivative of h with respect to h is 1.', tex: '= ' + (cone ? '\\frac{1}{3}' : '') + '\\pi r^{2}\\cdot 1' },
+          { label: 'Simplify.', tex: '= ' + ansH }
+        ]
+      }
+    };
+  });
+
+  // 5. Triple product
+  addType('Power & Product Rule', 'Triple Product', function(){
+    var a = randInt(2,4), b = randInt(2,4);
+    var ansX = 'y^{' + a + '}z^{' + b + '}';
+    var ansY = term(a,[['x',1],['y',a-1],['z',b]]);
+    var ansZ = term(b,[['x',1],['y',a],['z',b-1]]);
+    return {
+      outVar: 'w',
+      statement: 'w = xy^{' + a + '}z^{' + b + '}',
+      vars: ['x','y','z'],
+      answer: { x: ansX, y: ansY, z: ansZ },
+      steps: {
+        x: [
+          { label: 'Hold y and z fixed; y^{'+a+'}z^{'+b+'} is a constant factor.', tex: '\\frac{\\partial w}{\\partial x} = y^{'+a+'}z^{'+b+'}\\cdot\\frac{\\partial}{\\partial x}\\big[x\\big]' },
+          { label: 'The derivative of x with respect to x is 1.', tex: '= y^{'+a+'}z^{'+b+'}\\cdot 1' },
+          { label: 'Simplify.', tex: '= ' + ansX }
+        ],
+        y: [
+          { label: 'Hold x and z fixed; xz^{'+b+'} is a constant factor.', tex: '\\frac{\\partial w}{\\partial y} = xz^{'+b+'}\\cdot\\frac{\\partial}{\\partial y}\\big[y^{'+a+'}\\big]' },
+          { label: 'Apply the power rule to y.', tex: '= xz^{'+b+'}\\cdot ' + term(a,[['y',a-1]]) },
+          { label: 'Simplify.', tex: '= ' + ansY }
+        ],
+        z: [
+          { label: 'Hold x and y fixed; xy^{'+a+'} is a constant factor.', tex: '\\frac{\\partial w}{\\partial z} = xy^{'+a+'}\\cdot\\frac{\\partial}{\\partial z}\\big[z^{'+b+'}\\big]' },
+          { label: 'Apply the power rule to z.', tex: '= xy^{'+a+'}\\cdot ' + term(b,[['z',b-1]]) },
+          { label: 'Simplify.', tex: '= ' + ansZ }
+        ]
+      }
+    };
+  });
+
+  // 6. Simple quotient
+  addType('Quotient Rule', 'Simple Quotient', function(){
+    return {
+      outVar: 'z',
+      statement: 'z = \\frac{x}{y}',
+      vars: ['x','y'],
+      answer: { x: '\\frac{1}{y}', y: '-\\frac{x}{y^{2}}' },
+      steps: {
+        x: [
+          { label: 'Hold y fixed; 1/y is a constant factor on x.', tex: '\\frac{\\partial z}{\\partial x} = \\frac{1}{y}\\cdot\\frac{\\partial}{\\partial x}\\big[x\\big]' },
+          { label: 'The derivative of x with respect to x is 1.', tex: '= \\frac{1}{y}\\cdot 1' },
+          { label: 'Simplify.', tex: '= \\frac{1}{y}' }
+        ],
+        y: [
+          { label: 'Write z = xy^{-1} and apply the power rule to y, holding x fixed.', tex: '\\frac{\\partial z}{\\partial y} = x\\cdot\\frac{\\partial}{\\partial y}\\big[y^{-1}\\big]' },
+          { label: 'Differentiate y^{-1}.', tex: '= x\\cdot(-y^{-2})' },
+          { label: 'Simplify.', tex: '= -\\frac{x}{y^{2}}' }
+        ]
+      }
+    };
+  });
+
+  // 7. Quotient with difference in denominator
+  addType('Quotient Rule', 'Quotient with Difference', function(){
+    return {
+      outVar: 'z',
+      statement: 'z = \\frac{x}{x-y}',
+      vars: ['x','y'],
+      answer: { x: '-\\frac{y}{(x-y)^{2}}', y: '\\frac{x}{(x-y)^{2}}' },
+      steps: {
+        x: [
+          { label: 'Apply the quotient rule with f = x, g = x-y (differentiating with respect to x).', tex: '\\frac{\\partial z}{\\partial x} = \\frac{(1)(x-y) - x(1)}{(x-y)^{2}}' },
+          { label: 'Expand the numerator.', tex: '= \\frac{x-y-x}{(x-y)^{2}}' },
+          { label: 'Simplify.', tex: '= -\\frac{y}{(x-y)^{2}}' }
+        ],
+        y: [
+          { label: 'Apply the quotient rule with f = x, g = x-y (differentiating with respect to y).', tex: '\\frac{\\partial z}{\\partial y} = \\frac{(0)(x-y) - x(-1)}{(x-y)^{2}}' },
+          { label: 'Simplify the numerator.', tex: '= \\frac{x}{(x-y)^{2}}' },
+          { label: 'This is already simplified.', tex: '= \\frac{x}{(x-y)^{2}}' }
+        ]
+      }
+    };
+  });
+
+  // 8. Quotient with square root
+  addType('Quotient Rule', 'Quotient with Square Root', function(){
+    return {
+      outVar: 'z',
+      statement: 'z = \\frac{x}{\\sqrt{x^{2}+y^{2}}}',
+      vars: ['x','y'],
+      answer: { x: '\\frac{y^{2}}{(x^{2}+y^{2})^{3/2}}', y: '-\\frac{xy}{(x^{2}+y^{2})^{3/2}}' },
+      steps: {
+        x: [
+          { label: 'Write z = x(x^{2}+y^{2})^{-1/2} and apply the product rule with the chain rule.', tex: '\\frac{\\partial z}{\\partial x} = (x^{2}+y^{2})^{-1/2} + x\\cdot\\left(-\\tfrac{1}{2}\\right)(x^{2}+y^{2})^{-3/2}(2x)' },
+          { label: 'Combine over a common denominator.', tex: '= \\frac{(x^{2}+y^{2}) - x^{2}}{(x^{2}+y^{2})^{3/2}}' },
+          { label: 'Simplify the numerator.', tex: '= \\frac{y^{2}}{(x^{2}+y^{2})^{3/2}}' }
+        ],
+        y: [
+          { label: 'Hold x fixed; differentiate (x^{2}+y^{2})^{-1/2} with the chain rule.', tex: '\\frac{\\partial z}{\\partial y} = x\\cdot\\left(-\\tfrac{1}{2}\\right)(x^{2}+y^{2})^{-3/2}(2y)' },
+          { label: 'Cancel the factor of 2.', tex: '= -x y(x^{2}+y^{2})^{-3/2}' },
+          { label: 'Simplify.', tex: '= -\\frac{xy}{(x^{2}+y^{2})^{3/2}}' }
+        ]
+      }
+    };
+  });
+
+  // 9. Square root of a sum
+  addType('Roots & Radicals', 'Square Root of a Sum', function(){
+    var c = choice([9,16,25,36]);
+    return {
+      outVar: 'z',
+      statement: 'z = \\sqrt{' + c + ' - x^{2} - y^{2}}',
+      vars: ['x','y'],
+      answer: { x: '-\\frac{x}{\\sqrt{'+c+'-x^{2}-y^{2}}}', y: '-\\frac{y}{\\sqrt{'+c+'-x^{2}-y^{2}}}' },
+      steps: {
+        x: [
+          { label: 'Apply the chain rule: d/du\\,\\sqrt{u} = 1/(2\\sqrt{u}), with u = '+c+'-x^{2}-y^{2}.', tex: '\\frac{\\partial z}{\\partial x} = \\frac{1}{2\\sqrt{'+c+'-x^{2}-y^{2}}}\\cdot\\frac{\\partial}{\\partial x}\\big['+c+'-x^{2}-y^{2}\\big]' },
+          { label: 'Differentiate the inner expression with respect to x.', tex: '= \\frac{1}{2\\sqrt{'+c+'-x^{2}-y^{2}}}\\cdot(-2x)' },
+          { label: 'Simplify.', tex: '= -\\frac{x}{\\sqrt{'+c+'-x^{2}-y^{2}}}' }
+        ],
+        y: [
+          { label: 'Apply the chain rule with u = '+c+'-x^{2}-y^{2}.', tex: '\\frac{\\partial z}{\\partial y} = \\frac{1}{2\\sqrt{'+c+'-x^{2}-y^{2}}}\\cdot\\frac{\\partial}{\\partial y}\\big['+c+'-x^{2}-y^{2}\\big]' },
+          { label: 'Differentiate the inner expression with respect to y.', tex: '= \\frac{1}{2\\sqrt{'+c+'-x^{2}-y^{2}}}\\cdot(-2y)' },
+          { label: 'Simplify.', tex: '= -\\frac{y}{\\sqrt{'+c+'-x^{2}-y^{2}}}' }
+        ]
+      }
+    };
+  });
+
+  // 10. Product of sines
+  addType('Trigonometric', 'Product of Sines', function(){
+    var a = randInt(1,4), b = randInt(1,4);
+    var innerX = coefStr(a) + 'x', innerY = coefStr(b) + 'y';
+    return {
+      outVar: 'z',
+      statement: 'z = \\sin(' + innerX + ')\\sin(' + innerY + ')',
+      vars: ['x','y'],
+      answer: { x: coefStr(a) + '\\cos(' + innerX + ')\\sin(' + innerY + ')', y: coefStr(b) + '\\sin(' + innerX + ')\\cos(' + innerY + ')' },
+      steps: {
+        x: [
+          { label: 'Hold y fixed; \\sin('+innerY+') is a constant factor.', tex: '\\frac{\\partial z}{\\partial x} = \\sin('+innerY+')\\cdot\\frac{\\partial}{\\partial x}\\big[\\sin('+innerX+')\\big]' },
+          { label: 'Apply the chain rule: d/du\\,\\sin u = \\cos u, with u = '+innerX+'.', tex: '= \\sin('+innerY+')\\cdot ' + coefStr(a) + '\\cos('+innerX+')' },
+          { label: 'Simplify.', tex: '= ' + coefStr(a) + '\\cos('+innerX+')\\sin('+innerY+')' }
+        ],
+        y: [
+          { label: 'Hold x fixed; \\sin('+innerX+') is a constant factor.', tex: '\\frac{\\partial z}{\\partial y} = \\sin('+innerX+')\\cdot\\frac{\\partial}{\\partial y}\\big[\\sin('+innerY+')\\big]' },
+          { label: 'Apply the chain rule with u = '+innerY+'.', tex: '= \\sin('+innerX+')\\cdot ' + coefStr(b) + '\\cos('+innerY+')' },
+          { label: 'Simplify.', tex: '= ' + coefStr(b) + '\\sin('+innerX+')\\cos('+innerY+')' }
+        ]
+      }
+    };
+  });
+
+  // 11. Chain sine (sin(u^n v))
+  addType('Trigonometric', 'Chain Sine', function(){
+    var n = randInt(2,3);
+    var inner = 'u^{' + n + '}v';
+    return {
+      outVar: 'z',
+      statement: 'z = \\sin\\left(' + inner + '\\right)',
+      vars: ['u','v'],
+      answer: { u: term(n,[['u',n-1],['v',1]]) + '\\cos\\left(' + inner + '\\right)', v: 'u^{' + n + '}\\cos\\left(' + inner + '\\right)' },
+      steps: {
+        u: [
+          { label: 'Apply the chain rule: d/dw\\,\\sin w = \\cos w, with w = '+inner+'.', tex: '\\frac{\\partial z}{\\partial u} = \\cos\\left('+inner+'\\right)\\cdot\\frac{\\partial}{\\partial u}\\big['+inner+'\\big]' },
+          { label: 'Differentiate the inner expression with respect to u (v fixed).', tex: '= \\cos\\left('+inner+'\\right)\\cdot ' + term(n,[['u',n-1],['v',1]]) },
+          { label: 'Simplify.', tex: '= ' + term(n,[['u',n-1],['v',1]]) + '\\cos\\left('+inner+'\\right)' }
+        ],
+        v: [
+          { label: 'Apply the chain rule with w = '+inner+'.', tex: '\\frac{\\partial z}{\\partial v} = \\cos\\left('+inner+'\\right)\\cdot\\frac{\\partial}{\\partial v}\\big['+inner+'\\big]' },
+          { label: 'Differentiate the inner expression with respect to v (u fixed).', tex: '= \\cos\\left('+inner+'\\right)\\cdot u^{'+n+'}' },
+          { label: 'Simplify.', tex: '= u^{'+n+'}\\cos\\left('+inner+'\\right)' }
+        ]
+      }
+    };
+  });
+
+  // 12. Tangent of a quotient
+  addType('Trigonometric', 'Tangent of a Quotient', function(){
+    return {
+      outVar: 'z',
+      statement: 'z = \\tan\\left(\\frac{x}{y}\\right)',
+      vars: ['x','y'],
+      answer: { x: '\\frac{\\sec^{2}(x/y)}{y}', y: '-\\frac{x\\sec^{2}(x/y)}{y^{2}}' },
+      steps: {
+        x: [
+          { label: 'Apply the chain rule: d/du\\,\\tan u = \\sec^{2}u, with u = x/y.', tex: '\\frac{\\partial z}{\\partial x} = \\sec^{2}\\!\\left(\\frac{x}{y}\\right)\\cdot\\frac{\\partial}{\\partial x}\\left[\\frac{x}{y}\\right]' },
+          { label: 'Differentiate x/y with respect to x (y fixed).', tex: '= \\sec^{2}\\!\\left(\\frac{x}{y}\\right)\\cdot\\frac{1}{y}' },
+          { label: 'Simplify.', tex: '= \\frac{\\sec^{2}(x/y)}{y}' }
+        ],
+        y: [
+          { label: 'Apply the chain rule with u = x/y.', tex: '\\frac{\\partial z}{\\partial y} = \\sec^{2}\\!\\left(\\frac{x}{y}\\right)\\cdot\\frac{\\partial}{\\partial y}\\left[\\frac{x}{y}\\right]' },
+          { label: 'Differentiate x/y with respect to y (x fixed).', tex: '= \\sec^{2}\\!\\left(\\frac{x}{y}\\right)\\cdot\\left(-\\frac{x}{y^{2}}\\right)' },
+          { label: 'Simplify.', tex: '= -\\frac{x\\sec^{2}(x/y)}{y^{2}}' }
+        ]
+      }
+    };
+  });
+
+  // 13. Sine of a linear combination
+  addType('Trigonometric', 'Sine of a Linear Combination', function(){
+    var a = randInt(2,9), b = randInt(2,9);
+    var inner = a + '\\theta - ' + b + 't';
+    return {
+      outVar: 'A',
+      statement: 'A = \\sin(' + inner + ')',
+      vars: ['theta','t'],
+      answer: { theta: a + '\\cos(' + inner + ')', t: '-' + b + '\\cos(' + inner + ')' },
+      steps: {
+        theta: [
+          { label: 'Apply the chain rule: d/du\\,\\sin u = \\cos u, with u = '+inner+'.', tex: '\\frac{\\partial A}{\\partial \\theta} = \\cos(' + inner + ')\\cdot\\frac{\\partial}{\\partial \\theta}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to \\theta (t fixed).', tex: '= \\cos(' + inner + ')\\cdot ' + a },
+          { label: 'Simplify.', tex: '= ' + a + '\\cos(' + inner + ')' }
+        ],
+        t: [
+          { label: 'Apply the chain rule with u = '+inner+'.', tex: '\\frac{\\partial A}{\\partial t} = \\cos(' + inner + ')\\cdot\\frac{\\partial}{\\partial t}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to t (\\theta fixed).', tex: '= \\cos(' + inner + ')\\cdot(-' + b + ')' },
+          { label: 'Simplify.', tex: '= -' + b + '\\cos(' + inner + ')' }
+        ]
+      }
+    };
+  });
+
+  // 14. Arctangent of a product
+  addType('Inverse Trigonometric', 'Arctangent of a Product', function(){
+    var a = randInt(1,5);
+    var inner = coefStr(a) + 'wz';
+    var denom = '1+(' + inner + ')^{2}';
+    return {
+      outVar: 'S',
+      statement: 'S = \\tan^{-1}(' + inner + ')',
+      vars: ['w','z'],
+      answer: { w: frac(term(a,[['z',1]]), denom), z: frac(term(a,[['w',1]]), denom) },
+      steps: {
+        w: [
+          { label: 'Apply the chain rule: d/du\\,\\tan^{-1}u = 1/(1+u^{2}), with u = '+inner+'.', tex: '\\frac{\\partial S}{\\partial w} = \\frac{1}{' + denom + '}\\cdot\\frac{\\partial}{\\partial w}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to w (z fixed).', tex: '= \\frac{1}{' + denom + '}\\cdot ' + term(a,[['z',1]]) },
+          { label: 'Simplify.', tex: '= ' + frac(term(a,[['z',1]]), denom) }
+        ],
+        z: [
+          { label: 'Apply the chain rule with u = '+inner+'.', tex: '\\frac{\\partial S}{\\partial z} = \\frac{1}{' + denom + '}\\cdot\\frac{\\partial}{\\partial z}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to z (w fixed).', tex: '= \\frac{1}{' + denom + '}\\cdot ' + term(a,[['w',1]]) },
+          { label: 'Simplify.', tex: '= ' + frac(term(a,[['w',1]]), denom) }
+        ]
+      }
+    };
+  });
+
+  // 15. Natural log of a sum of squares
+  addType('Logarithmic', 'Natural Log of a Sum of Squares', function(){
+    var a = randInt(1,3), b = randInt(1,3);
+    var innerA = coefStr(a) + 'x^{2}', innerB = coefStr(b) + 'y^{2}';
+    var inner = innerA + ' + ' + innerB;
+    return {
+      outVar: 'z',
+      statement: 'z = \\ln(' + inner + ')',
+      vars: ['x','y'],
+      answer: { x: frac(term(2*a,[['x',1]]), inner), y: frac(term(2*b,[['y',1]]), inner) },
+      steps: {
+        x: [
+          { label: 'Apply the chain rule: d/du\\,\\ln u = 1/u, with u = '+inner+'.', tex: '\\frac{\\partial z}{\\partial x} = \\frac{1}{' + inner + '}\\cdot\\frac{\\partial}{\\partial x}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to x (y fixed).', tex: '= \\frac{1}{' + inner + '}\\cdot ' + term(2*a,[['x',1]]) },
+          { label: 'Simplify.', tex: '= ' + frac(term(2*a,[['x',1]]), inner) }
+        ],
+        y: [
+          { label: 'Apply the chain rule with u = '+inner+'.', tex: '\\frac{\\partial z}{\\partial y} = \\frac{1}{' + inner + '}\\cdot\\frac{\\partial}{\\partial y}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to y (x fixed).', tex: '= \\frac{1}{' + inner + '}\\cdot ' + term(2*b,[['y',1]]) },
+          { label: 'Simplify.', tex: '= ' + frac(term(2*b,[['y',1]]), inner) }
+        ]
+      }
+    };
+  });
+
+  // 16. Exponential of a sum
+  addType('Exponential', 'Exponential of a Sum', function(){
+    var a = randInt(1,4), b = randInt(1,4);
+    var exponent = coefStr(a) + 'r + ' + coefStr(b) + 's';
+    return {
+      outVar: 'W',
+      statement: 'W = e^{' + exponent + '}',
+      vars: ['r','s'],
+      answer: { r: coefStr(a) + 'e^{' + exponent + '}', s: coefStr(b) + 'e^{' + exponent + '}' },
+      steps: {
+        r: [
+          { label: 'Apply the chain rule: d/du\\,e^{u} = e^{u}, with u = '+exponent+'.', tex: '\\frac{\\partial W}{\\partial r} = e^{' + exponent + '}\\cdot\\frac{\\partial}{\\partial r}\\big[' + exponent + '\\big]' },
+          { label: 'Differentiate the exponent with respect to r (s fixed).', tex: '= e^{' + exponent + '}\\cdot ' + a },
+          { label: 'Simplify.', tex: '= ' + coefStr(a) + 'e^{' + exponent + '}' }
+        ],
+        s: [
+          { label: 'Apply the chain rule with u = '+exponent+'.', tex: '\\frac{\\partial W}{\\partial s} = e^{' + exponent + '}\\cdot\\frac{\\partial}{\\partial s}\\big[' + exponent + '\\big]' },
+          { label: 'Differentiate the exponent with respect to s (r fixed).', tex: '= e^{' + exponent + '}\\cdot ' + b },
+          { label: 'Simplify.', tex: '= ' + coefStr(b) + 'e^{' + exponent + '}' }
+        ]
+      }
+    };
+  });
+
+  // 17. Product with an exponential
+  addType('Exponential', 'Product with an Exponential', function(){
+    return {
+      outVar: 'Q',
+      statement: 'Q = re^{\\theta}',
+      vars: ['r','theta'],
+      answer: { r: 'e^{\\theta}', theta: 're^{\\theta}' },
+      steps: {
+        r: [
+          { label: 'Hold \\theta fixed; e^{\\theta} is a constant factor.', tex: '\\frac{\\partial Q}{\\partial r} = e^{\\theta}\\cdot\\frac{\\partial}{\\partial r}\\big[r\\big]' },
+          { label: 'The derivative of r with respect to r is 1.', tex: '= e^{\\theta}\\cdot 1' },
+          { label: 'Simplify.', tex: '= e^{\\theta}' }
+        ],
+        theta: [
+          { label: 'Hold r fixed; r is a constant factor.', tex: '\\frac{\\partial Q}{\\partial \\theta} = r\\cdot\\frac{\\partial}{\\partial \\theta}\\big[e^{\\theta}\\big]' },
+          { label: 'The derivative of e^{\\theta} with respect to \\theta is itself.', tex: '= r\\cdot e^{\\theta}' },
+          { label: 'Simplify.', tex: '= re^{\\theta}' }
+        ]
+      }
+    };
+  });
+
+  // 18. Exponential of a product
+  addType('Exponential', 'Exponential of a Product', function(){
+    var a = randInt(1,4);
+    var exponent = coefStr(a) + 'xy';
+    return {
+      outVar: 'z',
+      statement: 'z = e^{' + exponent + '}',
+      vars: ['x','y'],
+      answer: { x: term(a,[['y',1]]) + 'e^{' + exponent + '}', y: term(a,[['x',1]]) + 'e^{' + exponent + '}' },
+      steps: {
+        x: [
+          { label: 'Apply the chain rule: d/du\\,e^{u} = e^{u}, with u = '+exponent+'.', tex: '\\frac{\\partial z}{\\partial x} = e^{' + exponent + '}\\cdot\\frac{\\partial}{\\partial x}\\big[' + exponent + '\\big]' },
+          { label: 'Differentiate the exponent with respect to x (y fixed).', tex: '= e^{' + exponent + '}\\cdot ' + term(a,[['y',1]]) },
+          { label: 'Simplify.', tex: '= ' + term(a,[['y',1]]) + 'e^{' + exponent + '}' }
+        ],
+        y: [
+          { label: 'Apply the chain rule with u = '+exponent+'.', tex: '\\frac{\\partial z}{\\partial y} = e^{' + exponent + '}\\cdot\\frac{\\partial}{\\partial y}\\big[' + exponent + '\\big]' },
+          { label: 'Differentiate the exponent with respect to y (x fixed).', tex: '= e^{' + exponent + '}\\cdot ' + term(a,[['x',1]]) },
+          { label: 'Simplify.', tex: '= ' + term(a,[['x',1]]) + 'e^{' + exponent + '}' }
+        ]
+      }
+    };
+  });
+
+  // 19. Negative square over a constant
+  addType('Exponential', 'Negative Square over a Variable', function(){
+    return {
+      outVar: 'R',
+      statement: 'R = e^{-v^{2}/k}',
+      vars: ['v','k'],
+      answer: { v: '-\\frac{2v}{k}e^{-v^{2}/k}', k: '\\frac{v^{2}}{k^{2}}e^{-v^{2}/k}' },
+      steps: {
+        v: [
+          { label: 'Apply the chain rule with u = -v^{2}/k (k fixed).', tex: '\\frac{\\partial R}{\\partial v} = e^{-v^{2}/k}\\cdot\\frac{\\partial}{\\partial v}\\left[-\\frac{v^{2}}{k}\\right]' },
+          { label: 'Differentiate -v^{2}/k with respect to v.', tex: '= e^{-v^{2}/k}\\cdot\\left(-\\frac{2v}{k}\\right)' },
+          { label: 'Simplify.', tex: '= -\\frac{2v}{k}e^{-v^{2}/k}' }
+        ],
+        k: [
+          { label: 'Apply the chain rule with u = -v^{2}/k = -v^{2}k^{-1} (v fixed).', tex: '\\frac{\\partial R}{\\partial k} = e^{-v^{2}/k}\\cdot\\frac{\\partial}{\\partial k}\\left[-v^{2}k^{-1}\\right]' },
+          { label: 'Differentiate -v^{2}k^{-1} with respect to k.', tex: '= e^{-v^{2}/k}\\cdot v^{2}k^{-2}' },
+          { label: 'Simplify.', tex: '= \\frac{v^{2}}{k^{2}}e^{-v^{2}/k}' }
+        ]
+      }
+    };
+  });
+
+  // 20. Negative sum of squares
+  addType('Exponential', 'Negative Sum of Squares', function(){
+    var a = randInt(1,3);
+    var innerAbs = coefStr(a) === '' ? '\\left(x^{2}+y^{2}\\right)' : a + '\\left(x^{2}+y^{2}\\right)';
+    return {
+      outVar: 'z',
+      statement: 'z = e^{-' + innerAbs + '}',
+      vars: ['x','y'],
+      answer: { x: '-' + term(2*a,[['x',1]]) + 'e^{-' + innerAbs + '}', y: '-' + term(2*a,[['y',1]]) + 'e^{-' + innerAbs + '}' },
+      steps: {
+        x: [
+          { label: 'Apply the chain rule with u = -'+innerAbs+' (y fixed).', tex: '\\frac{\\partial z}{\\partial x} = e^{-' + innerAbs + '}\\cdot\\frac{\\partial}{\\partial x}\\big[-' + innerAbs + '\\big]' },
+          { label: 'Differentiate the exponent with respect to x.', tex: '= e^{-' + innerAbs + '}\\cdot(-' + term(2*a,[['x',1]]) + ')' },
+          { label: 'Simplify.', tex: '= -' + term(2*a,[['x',1]]) + 'e^{-' + innerAbs + '}' }
+        ],
+        y: [
+          { label: 'Apply the chain rule with u = -'+innerAbs+' (x fixed).', tex: '\\frac{\\partial z}{\\partial y} = e^{-' + innerAbs + '}\\cdot\\frac{\\partial}{\\partial y}\\big[-' + innerAbs + '\\big]' },
+          { label: 'Differentiate the exponent with respect to y.', tex: '= e^{-' + innerAbs + '}\\cdot(-' + term(2*a,[['y',1]]) + ')' },
+          { label: 'Simplify.', tex: '= -' + term(2*a,[['y',1]]) + 'e^{-' + innerAbs + '}' }
+        ]
+      }
+    };
+  });
+
+  // 21. Exponential of a square root
+  addType('Exponential', 'Exponential of a Square Root', function(){
+    var inner = '\\sqrt{y^{2}+z^{2}}';
+    return {
+      outVar: 'P',
+      statement: 'P = e^{' + inner + '}',
+      vars: ['y','z'],
+      answer: { y: '\\frac{y}{' + inner + '}e^{' + inner + '}', z: '\\frac{z}{' + inner + '}e^{' + inner + '}' },
+      steps: {
+        y: [
+          { label: 'Apply the chain rule: d/du\\,e^{u} = e^{u}, with u = '+inner+'.', tex: '\\frac{\\partial P}{\\partial y} = e^{' + inner + '}\\cdot\\frac{\\partial}{\\partial y}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the square root with respect to y (chain rule again).', tex: '= e^{' + inner + '}\\cdot\\frac{y}{' + inner + '}' },
+          { label: 'Simplify.', tex: '= \\frac{y}{' + inner + '}e^{' + inner + '}' }
+        ],
+        z: [
+          { label: 'Apply the chain rule with u = '+inner+'.', tex: '\\frac{\\partial P}{\\partial z} = e^{' + inner + '}\\cdot\\frac{\\partial}{\\partial z}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the square root with respect to z.', tex: '= e^{' + inner + '}\\cdot\\frac{z}{' + inner + '}' },
+          { label: 'Simplify.', tex: '= \\frac{z}{' + inner + '}e^{' + inner + '}' }
+        ]
+      }
+    };
+  });
+
+  // 22. Exponential over a variable
+  addType('Exponential', 'Exponential over a Variable', function(){
+    return {
+      outVar: 'U',
+      statement: 'U = \\frac{e^{-rt}}{r}',
+      vars: ['r','t'],
+      answer: { r: '-\\frac{e^{-rt}(1+rt)}{r^{2}}', t: '-e^{-rt}' },
+      steps: {
+        r: [
+          { label: 'Apply the quotient rule with f = e^{-rt}, g = r.', tex: '\\frac{\\partial U}{\\partial r} = \\frac{(-te^{-rt})(r) - e^{-rt}(1)}{r^{2}}' },
+          { label: 'Factor e^{-rt} out of the numerator.', tex: '= \\frac{e^{-rt}(-rt-1)}{r^{2}}' },
+          { label: 'Simplify.', tex: '= -\\frac{e^{-rt}(1+rt)}{r^{2}}' }
+        ],
+        t: [
+          { label: 'Hold r fixed; 1/r is a constant factor.', tex: '\\frac{\\partial U}{\\partial t} = \\frac{1}{r}\\cdot\\frac{\\partial}{\\partial t}\\big[e^{-rt}\\big]' },
+          { label: 'Apply the chain rule to e^{-rt} with respect to t.', tex: '= \\frac{1}{r}\\cdot(-r)e^{-rt}' },
+          { label: 'Simplify.', tex: '= -e^{-rt}' }
+        ]
+      }
+    };
+  });
+
+  // 23. Power function (variable base and exponent)
+  addType('Variable Exponent', 'Power Function y^x', function(){
+    return {
+      outVar: 'z',
+      statement: 'z = y^{x}',
+      vars: ['x','y'],
+      answer: { x: 'y^{x}\\ln y', y: 'xy^{x-1}' },
+      steps: {
+        x: [
+          { label: 'Here x is the exponent and y is held constant, so use the exponential rule d/du\\,b^{u} = b^{u}\\ln b.', tex: '\\frac{\\partial z}{\\partial x} = y^{x}\\ln y' },
+          { label: 'No further simplification is needed.', tex: '= y^{x}\\ln y' }
+        ],
+        y: [
+          { label: 'Here y is the base and x is held constant, so use the ordinary power rule.', tex: '\\frac{\\partial z}{\\partial y} = xy^{x-1}' },
+          { label: 'No further simplification is needed.', tex: '= xy^{x-1}' }
+        ]
+      }
+    };
+  });
+
+  // 24. Hyperbolic sine chain
+  addType('Hyperbolic', 'Hyperbolic Sine Chain', function(){
+    var n = randInt(2,3);
+    var inner = 'x^{' + n + '}y';
+    return {
+      outVar: 'z',
+      statement: 'z = \\sinh(' + inner + ')',
+      vars: ['x','y'],
+      answer: { x: term(n,[['x',n-1],['y',1]]) + '\\cosh(' + inner + ')', y: 'x^{' + n + '}\\cosh(' + inner + ')' },
+      steps: {
+        x: [
+          { label: 'Apply the chain rule: d/du\\,\\sinh u = \\cosh u, with u = '+inner+'.', tex: '\\frac{\\partial z}{\\partial x} = \\cosh(' + inner + ')\\cdot\\frac{\\partial}{\\partial x}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to x (y fixed).', tex: '= \\cosh(' + inner + ')\\cdot ' + term(n,[['x',n-1],['y',1]]) },
+          { label: 'Simplify.', tex: '= ' + term(n,[['x',n-1],['y',1]]) + '\\cosh(' + inner + ')' }
+        ],
+        y: [
+          { label: 'Apply the chain rule with u = '+inner+'.', tex: '\\frac{\\partial z}{\\partial y} = \\cosh(' + inner + ')\\cdot\\frac{\\partial}{\\partial y}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to y (x fixed).', tex: '= \\cosh(' + inner + ')\\cdot x^{' + n + '}' },
+          { label: 'Simplify.', tex: '= x^{' + n + '}\\cosh(' + inner + ')' }
+        ]
+      }
+    };
+  });
+
+  // 25. Hyperbolic cosine of a difference
+  addType('Hyperbolic', 'Hyperbolic Cosine of a Difference', function(){
+    var a = randInt(1,3);
+    var at = coefStr(a) + 't';
+    var inner = at + ' - \\cos x';
+    return {
+      outVar: 'z',
+      statement: 'z = \\cosh(' + inner + ')',
+      vars: ['x','t'],
+      answer: { x: '\\sin(x)\\sinh(' + inner + ')', t: coefStr(a) + '\\sinh(' + inner + ')' },
+      steps: {
+        x: [
+          { label: 'Apply the chain rule: d/du\\,\\cosh u = \\sinh u, with u = '+inner+'.', tex: '\\frac{\\partial z}{\\partial x} = \\sinh(' + inner + ')\\cdot\\frac{\\partial}{\\partial x}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to x (t fixed); the derivative of -\\cos x is \\sin x.', tex: '= \\sinh(' + inner + ')\\cdot \\sin(x)' },
+          { label: 'Simplify.', tex: '= \\sin(x)\\sinh(' + inner + ')' }
+        ],
+        t: [
+          { label: 'Apply the chain rule with u = '+inner+'.', tex: '\\frac{\\partial z}{\\partial t} = \\sinh(' + inner + ')\\cdot\\frac{\\partial}{\\partial t}\\big[' + inner + '\\big]' },
+          { label: 'Differentiate the inner expression with respect to t (x fixed).', tex: '= \\sinh(' + inner + ')\\cdot ' + a },
+          { label: 'Simplify.', tex: '= ' + coefStr(a) + '\\sinh(' + inner + ')' }
+        ]
+      }
+    };
+  });
+
+  // 26. Quotient over a sum (three variables)
+  addType('Quotient Rule', 'Quotient over a Sum', function(){
+    return {
+      outVar: 'w',
+      statement: 'w = \\frac{x}{y+z}',
+      vars: ['x','y','z'],
+      answer: { x: '\\frac{1}{y+z}', y: '-\\frac{x}{(y+z)^{2}}', z: '-\\frac{x}{(y+z)^{2}}' },
+      steps: {
+        x: [
+          { label: 'Hold y and z fixed; 1/(y+z) is a constant factor.', tex: '\\frac{\\partial w}{\\partial x} = \\frac{1}{y+z}\\cdot\\frac{\\partial}{\\partial x}\\big[x\\big]' },
+          { label: 'The derivative of x with respect to x is 1.', tex: '= \\frac{1}{y+z}\\cdot 1' },
+          { label: 'Simplify.', tex: '= \\frac{1}{y+z}' }
+        ],
+        y: [
+          { label: 'Write w = x(y+z)^{-1} and hold x and (implicitly) z fixed; apply the chain rule.', tex: '\\frac{\\partial w}{\\partial y} = x\\cdot(-1)(y+z)^{-2}\\cdot\\frac{\\partial}{\\partial y}\\big[y+z\\big]' },
+          { label: 'The derivative of y+z with respect to y is 1.', tex: '= -x(y+z)^{-2}\\cdot 1' },
+          { label: 'Simplify.', tex: '= -\\frac{x}{(y+z)^{2}}' }
+        ],
+        z: [
+          { label: 'By the same reasoning, differentiate with respect to z.', tex: '\\frac{\\partial w}{\\partial z} = x\\cdot(-1)(y+z)^{-2}\\cdot\\frac{\\partial}{\\partial z}\\big[y+z\\big]' },
+          { label: 'The derivative of y+z with respect to z is also 1.', tex: '= -x(y+z)^{-2}\\cdot 1' },
+          { label: 'Simplify.', tex: '= -\\frac{x}{(y+z)^{2}}' }
+        ]
+      }
+    };
+  });
+
+  // ---------- math rendering (serialized through one queue) ----------
+  var mathQueue = Promise.resolve();
+  function renderMath(el, tex, display){
+    mathQueue = mathQueue
+      .then(function(){ return MathJax.startup.promise; })
+      .then(function(){ return MathJax.tex2svgPromise(tex, { display: !!display }); })
+      .then(function(node){ el.innerHTML = ''; el.appendChild(node); })
+      .catch(function(){ el.textContent = tex; });
+    return mathQueue;
+  }
+
+  // ---------- app state & wiring ----------
+  var typeSelect = document.getElementById('typeSelect');
+  var newBtn = document.getElementById('newBtn');
+  var answerBtn = document.getElementById('answerBtn');
+  var stepsBtn = document.getElementById('stepsBtn');
+  var downloadBtn = document.getElementById('downloadBtn');
+  var exnumEl = document.getElementById('exnum');
+  var tagEl = document.getElementById('tag');
+  var problemEl = document.getElementById('problem');
+  var answerBox = document.getElementById('answerBox');
+  var stepsBox = document.getElementById('stepsBox');
+  var answerContent = document.getElementById('answerContent');
+  var stepsContent = document.getElementById('stepsContent');
+
+  // populate select: Random + grouped options
+  (function buildSelect(){
+    var randomOpt = document.createElement('option');
+    randomOpt.value = '-1';
+    randomOpt.textContent = 'Random';
+    typeSelect.appendChild(randomOpt);
+
+    var groups = {};
+    var order = [];
+    TYPES.forEach(function(t, i){
+      if (!groups[t.group]) { groups[t.group] = []; order.push(t.group); }
+      groups[t.group].push(i);
+    });
+    order.forEach(function(g){
+      var og = document.createElement('optgroup');
+      og.label = g;
+      groups[g].forEach(function(i){
+        var opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = TYPES[i].name;
+        og.appendChild(opt);
+      });
+      typeSelect.appendChild(og);
+    });
+  })();
+
+  var exerciseNumber = 13;
+
+  function pickType(){
+    var v = typeSelect.value;
+    if (v === '-1') return choice(TYPES);
+    return TYPES[parseInt(v, 10)];
+  }
+
+  function buildAnswerContent(data){
+    answerContent.innerHTML = '';
+    data.vars.forEach(function(v){
+      var line = document.createElement('div');
+      line.className = 'answer-line';
+      answerContent.appendChild(line);
+      renderMath(line, '\\frac{\\partial ' + data.outVar + '}{\\partial ' + vtex(v) + '} = ' + data.answer[v], true);
+    });
+  }
+
+  function buildStepsContent(data){
+    stepsContent.innerHTML = '';
+    data.vars.forEach(function(v){
+      var block = document.createElement('div');
+      block.className = 'var-block';
+
+      var head = document.createElement('div');
+      head.className = 'var-head';
+      var badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = 'WITH RESPECT TO ' + vtex(v).replace(/\\/g,'').toUpperCase();
+      var vhMath = document.createElement('div');
+      vhMath.className = 'vh-math';
+      head.appendChild(badge);
+      head.appendChild(vhMath);
+      block.appendChild(head);
+      renderMath(vhMath, '\\frac{\\partial ' + data.outVar + '}{\\partial ' + vtex(v) + '}', false);
+
+      var ol = document.createElement('ol');
+      ol.className = 'step-list';
+      data.steps[v].forEach(function(step, idx){
+        var li = document.createElement('li');
+        var num = document.createElement('div');
+        num.className = 'step-num';
+        num.textContent = String(idx + 1);
+        var body = document.createElement('div');
+        body.className = 'step-body';
+        var label = document.createElement('p');
+        label.className = 'step-label';
+        label.textContent = step.label;
+        var math = document.createElement('div');
+        math.className = 'step-math';
+        body.appendChild(label);
+        body.appendChild(math);
+        li.appendChild(num);
+        li.appendChild(body);
+        ol.appendChild(li);
+        renderMath(math, step.tex, true);
+      });
+      block.appendChild(ol);
+      stepsContent.appendChild(block);
+    });
+  }
+
+  function newExercise(){
+    var type = pickType();
+    var data = type.gen();
+
+    exnumEl.textContent = 'Exercise ' + exerciseNumber;
+    exerciseNumber = exerciseNumber >= 40 ? 13 : exerciseNumber + 1;
+    tagEl.textContent = type.name;
+
+    renderMath(problemEl, data.statement, true);
+    buildAnswerContent(data);
+    buildStepsContent(data);
+
+    answerBox.hidden = true;
+    stepsBox.hidden = true;
+    answerBtn.textContent = 'Show Answer';
+    stepsBtn.textContent = 'Show Step-by-Step Solution';
+  }
+
+  newBtn.addEventListener('click', newExercise);
+  answerBtn.addEventListener('click', function(){
+    answerBox.hidden = !answerBox.hidden;
+    answerBtn.textContent = answerBox.hidden ? 'Show Answer' : 'Hide Answer';
+  });
+  stepsBtn.addEventListener('click', function(){
+    stepsBox.hidden = !stepsBox.hidden;
+    stepsBtn.textContent = stepsBox.hidden ? 'Show Step-by-Step Solution' : 'Hide Step-by-Step Solution';
+  });
+
+  function slugify(s){
+    return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+
+  // Builds a self-contained HTML snapshot of the current exercise (problem,
+  // answer, full steps) by reusing the live page's own style block, masthead
+  // and footer, so the downloaded file always matches whatever is on screen.
+  function buildDownloadHtml(){
+    var styleTag = document.querySelector('style').outerHTML;
+    var mastheadHtml = document.querySelector('.masthead').outerHTML;
+    var footHtml = document.querySelector('.foot').outerHTML;
+    var exnum = exnumEl.textContent;
+    var tag = tagEl.textContent;
+
+    return '<!doctype html>\n' +
+      '<html lang="en">\n<head>\n<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      '<title>Partial Derivative Drills — ' + exnum + '</title>\n' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+      '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">\n' +
+      styleTag + '\n' +
+      '</head>\n<body>\n' +
+      '<div class="page">\n' +
+      mastheadHtml + '\n' +
+      '<main class="card">\n' +
+      '<div class="card-top"><div class="exnum">' + exnum + '</div><div class="tag">' + tag + '</div></div>\n' +
+      '<p class="instruction">Compute the first-order partial derivatives.</p>\n' +
+      '<div class="problem">' + problemEl.innerHTML + '</div>\n' +
+      '<div class="answer-box"><p class="answer-title">Answer</p><div class="answer-content">' + answerContent.innerHTML + '</div></div>\n' +
+      '<div class="steps-box"><p class="steps-title">Step-by-Step Solution</p><div>' + stepsContent.innerHTML + '</div></div>\n' +
+      '</main>\n' +
+      footHtml + '\n' +
+      '</div>\n</body>\n</html>';
+  }
+
+  downloadBtn.addEventListener('click', function(){
+    var html = buildDownloadHtml();
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'partial-derivative-exercise-' + slugify(tagEl.textContent) + '-' + exnumEl.textContent.replace(/[^0-9]/g,'') + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  });
+
+  newExercise();
+})();
+</script>
