@@ -1,0 +1,1028 @@
+<meta charset="utf-8">
+<title>Free Extrema Drills</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+/*
+  Layout concept: a worked page from a calculus problem set — a single
+  "exercise card" centered on a desk-like page, with the exercise number
+  set large in the margin the way a textbook numbers its drills, and the
+  answer/solution revealed progressively, like flipping to the back of
+  the book.
+*/
+:root{
+  --bg:#F4F5F0;
+  --surface:#FFFFFF;
+  --surface-2:#ECEEE6;
+  --fg:#1B2129;
+  --fg-muted:#5B6370;
+  --border:#DBDFD6;
+  --accent:#8F5A0C;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F1E2C2;
+  --accent-soft-ink:#6B4707;
+  --answer-bg:#FBF3E1;
+  --answer-border:#E2C381;
+  --focus:#2F6FB3;
+
+  --font-display:'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  --font-body:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151B;
+    --surface:#181E27;
+    --surface-2:#1F2631;
+    --fg:#E7E9EC;
+    --fg-muted:#9AA3AF;
+    --border:#2A3240;
+    --accent:#E0A94E;
+    --accent-ink:#1B1304;
+    --accent-soft:#30260F;
+    --accent-soft-ink:#F0C877;
+    --answer-bg:#231B0E;
+    --answer-border:#584119;
+    --focus:#6FA8E0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151B;
+  --surface:#181E27;
+  --surface-2:#1F2631;
+  --fg:#E7E9EC;
+  --fg-muted:#9AA3AF;
+  --border:#2A3240;
+  --accent:#E0A94E;
+  --accent-ink:#1B1304;
+  --accent-soft:#30260F;
+  --accent-soft-ink:#F0C877;
+  --answer-bg:#231B0E;
+  --answer-border:#584119;
+  --focus:#6FA8E0;
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--font-body);
+  line-height:1.5;
+}
+
+.page{
+  max-width:720px;
+  margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:40px 56px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.masthead{text-align:left;}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:11px;
+  letter-spacing:0.14em;
+  color:var(--fg-muted);
+  text-transform:uppercase;
+  margin:0 0 10px;
+}
+.masthead h1{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(28px, 5vw, 38px);
+  margin:0 0 10px;
+  text-wrap:balance;
+  letter-spacing:-0.01em;
+}
+.masthead .sub{
+  margin:0;
+  max-width:60ch;
+  color:var(--fg-muted);
+  font-size:15px;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.exnum{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:-0.01em;
+}
+.tag{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  letter-spacing:0.04em;
+  padding:5px 10px;
+  border-radius:999px;
+  background:var(--accent-soft);
+  color:var(--accent-soft-ink);
+  white-space:nowrap;
+}
+
+.tab-row, .level-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.tab-btn, .level-pill{
+  font-family:var(--font-mono);
+  font-weight:600;
+  font-size:12.5px;
+  letter-spacing:0.03em;
+  padding:9px 16px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--fg-muted);
+  cursor:pointer;
+}
+.level-pill{padding:7px 14px;}
+.tab-btn:hover, .level-pill:hover{background:var(--surface-2);}
+.tab-btn:focus-visible, .level-pill:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.tab-btn.active, .level-pill.active{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--accent-ink);
+}
+
+.instruction{
+  margin:0;
+  font-style:italic;
+  color:var(--fg-muted);
+  font-family:var(--font-display);
+  font-size:15px;
+}
+
+.problem{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:22px 18px;
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:auto;
+}
+.problem svg{display:block;}
+
+.controls{
+  display:flex;
+  gap:12px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+}
+.select-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  flex:1 1 220px;
+  min-width:0;
+}
+.select-wrap span{
+  font-size:11.5px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  font-family:var(--font-mono);
+}
+select{
+  font-family:var(--font-body);
+  font-size:14.5px;
+  color:var(--fg);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px 12px;
+  width:100%;
+  min-width:0;
+}
+select:focus-visible{outline:2px solid var(--focus); outline-offset:1px;}
+
+.btn{
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:14.5px;
+  border-radius:8px;
+  padding:10px 16px;
+  border:1px solid transparent;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+.btn.primary{
+  background:var(--accent);
+  color:var(--accent-ink);
+}
+.btn.primary:hover{filter:brightness(1.07);}
+.btn.ghost{
+  background:transparent;
+  color:var(--accent);
+  border-color:var(--border);
+}
+.btn.ghost:hover{background:var(--surface-2);}
+
+.reveal-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.answer-box, .steps-box{
+  border-radius:10px;
+  padding:18px;
+}
+.answer-box{
+  background:var(--answer-bg);
+  border:1px solid var(--answer-border);
+}
+.steps-box{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+}
+.answer-title, .steps-title{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--fg-muted);
+  margin:0 0 14px;
+}
+.answer-content{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.answer-line{
+  overflow-x:auto;
+  padding:4px 2px;
+}
+.answer-line svg{display:block;}
+
+.var-block + .var-block{
+  margin-top:20px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+}
+.var-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+  flex-wrap:wrap;
+}
+.var-head .badge{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--fg-muted);
+  letter-spacing:0.04em;
+}
+.var-head .vh-math{overflow-x:auto;}
+.var-head .vh-math svg{display:block;}
+
+.step-note{
+  font-size:13px;
+  font-style:italic;
+  color:var(--fg-muted);
+  margin:0 0 12px;
+}
+
+.step-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.step-list li{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.step-num{
+  flex:0 0 auto;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--fg-muted);
+  font-family:var(--font-mono);
+  font-size:11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:2px;
+}
+.step-body{min-width:0; flex:1 1 auto;}
+.step-label{
+  font-size:13px;
+  color:var(--fg-muted);
+  margin:0 0 6px;
+}
+.step-math{overflow-x:auto; padding:2px 0;}
+.step-math svg{display:block;}
+
+.foot{
+  font-size:12.5px;
+  color:var(--fg-muted);
+  text-align:left;
+  max-width:60ch;
+}
+
+[hidden]{display:none!important;}
+mjx-assistive-mml{display:none!important;}
+
+@media (max-width:480px){
+  .card{padding:20px;}
+  .controls{flex-direction:column; align-items:stretch;}
+  .reveal-row .btn{flex:1 1 auto;}
+}
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <p class="eyebrow">Calculus: Optimization of z = f(x,y)</p>
+    <h1>Free Extrema Drills</h1>
+    <p class="sub">Find and classify the critical points of a two-variable function — local minima, local maxima and saddle points — with tabs for polynomial and transcendental functions. Every exercise has at most three critical points, found with straightforward algebra. Work the problem on paper, then reveal the answer and a full step-by-step solution.</p>
+  </header>
+
+  <main class="card" id="card">
+    <div class="tab-row" id="tabRow">
+      <button class="tab-btn active" data-mode="basic" type="button">Polynomial</button>
+      <button class="tab-btn" data-mode="advanced" type="button">Transcendental</button>
+    </div>
+
+    <div class="card-top">
+      <div class="exnum" id="exnum">Exercise</div>
+      <div class="tag" id="tag">Quadratic Forms</div>
+    </div>
+    <p class="instruction">Find all critical points of z = f(x,y), and classify each one (local minimum, local maximum or saddle point) using the Hessian criterion.</p>
+
+    <div class="problem" id="problem"></div>
+
+    <div class="controls">
+      <label class="select-wrap">
+        <span>Exercise type</span>
+        <select id="typeSelect"></select>
+      </label>
+      <button class="btn primary" id="newBtn" type="button">New Exercise</button>
+    </div>
+
+    <div class="reveal-row">
+      <button class="btn ghost" id="answerBtn" type="button">Show Answer</button>
+      <button class="btn ghost" id="stepsBtn" type="button">Show Step-by-Step Solution</button>
+      <button class="btn ghost" id="downloadBtn" type="button">Download This Exercise</button>
+    </div>
+
+    <div class="answer-box" id="answerBox" hidden>
+      <p class="answer-title">Answer</p>
+      <div class="answer-content" id="answerContent"></div>
+    </div>
+
+    <div class="steps-box" id="stepsBox" hidden>
+      <p class="steps-title">Step-by-Step Solution</p>
+      <div id="stepsContent"></div>
+    </div>
+  </main>
+
+  <footer class="foot">Covers quadratic forms, separable and coupled polynomial systems, and exponential/logarithmic functions, classified via the first and second principal minors of the Hessian. Every exercise is built to have at most three critical points, none degenerate.<br><br>Created by <a href="https://web.comillas.edu/profesor/fsansegundo">Fernando San Segundo (ICAI)</a> using <a href="https://claude.com/es/product/claude-code">Claude Code</a></footer>
+
+</div>
+
+<script>
+window.MathJax = {
+  options: { enableAssistiveMml: false },
+  svg: { fontCache: 'local' },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- small LaTeX-building helpers ----------
+  function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function choice(arr){ return arr[randInt(0, arr.length - 1)]; }
+
+  // Build a monomial "coef * v1^e1 * v2^e2 ..." as LaTeX (coef must be >= 0 here).
+  function term(coef, parts){
+    var c = coef === 1 ? '' : String(coef);
+    var vs = parts
+      .filter(function(p){ return p[1] !== 0; })
+      .map(function(p){ return p[1] === 1 ? p[0] : (p[0] + '^{' + p[1] + '}'); })
+      .join('');
+    if (vs === '') return c === '' ? '1' : c;
+    return c + vs;
+  }
+  function frac(num, den){ return '\\frac{' + num + '}{' + den + '}'; }
+  function pmatrix(rows){
+    return '\\begin{pmatrix}' + rows.map(function(row){ return row.join(' & '); }).join(' \\\\ ') + '\\end{pmatrix}';
+  }
+  function T(s){ return '\\text{' + s + '}'; }
+  var NL = ' \\\\ ';
+
+  // Assemble a signed sum of monomials as LaTeX, e.g. terms = [[2,[['x',2]]], [-3,[['y',1]]]]
+  // -> "2x^{2} - 3y". A coefficient of 0 drops that term entirely.
+  function assemblePoly(terms){
+    var parts = [];
+    terms.forEach(function(t){
+      var coef = t[0], varParts = t[1];
+      if (coef === 0) return;
+      var mag = Math.abs(coef);
+      parts.push({ neg: coef < 0, txt: term(mag, varParts) });
+    });
+    if (parts.length === 0) return '0';
+    var out = (parts[0].neg ? '-' : '') + parts[0].txt;
+    for (var i = 1; i < parts.length; i++){
+      out += (parts[i].neg ? ' - ' : ' + ') + parts[i].txt;
+    }
+    return out;
+  }
+
+  // Classify a critical point from the two principal minors of the Hessian
+  // (H1 = fxx, H2 = fxx*fyy - fxy^2), per the standard 2-variable criterion.
+  function classifyHessian(H1, H2){
+    if (H2 < 0) return 'saddle';
+    return H1 > 0 ? 'min' : 'max';
+  }
+  var KIND_LABEL = { min: 'local minimum', max: 'local maximum', saddle: 'saddle point' };
+  function classifyRuleTex(kind){
+    if (kind === 'saddle') return 'H_2 < 0\\ \\Rightarrow\\ ' + T('saddle point');
+    if (kind === 'min') return 'H_1>0' + T(' and ') + 'H_2>0\\ \\Rightarrow\\ ' + T('local minimum');
+    return 'H_1<0' + T(' and ') + 'H_2>0\\ \\Rightarrow\\ ' + T('local maximum');
+  }
+  function pointTex(x0, y0){ return '(' + x0 + ',\\ ' + y0 + ')'; }
+  // Coefficient for a plain (non-term()) context, e.g. before \ln x: omits a bare 1.
+  function pcoef(n){ return n === 1 ? '' : String(n); }
+  // Divide a LaTeX numerator by an integer k, simplifying away k = ±1.
+  function fracByInt(numTex, k){
+    if (k === 1) return numTex;
+    if (k === -1) return '-' + numTex;
+    return k > 0 ? frac(numTex, String(k)) : '-' + frac(numTex, String(-k));
+  }
+
+  // ---------- exercise type library ----------
+  var BASIC_TYPES = [];
+  var ADV_TYPES = [];
+  function addType(arr, group, name, gen){
+    arr.push({ group: group, name: name, gen: gen });
+  }
+
+  // ===================== BASIC (POLYNOMIAL) EXERCISES =====================
+
+  // B1. General quadratic form -- exactly one critical point
+  addType(BASIC_TYPES, 'Quadratic Forms', 'General Quadratic Form', function(){
+    var A, C, B, Delta;
+    do {
+      A = choice([-2,-1,1,2]);
+      C = choice([-2,-1,1,2]);
+      B = choice([-2,-1,0,0,1,2]);
+      Delta = 4*A*C - B*B;
+    } while (Delta === 0);
+    var x0 = randInt(-2,2), y0 = randInt(-2,2);
+    var D = -(2*A*x0 + B*y0);
+    var E = -(B*x0 + 2*C*y0);
+    var stmt = '\\begin{aligned} & z = ' + assemblePoly([[A,[['x',2]]], [B,[['x',1],['y',1]]], [C,[['y',2]]], [D,[['x',1]]], [E,[['y',1]]]]) + '.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var fxTex = assemblePoly([[2*A,[['x',1]]], [B,[['y',1]]], [D,[]]]);
+    var fyTex = assemblePoly([[B,[['x',1]]], [2*C,[['y',1]]], [E,[]]]);
+    var H1 = 2*A, H2 = Delta;
+    var kind = classifyHessian(H1, H2);
+    return {
+      statement: stmt,
+      parts: [
+        { label: 'Critical point', head: '', answer: pointTex(x0,y0), steps: [
+          { label: 'Compute the first partial derivatives.', tex: '\\frac{\\partial z}{\\partial x} = ' + fxTex + ',\\qquad \\frac{\\partial z}{\\partial y} = ' + fyTex },
+          { label: 'Set both equal to zero.', tex: fxTex + ' = 0,\\qquad ' + fyTex + ' = 0' },
+          { label: 'Solve this linear system (by substitution or elimination).', tex: '(x,y) = ' + pointTex(x0,y0) }
+        ]},
+        { label: 'Classification at ' + pointTex(x0,y0), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+          { label: 'Since z is quadratic, the Hessian is constant everywhere.', tex: 'H_z = ' + pmatrix([[String(2*A),String(B)],[String(B),String(2*C)]]) },
+          { label: 'Compute the principal minors.', tex: 'H_1 = f_{xx} = ' + H1 + ',\\qquad H_2 = f_{xx}f_{yy}-f_{xy}^{2} = ' + H2 },
+          { label: 'Apply the classification criterion.', tex: classifyRuleTex(kind) }
+        ]}
+      ]
+    };
+  });
+
+  // B2. Separable cubic + quadratic -- two critical points, one saddle + one extremum
+  addType(BASIC_TYPES, 'Separable Functions', 'Cubic + Quadratic (Separable)', function(){
+    var cubicIsX = Math.random() < 0.5;
+    var a = choice([-2,-1,1,2]);
+    var k = choice([1,2]);
+    var b = -3*a*k*k;
+    var c = choice([-2,-1,1,2]);
+    var q0 = randInt(-2,2);
+    var d = -2*c*q0;
+    var cubicVar = cubicIsX ? 'x' : 'y';
+    var quadVar = cubicIsX ? 'y' : 'x';
+    var stmt = '\\begin{aligned} & z = ' + assemblePoly([[a,[[cubicVar,3]]], [b,[[cubicVar,1]]], [c,[[quadVar,2]]], [d,[[quadVar,1]]]]) + '.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var cubicDerivTex = assemblePoly([[3*a,[[cubicVar,2]]], [b,[]]]);
+    var quadDerivTex = assemblePoly([[2*c,[[quadVar,1]]], [d,[]]]);
+    var fxTex = cubicIsX ? cubicDerivTex : quadDerivTex;
+    var fyTex = cubicIsX ? quadDerivTex : cubicDerivTex;
+    var pts = [
+      cubicIsX ? [k, q0] : [q0, k],
+      cubicIsX ? [-k, q0] : [q0, -k]
+    ];
+    var parts = [
+      { label: 'Critical points', head: '', answer: pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ '), steps: [
+        { label: 'Compute the first partial derivatives.', tex: '\\frac{\\partial z}{\\partial x} = ' + fxTex + ',\\qquad \\frac{\\partial z}{\\partial y} = ' + fyTex },
+        { label: 'Set both equal to zero; the two equations each involve only one variable.', tex: fxTex + ' = 0,\\qquad ' + fyTex + ' = 0' },
+        { label: 'Solve each equation separately.', tex: cubicVar + ' = \\pm ' + k + ',\\qquad ' + quadVar + ' = ' + q0 }
+      ]}
+    ];
+    pts.forEach(function(p){
+      var xv = p[0], yv = p[1];
+      var cubicVal = cubicIsX ? xv : yv;
+      var fxx = cubicIsX ? 6*a*cubicVal : 2*c;
+      var fyy = cubicIsX ? 2*c : 6*a*cubicVal;
+      var H1 = fxx, H2 = fxx*fyy;
+      var kind = classifyHessian(H1, H2);
+      parts.push({ label: 'Classification at ' + pointTex(xv,yv), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+        { label: 'Compute the Hessian entries at this point.', tex: 'f_{xx} = ' + fxx + ',\\qquad f_{yy} = ' + fyy + ',\\qquad f_{xy} = 0' },
+        { label: 'Compute the principal minors.', tex: 'H_1 = ' + H1 + ',\\qquad H_2 = ' + H2 },
+        { label: 'Apply the classification criterion.', tex: classifyRuleTex(kind) }
+      ]});
+    });
+    return { statement: stmt, parts: parts };
+  });
+
+  // B3. Coupled cubic system solved by substitution -- two critical points
+  addType(BASIC_TYPES, 'Coupled Systems', 'Coupled Cubic (Substitution)', function(){
+    var k = choice([-2,-1,1,2]);
+    var polyTex = 'x^{3} + y^{3} - ' + term(3*Math.abs(k), [['x',1],['y',1]]);
+    if (3*k < 0) polyTex = 'x^{3} + y^{3} + ' + term(3*Math.abs(k), [['x',1],['y',1]]);
+    var stmt = '\\begin{aligned} & z = ' + polyTex + '.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var fxTex = assemblePoly([[3,[['x',2]]], [-3*k,[['y',1]]]]);
+    var fyTex = assemblePoly([[3,[['y',2]]], [-3*k,[['x',1]]]]);
+    var pts = [[0,0],[k,k]];
+    var parts = [
+      { label: 'Critical points', head: '', answer: pointTex(0,0) + ',\\ ' + pointTex(k,k), steps: [
+        { label: 'Compute the first partial derivatives.', tex: '\\frac{\\partial z}{\\partial x} = ' + fxTex + ',\\qquad \\frac{\\partial z}{\\partial y} = ' + fyTex },
+        { label: 'Set both equal to zero and solve the first equation for y.', tex: '3x^{2} = ' + (3*k) + 'y\\ \\Rightarrow\\ y = ' + fracByInt('x^{2}', k) },
+        { label: 'Substitute into the second equation.', tex: '3\\left(' + fracByInt('x^{2}', k) + '\\right)^{2} = ' + (3*k) + 'x\\ \\Rightarrow\\ x^{4} = ' + assemblePoly([[k*k*k,[['x',1]]]]) },
+        { label: 'Factor; the only real solutions are x = 0 and x = k (the quadratic factor x^2+kx+k^2 has no real roots).', tex: 'x(' + assemblePoly([[1,[['x',3]]], [-(k*k*k),[]]]) + ') = 0\\ \\Rightarrow\\ x = 0\\ \\text{or}\\ x = ' + k },
+        { label: 'Recover y from y = x^2/k.', tex: '(x,y) = ' + pointTex(0,0) + '\\ \\text{or}\\ ' + pointTex(k,k) }
+      ]}
+    ];
+    pts.forEach(function(p){
+      var xv = p[0], yv = p[1];
+      var fxx = 6*xv, fyy = 6*yv, fxy = -3*k;
+      var H1 = fxx, H2 = fxx*fyy - fxy*fxy;
+      var kind = classifyHessian(H1, H2);
+      parts.push({ label: 'Classification at ' + pointTex(xv,yv), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+        { label: 'Compute the Hessian entries at this point.', tex: 'f_{xx} = ' + fxx + ',\\qquad f_{yy} = ' + fyy + ',\\qquad f_{xy} = ' + fxy },
+        { label: 'Compute the principal minors.', tex: 'H_1 = ' + H1 + ',\\qquad H_2 = ' + H2 },
+        { label: 'Apply the classification criterion.', tex: classifyRuleTex(kind) }
+      ]});
+    });
+    return { statement: stmt, parts: parts };
+  });
+
+  // B4. Double-well quartic + quadratic -- three critical points
+  addType(BASIC_TYPES, 'Three Critical Points', 'Quartic + Quadratic (Three Critical Points)', function(){
+    var s1 = choice([-1,1]);
+    var s2 = choice([-1,1]);
+    var m = choice([1,2]);
+    var c = choice([1,2]);
+    var stmt = '\\begin{aligned} & z = ' + assemblePoly([[s1,[['x',4]]], [-2*s1*m*m,[['x',2]]], [s2*c,[['y',2]]]]) + '.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var fxTex = assemblePoly([[4*s1,[['x',3]]], [-4*s1*m*m,[['x',1]]]]);
+    var fyTex = assemblePoly([[2*s2*c,[['y',1]]]]);
+    var pts = [[0,0],[m,0],[-m,0]];
+    var parts = [
+      { label: 'Critical points', head: '', answer: pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ '), steps: [
+        { label: 'Compute the first partial derivatives.', tex: '\\frac{\\partial z}{\\partial x} = ' + fxTex + ',\\qquad \\frac{\\partial z}{\\partial y} = ' + fyTex },
+        { label: 'Set both equal to zero; the y-equation gives y = 0 directly.', tex: fxTex + ' = 0,\\qquad ' + fyTex + ' = 0' },
+        { label: 'Factor the x-equation.', tex: (4*s1) + 'x(x^{2} - ' + (m*m) + ') = 0\\ \\Rightarrow\\ x = 0,\\ ' + m + ',\\ -' + m },
+        { label: 'Combine with y = 0.', tex: '(x,y) = ' + pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ ') }
+      ]}
+    ];
+    pts.forEach(function(p){
+      var xv = p[0], yv = p[1];
+      var fxx = 4*s1*(3*xv*xv - m*m);
+      var fyy = 2*s2*c;
+      var H1 = fxx, H2 = fxx*fyy;
+      var kind = classifyHessian(H1, H2);
+      parts.push({ label: 'Classification at ' + pointTex(xv,yv), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+        { label: 'Compute the Hessian entries at this point.', tex: 'f_{xx} = ' + fxx + ',\\qquad f_{yy} = ' + fyy + ',\\qquad f_{xy} = 0' },
+        { label: 'Compute the principal minors.', tex: 'H_1 = ' + H1 + ',\\qquad H_2 = ' + H2 },
+        { label: 'Apply the classification criterion.', tex: classifyRuleTex(kind) }
+      ]});
+    });
+    return { statement: stmt, parts: parts };
+  });
+
+  // ===================== ADVANCED (TRANSCENDENTAL) EXERCISES =====================
+
+  // A1. Logarithmic + linear -- exactly one critical point, always a maximum
+  addType(ADV_TYPES, 'Logarithmic Functions', 'Sum of Logarithms', function(){
+    var x0 = choice([1,2]), y0 = choice([1,2]);
+    var C = randInt(1,3), D = randInt(1,3);
+    var A = C*x0, B = D*y0;
+    var stmt = '\\begin{aligned} & z = ' + pcoef(A) + '\\ln x + ' + pcoef(B) + '\\ln y - ' + term(C,[['x',1]]) + ' - ' + term(D,[['y',1]]) + ',\\qquad x>0,\\ y>0.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var fxTex = frac(String(A), 'x') + ' - ' + C;
+    var fyTex = frac(String(B), 'y') + ' - ' + D;
+    var fxx = -A/(x0*x0), fyy = -B/(y0*y0);
+    var H1 = fxx, H2 = fxx*fyy;
+    var kind = classifyHessian(H1, H2);
+    return {
+      statement: stmt,
+      parts: [
+        { label: 'Critical point', head: '', answer: pointTex(x0,y0), steps: [
+          { label: 'Compute the first partial derivatives (domain: x>0, y>0).', tex: '\\frac{\\partial z}{\\partial x} = ' + fxTex + ',\\qquad \\frac{\\partial z}{\\partial y} = ' + fyTex },
+          { label: 'Set both equal to zero and solve for x and y directly.', tex: frac(String(A),'x') + ' = ' + C + '\\ \\Rightarrow\\ x = ' + x0 + ',\\qquad ' + frac(String(B),'y') + ' = ' + D + '\\ \\Rightarrow\\ y = ' + y0 }
+        ]},
+        { label: 'Classification at ' + pointTex(x0,y0), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+          { label: 'Compute the second partial derivatives.', tex: 'f_{xx} = -\\frac{' + A + '}{x^{2}},\\qquad f_{yy} = -\\frac{' + B + '}{y^{2}},\\qquad f_{xy} = 0' },
+          { label: 'Evaluate at the critical point and compute the principal minors.', tex: 'H_1 = ' + H1 + ',\\qquad H_2 = ' + H2 },
+          { label: 'Apply the classification criterion.', tex: classifyRuleTex(kind) }
+        ]}
+      ]
+    };
+  });
+
+  // A2. Exponential of a general quadratic form -- same critical point / type as the exponent
+  addType(ADV_TYPES, 'Exponential of a Quadratic Form', 'Exponential of a Quadratic Form', function(){
+    var A, C, B, Delta;
+    do {
+      A = choice([-2,-1,1,2]);
+      C = choice([-2,-1,1,2]);
+      B = choice([-2,-1,0,0,1,2]);
+      Delta = 4*A*C - B*B;
+    } while (Delta === 0);
+    var x0 = randInt(-2,2), y0 = randInt(-2,2);
+    var D = -(2*A*x0 + B*y0);
+    var E = -(B*x0 + 2*C*y0);
+    var gTex = assemblePoly([[A,[['x',2]]], [B,[['x',1],['y',1]]], [C,[['y',2]]], [D,[['x',1]]], [E,[['y',1]]]]);
+    var stmt = '\\begin{aligned} & z = e^{\\,' + gTex + '}.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var gxTex = assemblePoly([[2*A,[['x',1]]], [B,[['y',1]]], [D,[]]]);
+    var gyTex = assemblePoly([[B,[['x',1]]], [2*C,[['y',1]]], [E,[]]]);
+    var H1 = 2*A, H2 = Delta;
+    var kind = classifyHessian(H1, H2);
+    return {
+      statement: stmt,
+      parts: [
+        { label: 'Critical point', head: '', answer: pointTex(x0,y0), steps: [
+          { label: 'Write z = e^g with g the exponent; since e^g>0 always, f_x=0 and f_y=0 are equivalent to g_x=0 and g_y=0.', tex: 'g_x = ' + gxTex + ',\\qquad g_y = ' + gyTex },
+          { label: 'Set both equal to zero and solve this linear system.', tex: gxTex + ' = 0,\\qquad ' + gyTex + ' = 0\\ \\Rightarrow\\ (x,y) = ' + pointTex(x0,y0) }
+        ]},
+        { label: 'Classification at ' + pointTex(x0,y0), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+          { label: 'At a critical point of g, the cross terms of e^g vanish, so the Hessian of z has the same sign pattern as the Hessian of g (since e^g>0).', tex: 'g_{xx} = ' + (2*A) + ',\\qquad g_{yy} = ' + (2*C) + ',\\qquad g_{xy} = ' + B },
+          { label: 'Compute the principal minors of g.', tex: 'H_1 = ' + H1 + ',\\qquad H_2 = ' + H2 },
+          { label: 'Apply the classification criterion (z = e^g inherits the type of g).', tex: classifyRuleTex(kind) }
+        ]}
+      ]
+    };
+  });
+
+  // A3. Exponential-linear separable term + quadratic -- one critical point
+  addType(ADV_TYPES, 'Exponential Separable Functions', 'Exponential Term + Quadratic (Separable)', function(){
+    var expIsX = Math.random() < 0.5;
+    var A = choice([-2,-1,1,2]);
+    var B = choice([1,2]);
+    var q0 = randInt(-2,2);
+    var Cc = -2*B*q0;
+    var expVar = expIsX ? 'x' : 'y';
+    var quadVar = expIsX ? 'y' : 'x';
+    var expCoefTex = A === 1 ? '' : (A === -1 ? '-' : String(A));
+    var zTex = expCoefTex + expVar + 'e^{-' + expVar + '}' + ' + ' + assemblePoly([[B,[[quadVar,2]]], [Cc,[[quadVar,1]]]]);
+    var stmt = '\\begin{aligned} & z = ' + zTex + '.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var expDerivTex = A + '(1-' + expVar + ')e^{-' + expVar + '}';
+    var quadDerivTex = assemblePoly([[2*B,[[quadVar,1]]], [Cc,[]]]);
+    var fxTex = expIsX ? expDerivTex : quadDerivTex;
+    var fyTex = expIsX ? quadDerivTex : expDerivTex;
+    var xv = expIsX ? 1 : q0;
+    var yv = expIsX ? q0 : 1;
+    var fxxExp = -A/Math.E, fyyQuad = 2*B;
+    var fxx = expIsX ? fxxExp : fyyQuad;
+    var fyy = expIsX ? fyyQuad : fxxExp;
+    var H1 = fxx, H2 = fxx*fyy;
+    var kind = classifyHessian(H1, H2);
+    return {
+      statement: stmt,
+      parts: [
+        { label: 'Critical point', head: '', answer: pointTex(xv,yv), steps: [
+          { label: 'Compute the first partial derivatives.', tex: '\\frac{\\partial z}{\\partial x} = ' + fxTex + ',\\qquad \\frac{\\partial z}{\\partial y} = ' + fyTex },
+          { label: 'Since e^{-' + expVar + '} is never zero, the ' + expVar + '-equation reduces to a linear factor.', tex: expDerivTex + ' = 0\\ \\Rightarrow\\ ' + expVar + ' = 1' },
+          { label: 'The other equation is linear.', tex: quadDerivTex + ' = 0\\ \\Rightarrow\\ ' + quadVar + ' = ' + q0 }
+        ]},
+        { label: 'Classification at ' + pointTex(xv,yv), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+          { label: 'Compute the second partial derivatives and evaluate at the critical point (using e^{-1} \\approx 0.37).', tex: 'f_{xx} = ' + fxx.toFixed(2) + ',\\qquad f_{yy} = ' + fyy.toFixed(2) + ',\\qquad f_{xy} = 0' },
+          { label: 'Compute the principal minors.', tex: 'H_1 = ' + H1.toFixed(2) + ',\\qquad H_2 = ' + H2.toFixed(2) },
+          { label: 'Apply the classification criterion.', tex: classifyRuleTex(kind) }
+        ]}
+      ]
+    };
+  });
+
+  // A4. Exponential of the double-well quartic -- three critical points
+  addType(ADV_TYPES, 'Three Critical Points', 'Exponential of a Quartic + Quadratic', function(){
+    var s1 = choice([-1,1]);
+    var s2 = choice([-1,1]);
+    var m = choice([1,2]);
+    var c = choice([1,2]);
+    var gTex = assemblePoly([[s1,[['x',4]]], [-2*s1*m*m,[['x',2]]], [s2*c,[['y',2]]]]);
+    var stmt = '\\begin{aligned} & z = e^{\\,' + gTex + '}.' + NL +
+      '& ' + T('Find all critical points and classify each one.') + '\\end{aligned}';
+    var gxTex = assemblePoly([[4*s1,[['x',3]]], [-4*s1*m*m,[['x',1]]]]);
+    var gyTex = assemblePoly([[2*s2*c,[['y',1]]]]);
+    var pts = [[0,0],[m,0],[-m,0]];
+    var parts = [
+      { label: 'Critical points', head: '', answer: pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ '), steps: [
+        { label: 'Write z = e^g with g the exponent; f_x=0, f_y=0 are equivalent to g_x=0, g_y=0 since e^g>0 always.', tex: 'g_x = ' + gxTex + ',\\qquad g_y = ' + gyTex },
+        { label: 'The y-equation gives y = 0 directly; factor the x-equation.', tex: (4*s1) + 'x(x^{2} - ' + (m*m) + ') = 0\\ \\Rightarrow\\ x = 0,\\ ' + m + ',\\ -' + m },
+        { label: 'Combine with y = 0.', tex: '(x,y) = ' + pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ ') }
+      ]}
+    ];
+    pts.forEach(function(p){
+      var xv = p[0], yv = p[1];
+      var gxx = 4*s1*(3*xv*xv - m*m);
+      var gyy = 2*s2*c;
+      var H1 = gxx, H2 = gxx*gyy;
+      var kind = classifyHessian(H1, H2);
+      parts.push({ label: 'Classification at ' + pointTex(xv,yv), head: 'H_1,\\ H_2', answer: KIND_LABEL[kind], steps: [
+        { label: 'At a critical point of g, z = e^g inherits the sign pattern of the Hessian of g.', tex: 'g_{xx} = ' + gxx + ',\\qquad g_{yy} = ' + gyy + ',\\qquad g_{xy} = 0' },
+        { label: 'Compute the principal minors of g.', tex: 'H_1 = ' + H1 + ',\\qquad H_2 = ' + H2 },
+        { label: 'Apply the classification criterion.', tex: classifyRuleTex(kind) }
+      ]});
+    });
+    return { statement: stmt, parts: parts };
+  });
+
+  // ===================== RENDERING =====================
+
+  var mathQueue = Promise.resolve();
+  function renderMath(el, tex, display){
+    mathQueue = mathQueue.then(function(){
+      return MathJax.tex2svgPromise(tex, { display: !!display });
+    }).then(function(node){
+      el.innerHTML = '';
+      el.appendChild(node);
+    }).catch(function(err){
+      el.textContent = '[math error] ' + tex;
+      console.error(err);
+    });
+    return mathQueue;
+  }
+
+  var problemEl = document.getElementById('problem');
+  var answerBox = document.getElementById('answerBox');
+  var answerContent = document.getElementById('answerContent');
+  var stepsBox = document.getElementById('stepsBox');
+  var stepsContent = document.getElementById('stepsContent');
+  var answerBtn = document.getElementById('answerBtn');
+  var stepsBtn = document.getElementById('stepsBtn');
+  var downloadBtn = document.getElementById('downloadBtn');
+  var newBtn = document.getElementById('newBtn');
+  var typeSelect = document.getElementById('typeSelect');
+  var tabRow = document.getElementById('tabRow');
+  var exnumEl = document.getElementById('exnum');
+  var tagEl = document.getElementById('tag');
+
+  var mode = 'basic';
+  var exCount = 0;
+  var current = null;
+  var currentTypeIdx = 0;
+
+  function currentArr(){ return mode === 'basic' ? BASIC_TYPES : ADV_TYPES; }
+
+  function buildTypeOptions(){
+    typeSelect.innerHTML = '';
+    var arr = currentArr();
+    var groups = {};
+    var order = [];
+    arr.forEach(function(t, i){
+      if (!groups[t.group]){ groups[t.group] = []; order.push(t.group); }
+      groups[t.group].push(i);
+    });
+    var anyOpt = document.createElement('option');
+    anyOpt.value = '-1';
+    anyOpt.textContent = 'Random (any type)';
+    typeSelect.appendChild(anyOpt);
+    order.forEach(function(g){
+      var og = document.createElement('optgroup');
+      og.label = g;
+      groups[g].forEach(function(i){
+        var opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = arr[i].name;
+        og.appendChild(opt);
+      });
+      typeSelect.appendChild(og);
+    });
+    typeSelect.value = '-1';
+  }
+
+  function buildAnswerContent(data){
+    answerContent.innerHTML = '';
+    data.parts.forEach(function(p){
+      var line = document.createElement('div');
+      line.className = 'answer-line';
+      answerContent.appendChild(line);
+      var tex = p.head ? (p.head + ' = ' + p.answer) : p.answer;
+      renderMath(line, tex, true);
+    });
+  }
+
+  function buildStepsContent(data){
+    stepsContent.innerHTML = '';
+    data.parts.forEach(function(p){
+      var block = document.createElement('div');
+      block.className = 'var-block';
+      stepsContent.appendChild(block);
+
+      var head = document.createElement('div');
+      head.className = 'var-head';
+      var badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = p.label;
+      head.appendChild(badge);
+      if (p.head){
+        var vh = document.createElement('span');
+        vh.className = 'vh-math';
+        head.appendChild(vh);
+        renderMath(vh, p.head, false);
+      }
+      block.appendChild(head);
+
+      if (p.note){
+        var note = document.createElement('p');
+        note.className = 'step-note';
+        note.textContent = p.note;
+        block.appendChild(note);
+      }
+
+      var ol = document.createElement('ol');
+      ol.className = 'step-list';
+      block.appendChild(ol);
+      p.steps.forEach(function(s, i){
+        var li = document.createElement('li');
+        var num = document.createElement('span');
+        num.className = 'step-num';
+        num.textContent = String(i + 1);
+        li.appendChild(num);
+        var body = document.createElement('div');
+        body.className = 'step-body';
+        if (s.label){
+          var lab = document.createElement('p');
+          lab.className = 'step-label';
+          lab.textContent = s.label;
+          body.appendChild(lab);
+        }
+        var mathEl = document.createElement('div');
+        mathEl.className = 'step-math';
+        body.appendChild(mathEl);
+        renderMath(mathEl, s.tex, true);
+        li.appendChild(body);
+        ol.appendChild(li);
+      });
+    });
+  }
+
+  function newExercise(){
+    var arr = currentArr();
+    var idx = typeSelect.value === '-1' ? randInt(0, arr.length - 1) : parseInt(typeSelect.value, 10);
+    currentTypeIdx = idx;
+    var type = arr[idx];
+    current = type.gen();
+    exCount++;
+    exnumEl.textContent = 'Exercise ' + exCount;
+    tagEl.textContent = type.name;
+    answerBox.hidden = true;
+    stepsBox.hidden = true;
+    answerBtn.textContent = 'Show Answer';
+    stepsBtn.textContent = 'Show Step-by-Step Solution';
+    renderMath(problemEl, current.statement, true);
+  }
+
+  function setMode(m){
+    mode = m;
+    Array.prototype.forEach.call(tabRow.querySelectorAll('.tab-btn'), function(btn){
+      btn.classList.toggle('active', btn.dataset.mode === m);
+    });
+    buildTypeOptions();
+    newExercise();
+  }
+
+  tabRow.addEventListener('click', function(e){
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    setMode(btn.dataset.mode);
+  });
+
+  typeSelect.addEventListener('change', newExercise);
+  newBtn.addEventListener('click', newExercise);
+
+  answerBtn.addEventListener('click', function(){
+    var showing = !answerBox.hidden;
+    if (showing){
+      answerBox.hidden = true;
+      answerBtn.textContent = 'Show Answer';
+    } else {
+      buildAnswerContent(current);
+      answerBox.hidden = false;
+      answerBtn.textContent = 'Hide Answer';
+    }
+  });
+
+  stepsBtn.addEventListener('click', function(){
+    var showing = !stepsBox.hidden;
+    if (showing){
+      stepsBox.hidden = true;
+      stepsBtn.textContent = 'Show Step-by-Step Solution';
+    } else {
+      buildStepsContent(current);
+      stepsBox.hidden = false;
+      stepsBtn.textContent = 'Hide Step-by-Step Solution';
+    }
+  });
+
+  function buildDownloadHtml(){
+    var styleTag = document.querySelector('style').outerHTML;
+    var mastheadHtml = document.querySelector('.masthead').outerHTML;
+    var footHtml = document.querySelector('.foot').outerHTML;
+
+    if (answerBox.hidden) buildAnswerContent(current);
+    if (stepsBox.hidden) buildStepsContent(current);
+
+    return mathQueue.then(function(){
+      var problemHtml = problemEl.outerHTML;
+      var answerHtml = answerContent.innerHTML;
+      var stepsHtml = stepsContent.innerHTML;
+      var tagText = tagEl.textContent;
+      var exText = exnumEl.textContent;
+
+      return '<!doctype html>\n<meta charset="utf-8">\n<title>' + exText + ' — Free Extrema Drills</title>\n' +
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+        '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">\n' +
+        styleTag + '\n' +
+        '<div class="page">\n' +
+        mastheadHtml + '\n' +
+        '<main class="card">\n' +
+        '<div class="card-top"><div class="exnum">' + exText + '</div><div class="tag">' + tagText + '</div></div>\n' +
+        '<p class="instruction">Find all critical points of z = f(x,y), and classify each one (local minimum, local maximum or saddle point) using the Hessian criterion.</p>\n' +
+        problemHtml + '\n' +
+        '<div class="answer-box"><p class="answer-title">Answer</p><div class="answer-content">' + answerHtml + '</div></div>\n' +
+        '<div class="steps-box"><p class="steps-title">Step-by-Step Solution</p><div>' + stepsHtml + '</div></div>\n' +
+        '</main>\n' +
+        footHtml + '\n' +
+        '</div>\n';
+    });
+  }
+
+  downloadBtn.addEventListener('click', function(){
+    buildDownloadHtml().then(function(html){
+      var blob = new Blob([html], { type: 'text/html' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'optimization-exercise-' + exCount + '.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+    });
+  });
+
+  buildTypeOptions();
+  newExercise();
+})();
+</script>
