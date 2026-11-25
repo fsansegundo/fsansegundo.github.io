@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>Free Extrema Drills</title>
+<title>Extrema Drills</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -370,11 +370,16 @@ mjx-assistive-mml{display:none!important;}
 <div class="page">
   <header class="masthead">
     <p class="eyebrow">Calculus: Optimization of z = f(x,y)</p>
-    <h1>Free Extrema Drills</h1>
-    <p class="sub">Find and classify the critical points of a two-variable function — local minima, local maxima and saddle points — with tabs for polynomial and transcendental functions. Every exercise has at most three critical points, found with straightforward algebra. Work the problem on paper, then reveal the answer and a full step-by-step solution.</p>
+    <h1>Extrema Drills</h1>
+    <p class="sub">Find and classify critical points of a two-variable function, either free (local minima, maxima and saddle points, via the Hessian) or subject to one constraint (via Lagrange multipliers). Work the problem on paper, then reveal the answer and a full step-by-step solution.</p>
   </header>
 
   <main class="card" id="card">
+    <div class="tab-row" id="mainTabRow">
+      <button class="tab-btn active" data-main="free" type="button">Free Extrema</button>
+      <button class="tab-btn" data-main="constrained" type="button">Constrained Extrema (Lagrange)</button>
+    </div>
+
     <div class="tab-row" id="tabRow">
       <button class="tab-btn active" data-mode="basic" type="button">Polynomial</button>
       <button class="tab-btn" data-mode="advanced" type="button">Transcendental</button>
@@ -384,7 +389,7 @@ mjx-assistive-mml{display:none!important;}
       <div class="exnum" id="exnum">Exercise</div>
       <div class="tag" id="tag">Quadratic Forms</div>
     </div>
-    <p class="instruction">Find all critical points of z = f(x,y), and classify each one (local minimum, local maximum or saddle point) using the Hessian criterion.</p>
+    <p class="instruction" id="instruction">Find all critical points of z = f(x,y), and classify each one (local minimum, local maximum or saddle point) using the Hessian criterion.</p>
 
     <div class="problem" id="problem"></div>
 
@@ -413,7 +418,7 @@ mjx-assistive-mml{display:none!important;}
     </div>
   </main>
 
-  <footer class="foot">Covers quadratic forms, separable and coupled polynomial systems, and exponential/logarithmic functions, classified via the first and second principal minors of the Hessian. Every exercise is built to have at most three critical points, none degenerate.<br><br>Created by <a href="https://web.comillas.edu/profesor/fsansegundo">Fernando San Segundo (ICAI)</a> using <a href="https://claude.com/es/product/claude-code">Claude Code</a></footer>
+  <footer class="foot">Free extrema cover quadratic forms, separable and coupled polynomial systems, and exponential/logarithmic functions, classified via the first and second principal minors of the Hessian. Constrained extrema cover linear, product and distance objectives on circles, ellipses, hyperbolas, lines, planes and spheres (including true three-variable problems), solved by Lagrange multipliers and classified by comparing candidate values on a compact constraint set, or by a boundedness argument; a few are classic applied problems (maximum-volume box, maximum-area rectangle). Every exercise is built to have a small number of non-degenerate critical points.<br><br>Created by <a href="https://web.comillas.edu/profesor/fsansegundo">Fernando San Segundo (ICAI)</a> using <a href="https://claude.com/es/product/claude-code">Claude Code</a></footer>
 
 </div>
 
@@ -482,6 +487,15 @@ window.MathJax = {
     return 'H_1<0' + T(' and ') + 'H_2>0\\ \\Rightarrow\\ ' + T('local maximum');
   }
   function pointTex(x0, y0){ return '(' + x0 + ',\\ ' + y0 + ')'; }
+  function point3Tex(x0, y0, z0){ return '(' + x0 + ',\\ ' + y0 + ',\\ ' + z0 + ')'; }
+  function shuffle3(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = randInt(0, i);
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
   // Coefficient for a plain (non-term()) context, e.g. before \ln x: omits a bare 1.
   function pcoef(n){ return n === 1 ? '' : String(n); }
   // Divide a LaTeX numerator by an integer k, simplifying away k = ±1.
@@ -494,6 +508,7 @@ window.MathJax = {
   // ---------- exercise type library ----------
   var BASIC_TYPES = [];
   var ADV_TYPES = [];
+  var CONSTR_TYPES = [];
   function addType(arr, group, name, gen){
     arr.push({ group: group, name: name, gen: gen });
   }
@@ -786,6 +801,317 @@ window.MathJax = {
     return { statement: stmt, parts: parts };
   });
 
+  // ===================== CONSTRAINED (LAGRANGE) EXERCISES =====================
+
+  // C1. Linear objective on a circle -- exactly two critical points (global max + min)
+  addType(CONSTR_TYPES, 'Circular Constraint', 'Linear Function on a Circle', function(){
+    var TRIPLES = [[3,4,5],[4,3,5],[6,8,10],[8,6,10],[5,12,13],[12,5,13],[9,12,15],[12,9,15]];
+    var trip = choice(TRIPLES);
+    var p = trip[0], q = trip[1], r = trip[2];
+    var a = choice([-1,1]) * p;
+    var b = choice([-1,1]) * q;
+    var r2 = r * r;
+    var sum2 = a*a + b*b; // equals r2 by construction (Pythagorean triple)
+    var fTex = assemblePoly([[a,[['x',1]]], [b,[['y',1]]]]);
+    var stmt = '\\begin{aligned} & z = ' + fTex + ',\\qquad ' + T('subject to') + '\\ x^{2}+y^{2} = ' + r2 + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify each one.') + '\\end{aligned}';
+    var fMax = sum2, fMin = -sum2;
+    var parts = [
+      { label: 'Critical points', head: '', answer: pointTex(a,b) + ',\\ ' + pointTex(-a,-b), steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint, together with the constraint itself.', tex: a + ' = 2\\lambda x,\\qquad ' + b + ' = 2\\lambda y,\\qquad x^{2}+y^{2} = ' + r2 },
+        { label: 'Solve the first two equations for x and y (λ ≠ 0, since the left-hand sides are nonzero).', tex: 'x = ' + frac(String(a),'2\\lambda') + ',\\qquad y = ' + frac(String(b),'2\\lambda') },
+        { label: 'Substitute into the constraint and solve for λ.', tex: frac(String(sum2),'4\\lambda^{2}') + ' = ' + r2 + '\\ \\Rightarrow\\ \\lambda^{2} = ' + frac('1','4') + '\\ \\Rightarrow\\ \\lambda = \\pm' + frac('1','2') },
+        { label: 'Recover the two candidate points.', tex: '\\lambda = ' + frac('1','2') + ':\\ (x,y) = ' + pointTex(a,b) + ',\\qquad \\lambda = -' + frac('1','2') + ':\\ (x,y) = ' + pointTex(-a,-b) }
+      ]},
+      { label: 'Classification at ' + pointTex(a,b), head: '', answer: 'global maximum', steps: [
+        { label: 'The constraint set x^2+y^2=' + r2 + ' is compact (closed and bounded), so z attains a global maximum and a global minimum on it.', tex: 'z(' + pointTex(a,b) + ') = ' + fMax + ',\\qquad z(' + pointTex(-a,-b) + ') = ' + fMin },
+        { label: 'The larger value is the maximum.', tex: fMax + ' > ' + fMin + '\\ \\Rightarrow\\ ' + pointTex(a,b) + '\\ ' + T('is the global maximum') }
+      ]},
+      { label: 'Classification at ' + pointTex(-a,-b), head: '', answer: 'global minimum', steps: [
+        { label: 'Same comparison as above.', tex: 'z(' + pointTex(a,b) + ') = ' + fMax + ',\\qquad z(' + pointTex(-a,-b) + ') = ' + fMin },
+        { label: 'The smaller value is the minimum.', tex: fMin + ' < ' + fMax + '\\ \\Rightarrow\\ ' + pointTex(-a,-b) + '\\ ' + T('is the global minimum') }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // C2. Product function on a circle -- four critical points (two maxima + two minima)
+  addType(CONSTR_TYPES, 'Circular Constraint', 'Product Function on a Circle', function(){
+    var m = choice([1,2,3]);
+    var r2 = 2*m*m;
+    var stmt = '\\begin{aligned} & z = xy,\\qquad ' + T('subject to') + '\\ x^{2}+y^{2} = ' + r2 + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify each one.') + '\\end{aligned}';
+    var pts = [[m,m],[-m,-m],[m,-m],[-m,m]];
+    var fMax = m*m, fMin = -m*m;
+    var parts = [
+      { label: 'Critical points', head: '', answer: pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ '), steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint.', tex: 'y = 2\\lambda x,\\qquad x = 2\\lambda y,\\qquad x^{2}+y^{2} = ' + r2 },
+        { label: 'Substitute the first equation into the second to eliminate y (x cannot be 0, since (0,0) is not on the circle).', tex: 'x = 2\\lambda(2\\lambda x) = 4\\lambda^{2}x\\ \\Rightarrow\\ \\lambda^{2} = ' + frac('1','4') + '\\ \\Rightarrow\\ \\lambda = \\pm' + frac('1','2') },
+        { label: 'λ = 1/2 gives y = x; λ = −1/2 gives y = −x. Combine each case with the constraint.', tex: 'y=x:\\ 2x^{2} = ' + r2 + '\\ \\Rightarrow\\ x = \\pm ' + m + ';\\qquad y=-x:\\ 2x^{2} = ' + r2 + '\\ \\Rightarrow\\ x = \\pm ' + m },
+        { label: 'List the four candidate points.', tex: '(x,y) = ' + pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ ') }
+      ]}
+    ];
+    pts.forEach(function(p){
+      var xv = p[0], yv = p[1];
+      var fv = xv*yv;
+      var kind = fv > 0 ? 'global maximum' : 'global minimum';
+      var other = fv > 0 ? fMin : fMax;
+      parts.push({ label: 'Classification at ' + pointTex(xv,yv), head: '', answer: kind, steps: [
+        { label: 'The constraint set x^2+y^2=' + r2 + ' is compact, so z attains a global maximum and a global minimum on it.', tex: 'z(' + pointTex(xv,yv) + ') = ' + fv },
+        { label: 'Compare with the value at the opposite-sign points.', tex: (fv > 0 ? (fv + ' > ' + other) : (fv + ' < ' + other)) + '\\ \\Rightarrow\\ ' + pointTex(xv,yv) + '\\ ' + T('is a ' + kind) }
+      ]});
+    });
+    return { statement: stmt, parts: parts };
+  });
+
+  // C3. Difference of squares on a circle -- four critical points (two maxima + two minima)
+  addType(CONSTR_TYPES, 'Circular Constraint', 'Difference of Squares on a Circle', function(){
+    var r = choice([1,2,3,4]);
+    var r2 = r*r;
+    var stmt = '\\begin{aligned} & z = x^{2}-y^{2},\\qquad ' + T('subject to') + '\\ x^{2}+y^{2} = ' + r2 + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify each one.') + '\\end{aligned}';
+    var pts = [[r,0],[-r,0],[0,r],[0,-r]];
+    var fMax = r2, fMin = -r2;
+    var parts = [
+      { label: 'Critical points', head: '', answer: pts.map(function(p){ return pointTex(p[0],p[1]); }).join(',\\ '), steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint.', tex: '2x = 2\\lambda x,\\qquad -2y = 2\\lambda y,\\qquad x^{2}+y^{2} = ' + r2 },
+        { label: 'Each equation factors: either a coordinate is 0, or λ takes a fixed value.', tex: 'x(1-\\lambda) = 0,\\qquad y(1+\\lambda) = 0' },
+        { label: 'If λ = 1, the second equation forces y = 0; the constraint then gives x.', tex: '\\lambda = 1\\ \\Rightarrow\\ y = 0,\\quad x^{2} = ' + r2 + '\\ \\Rightarrow\\ x = \\pm ' + r },
+        { label: 'If λ = −1, the first equation forces x = 0; the constraint then gives y.', tex: '\\lambda = -1\\ \\Rightarrow\\ x = 0,\\quad y^{2} = ' + r2 + '\\ \\Rightarrow\\ y = \\pm ' + r }
+      ]}
+    ];
+    pts.forEach(function(p){
+      var xv = p[0], yv = p[1];
+      var fv = xv*xv - yv*yv;
+      var kind = fv > 0 ? 'global maximum' : 'global minimum';
+      var other = fv > 0 ? fMin : fMax;
+      parts.push({ label: 'Classification at ' + pointTex(xv,yv), head: '', answer: kind, steps: [
+        { label: 'The constraint set x^2+y^2=' + r2 + ' is compact, so z attains a global maximum and a global minimum on it.', tex: 'z(' + pointTex(xv,yv) + ') = ' + fv },
+        { label: 'Compare with the value at the other type of point.', tex: (fv > 0 ? (fv + ' > ' + other) : (fv + ' < ' + other)) + '\\ \\Rightarrow\\ ' + pointTex(xv,yv) + '\\ ' + T('is a ' + kind) }
+      ]});
+    });
+    return { statement: stmt, parts: parts };
+  });
+
+  // C4. Minimum squared distance to a line -- exactly one critical point (global minimum)
+  addType(CONSTR_TYPES, 'Line Constraint', 'Minimum Distance to a Line', function(){
+    var a = choice([-3,-2,-1,1,2,3]);
+    var b = choice([-3,-2,-1,1,2,3]);
+    var k = choice([-2,-1,1,2]);
+    var s = a*a + b*b;
+    var c = s*k;
+    var x0 = a*k, y0 = b*k;
+    var gTex = assemblePoly([[a,[['x',1]]], [b,[['y',1]]]]);
+    var stmt = '\\begin{aligned} & z = x^{2}+y^{2},\\qquad ' + T('subject to') + '\\ ' + gTex + ' = ' + c + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify the critical point.') + '\\end{aligned}';
+    var aLambdaTex = (a === 1 ? '' : (a === -1 ? '-' : String(a))) + '\\lambda';
+    var bLambdaTex = (b === 1 ? '' : (b === -1 ? '-' : String(b))) + '\\lambda';
+    var parts = [
+      { label: 'Critical point', head: '', answer: pointTex(x0,y0), steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint, together with the constraint itself.', tex: '2x = ' + a + '\\lambda,\\qquad 2y = ' + b + '\\lambda,\\qquad ' + gTex + ' = ' + c },
+        { label: 'Solve for x and y in terms of λ.', tex: 'x = ' + frac(aLambdaTex,'2') + ',\\qquad y = ' + frac(bLambdaTex,'2') },
+        { label: 'Substitute into the constraint and solve for λ.', tex: frac(String(s)+'\\lambda','2') + ' = ' + c + '\\ \\Rightarrow\\ \\lambda = ' + (2*k) },
+        { label: 'Recover the critical point.', tex: '(x,y) = ' + pointTex(x0,y0) }
+      ]},
+      { label: 'Classification at ' + pointTex(x0,y0), head: '', answer: 'global minimum', steps: [
+        { label: 'z = x^2+y^2 is a sum of squares, so it is bounded below by 0, and it grows without bound as (x,y) moves away along the (unbounded) line.', tex: '(x,y) \\to \\infty\\ ' + T('along the line') + '\\ \\Rightarrow\\ z \\to \\infty' },
+        { label: 'No maximum exists on this unbounded constraint set, so the unique critical point must be the global minimum.', tex: pointTex(x0,y0) + '\\ ' + T('is the global minimum') }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // C5. Minimum sum of squares on a hyperbola -- two critical points (tied minima, no maximum)
+  addType(CONSTR_TYPES, 'Hyperbolic Constraint', 'Minimum Distance to a Hyperbola', function(){
+    var m = choice([1,2,3]);
+    var k = m*m;
+    var stmt = '\\begin{aligned} & z = x^{2}+y^{2},\\qquad ' + T('subject to') + '\\ xy = ' + k + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify each one.') + '\\end{aligned}';
+    var parts = [
+      { label: 'Critical points', head: '', answer: pointTex(m,m) + ',\\ ' + pointTex(-m,-m), steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint.', tex: '2x = \\lambda y,\\qquad 2y = \\lambda x,\\qquad xy = ' + k },
+        { label: 'Divide the two equations (x, y \\neq 0, since xy=' + k + '\\neq 0) to get x^2=y^2, so x=\\pm y.', tex: '\\frac{2x}{2y} = \\frac{\\lambda y}{\\lambda x}\\ \\Rightarrow\\ x^{2}=y^{2}\\ \\Rightarrow\\ x=\\pm y' },
+        { label: 'If x=-y, the constraint gives xy=-x^2<0, impossible since xy=' + k + '>0; so x=y.', tex: 'x=y\\ \\Rightarrow\\ x^{2} = ' + k + '\\ \\Rightarrow\\ x = \\pm ' + m },
+        { label: 'Recover the two candidate points.', tex: '(x,y) = ' + pointTex(m,m) + '\\ \\text{or}\\ ' + pointTex(-m,-m) }
+      ]},
+      { label: 'Classification at ' + pointTex(m,m), head: '', answer: 'global minimum (on its branch)', steps: [
+        { label: 'On the branch x,y>0, write y=' + k + '/x; as x\\to0^+ or x\\to\\infty, z=x^2+' + k + '^2/x^2\\to\\infty, so z is bounded below and attains its minimum at the unique critical point of that branch.', tex: 'z(' + pointTex(m,m) + ') = ' + (2*k) }
+      ]},
+      { label: 'Classification at ' + pointTex(-m,-m), head: '', answer: 'global minimum (on its branch)', steps: [
+        { label: 'The branch x,y<0 is the mirror image (x,y)\\to(-x,-y), under which z is unchanged; by the same argument its unique critical point is also a minimum. z has no maximum on the hyperbola.', tex: 'z(' + pointTex(-m,-m) + ') = ' + (2*k) }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // C6. Product function on an ellipse -- four critical points (two maxima + two minima)
+  addType(CONSTR_TYPES, 'Elliptical Constraint', 'Extrema of a Product on an Ellipse', function(){
+    var vals = [2,3,4,5];
+    var a = choice(vals);
+    var b;
+    do { b = choice(vals); } while (b === a);
+    var a2 = a*a, b2 = b*b;
+    var stmt = '\\begin{aligned} & z = xy,\\qquad ' + T('subject to') + '\\ ' + b2 + 'x^{2}+' + a2 + 'y^{2} = ' + (a2*b2) + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify each one.') + '\\end{aligned}';
+    var ax = frac(a + '\\sqrt{2}', '2');
+    var by = frac(b + '\\sqrt{2}', '2');
+    var maxVal = frac(String(a*b), '2');
+    var pMax1 = pointTex(ax, by), pMax2 = pointTex('-' + ax, '-' + by);
+    var pMin1 = pointTex(ax, '-' + by), pMin2 = pointTex('-' + ax, by);
+    var parts = [
+      { label: 'Critical points', head: '', answer: pMax1 + ',\\ ' + pMax2 + ',\\ ' + pMin1 + ',\\ ' + pMin2, steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint.', tex: 'y = 2\\lambda\\, ' + b2 + 'x,\\qquad x = 2\\lambda\\, ' + a2 + 'y,\\qquad ' + b2 + 'x^{2}+' + a2 + 'y^{2} = ' + (a2*b2) },
+        { label: 'Multiply the first equation by x and the second by y; both then equal 2\\lambda\\,' + b2 + 'x^2 and 2\\lambda\\,' + a2 + 'y^2 respectively, and these two products are equal (both equal \\lambda\\cdot(\\text{the same }xy\\text{ term})), giving ' + b2 + 'x^{2} = ' + a2 + 'y^{2}.', tex: b2 + 'x^{2} = ' + a2 + 'y^{2}\\ \\Rightarrow\\ y = \\pm' + frac(String(b),String(a)) + 'x' },
+        { label: 'Substitute into the constraint; both sign choices give the same equation for x.', tex: b2 + 'x^{2} + ' + a2 + '\\left(' + frac(String(b),String(a)) + 'x\\right)^{2} = ' + (a2*b2) + '\\ \\Rightarrow\\ 2\\cdot' + b2 + 'x^{2} = ' + (a2*b2) + '\\ \\Rightarrow\\ x = \\pm' + ax },
+        { label: 'Recover y = \\pm(b/a)x for each sign choice.', tex: '(x,y) = ' + pMax1 + ',\\ ' + pMax2 + ',\\ ' + pMin1 + ',\\ ' + pMin2 }
+      ]},
+      { label: 'Classification at ' + pMax1 + ' and ' + pMax2, head: '', answer: 'global maximum', steps: [
+        { label: 'The ellipse is compact (closed and bounded), so z attains a global maximum and a global minimum on it.', tex: 'z = ' + maxVal + '\\ ' + T('at these two points, and') + '\\ z = -' + maxVal + '\\ ' + T('at the other two') },
+        { label: 'The larger value is the maximum.', tex: maxVal + ' > -' + maxVal + '\\ \\Rightarrow\\ ' + T('these are the global maxima') }
+      ]},
+      { label: 'Classification at ' + pMin1 + ' and ' + pMin2, head: '', answer: 'global minimum', steps: [
+        { label: 'The smaller value is the minimum.', tex: '-' + maxVal + ' < ' + maxVal + '\\ \\Rightarrow\\ ' + T('these are the global minima') }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // Shared table of integer quadruples (a,b,c,r) with a^2+b^2+c^2=r^2, for 3-variable sphere exercises.
+  var SPHERE_QUADS = [[1,2,2,3],[2,3,6,7],[1,4,8,9],[4,4,7,9],[3,4,12,13],[2,6,9,11],[6,6,7,11]];
+
+  // C7. Linear function on a sphere -- two critical points (global max + min), 3D analogue of C1
+  addType(CONSTR_TYPES, 'Spherical Constraint', 'Linear Function on a Sphere', function(){
+    var quad = choice(SPHERE_QUADS);
+    var mags = shuffle3([quad[0], quad[1], quad[2]]);
+    var a = choice([-1,1]) * mags[0];
+    var b = choice([-1,1]) * mags[1];
+    var c = choice([-1,1]) * mags[2];
+    var r2 = quad[3] * quad[3];
+    var fTex = assemblePoly([[a,[['x',1]]], [b,[['y',1]]], [c,[['z',1]]]]);
+    var stmt = '\\begin{aligned} & z = ' + fTex + ',\\qquad ' + T('subject to') + '\\ x^{2}+y^{2}+z^{2} = ' + r2 + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify each one.') + '\\end{aligned}';
+    var sum2 = a*a + b*b + c*c;
+    var parts = [
+      { label: 'Critical points', head: '', answer: point3Tex(a,b,c) + ',\\ ' + point3Tex(-a,-b,-c), steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint, together with the constraint itself.', tex: a + ' = 2\\lambda x,\\qquad ' + b + ' = 2\\lambda y,\\qquad ' + c + ' = 2\\lambda z,\\qquad x^{2}+y^{2}+z^{2} = ' + r2 },
+        { label: 'Solve the first three equations for x, y, z (λ ≠ 0).', tex: 'x = ' + frac(String(a),'2\\lambda') + ',\\qquad y = ' + frac(String(b),'2\\lambda') + ',\\qquad z = ' + frac(String(c),'2\\lambda') },
+        { label: 'Substitute into the constraint and solve for λ.', tex: frac(String(sum2),'4\\lambda^{2}') + ' = ' + r2 + '\\ \\Rightarrow\\ \\lambda^{2} = ' + frac('1','4') + '\\ \\Rightarrow\\ \\lambda = \\pm' + frac('1','2') },
+        { label: 'Recover the two candidate points.', tex: '\\lambda = ' + frac('1','2') + ':\\ (x,y,z) = ' + point3Tex(a,b,c) + ',\\qquad \\lambda = -' + frac('1','2') + ':\\ (x,y,z) = ' + point3Tex(-a,-b,-c) }
+      ]},
+      { label: 'Classification at ' + point3Tex(a,b,c), head: '', answer: 'global maximum', steps: [
+        { label: 'The sphere x^2+y^2+z^2=' + r2 + ' is compact, so z attains a global maximum and minimum on it.', tex: 'z(' + point3Tex(a,b,c) + ') = ' + r2 + ',\\qquad z(' + point3Tex(-a,-b,-c) + ') = ' + (-r2) },
+        { label: 'The larger value is the maximum.', tex: r2 + ' > ' + (-r2) + '\\ \\Rightarrow\\ ' + point3Tex(a,b,c) + '\\ ' + T('is the global maximum') }
+      ]},
+      { label: 'Classification at ' + point3Tex(-a,-b,-c), head: '', answer: 'global minimum', steps: [
+        { label: 'Same comparison as above.', tex: (-r2) + ' < ' + r2 + '\\ \\Rightarrow\\ ' + point3Tex(-a,-b,-c) + '\\ ' + T('is the global minimum') }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // C8. Closest and farthest point on a sphere from an external point
+  addType(CONSTR_TYPES, 'Spherical Constraint', 'Closest and Farthest Point on a Sphere', function(){
+    var quad = choice(SPHERE_QUADS);
+    var mags = shuffle3([quad[0], quad[1], quad[2]]);
+    var p = choice([-1,1]) * mags[0];
+    var q = choice([-1,1]) * mags[1];
+    var s = choice([-1,1]) * mags[2];
+    var d = quad[3];
+    var stmt = '\\begin{aligned} & ' + T('Find the points on the sphere') + '\\ x^{2}+y^{2}+z^{2}=1\\ ' + T('that are closest to and farthest from the point') + '\\ ' + point3Tex(p,q,s) + '.\\end{aligned}';
+    var closeX = frac(String(p), String(d)), closeY = frac(String(q), String(d)), closeZ = frac(String(s), String(d));
+    var farX = frac(String(-p), String(d)), farY = frac(String(-q), String(d)), farZ = frac(String(-s), String(d));
+    var dMinus1 = d - 1, dPlus1 = d + 1;
+    var parts = [
+      { label: 'Critical points', head: '', answer: point3Tex(closeX, closeY, closeZ) + ',\\ ' + point3Tex(farX, farY, farZ), steps: [
+        { label: 'Minimize z=(x-' + p + ')^{2}+(y-' + q + ')^{2}+(z-' + s + ')^{2} subject to x^{2}+y^{2}+z^{2}=1; set the gradient of z equal to λ times the gradient of the constraint.', tex: 'x-' + p + ' = \\lambda x,\\qquad y-' + q + ' = \\lambda y,\\qquad z-' + s + ' = \\lambda z' },
+        { label: 'Solve each equation for the coordinate.', tex: 'x = ' + frac(String(p), '1-\\lambda') + ',\\qquad y = ' + frac(String(q), '1-\\lambda') + ',\\qquad z = ' + frac(String(s), '1-\\lambda') },
+        { label: 'Substitute into the constraint, using ' + p + '^{2}+' + q + '^{2}+' + s + '^{2} = ' + (d*d) + '.', tex: frac(String(d*d), '(1-\\lambda)^{2}') + ' = 1\\ \\Rightarrow\\ 1-\\lambda = \\pm ' + d },
+        { label: 'Recover the two candidate points: (x,y,z) is (p,q,s)/' + d + ' when 1-\\lambda=' + d + ', and -(p,q,s)/' + d + ' when 1-\\lambda=-' + d + '.', tex: '(x,y,z) = ' + point3Tex(closeX, closeY, closeZ) + '\\ \\text{or}\\ ' + point3Tex(farX, farY, farZ) }
+      ]},
+      { label: 'Classification at ' + point3Tex(closeX, closeY, closeZ), head: '', answer: 'closest point', steps: [
+        { label: 'The sphere is compact, so the squared distance attains a minimum and a maximum on it; compute both.', tex: T('squared distance') + ' = (' + d + '-1)^{2} = ' + (dMinus1*dMinus1) + '\\quad ' + T('or') + '\\quad (' + d + '+1)^{2} = ' + (dPlus1*dPlus1) },
+        { label: 'The smaller value is the closest point.', tex: (dMinus1*dMinus1) + ' < ' + (dPlus1*dPlus1) }
+      ]},
+      { label: 'Classification at ' + point3Tex(farX, farY, farZ), head: '', answer: 'farthest point', steps: [
+        { label: 'The larger value is the farthest point.', tex: (dPlus1*dPlus1) + ' > ' + (dMinus1*dMinus1) }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // C9. Product xyz on a sphere -- symmetric critical points, classified by sign parity
+  addType(CONSTR_TYPES, 'Spherical Constraint', 'Product on a Sphere', function(){
+    var r = choice([1,2,3]);
+    var r2 = r*r;
+    var stmt = '\\begin{aligned} & z = xyz,\\qquad ' + T('subject to') + '\\ x^{2}+y^{2}+z^{2} = ' + r2 + '.' + NL +
+      '& ' + T('Find the extrema of z using Lagrange multipliers, and classify each one.') + '\\end{aligned}';
+    var coordTex = frac(String(r), '\\sqrt{3}');
+    var valTex = frac(String(r*r*r), '3\\sqrt{3}');
+    var pMax = point3Tex(coordTex, coordTex, coordTex);
+    var pMin = point3Tex('-' + coordTex, '-' + coordTex, '-' + coordTex);
+    var parts = [
+      { label: 'Critical points (up to sign)', head: '', answer: 'x^{2}=y^{2}=z^{2}=' + frac(String(r2),'3'), steps: [
+        { label: 'Set the gradient of z equal to λ times the gradient of the constraint.', tex: 'yz = 2\\lambda x,\\qquad xz = 2\\lambda y,\\qquad xy = 2\\lambda z,\\qquad x^{2}+y^{2}+z^{2} = ' + r2 },
+        { label: 'Multiply the first equation by x, the second by y, the third by z: all three left-hand sides equal xyz, so (for λ≠0) x^2=y^2=z^2.', tex: 'x\\cdot yz = y\\cdot xz = z\\cdot xy = xyz\\ \\Rightarrow\\ 2\\lambda x^{2} = 2\\lambda y^{2} = 2\\lambda z^{2}\\ \\Rightarrow\\ x^{2}=y^{2}=z^{2}' },
+        { label: 'Substitute into the constraint.', tex: '3x^{2} = ' + r2 + '\\ \\Rightarrow\\ x^{2} = ' + frac(String(r2),'3') + '\\ \\Rightarrow\\ |x|=|y|=|z|=' + coordTex }
+      ]},
+      { label: 'Classification at ' + pMax + ' (and the other points with an even number of minus signs)', head: '', answer: 'global maximum', steps: [
+        { label: 'The sphere is compact, so z=xyz attains a global maximum and minimum on it. The value of xyz depends only on how many of the three coordinates are negative.', tex: T('an even number of minus signs') + '\\ \\Rightarrow\\ z = ' + valTex },
+        { label: 'This is the largest value z can take.', tex: 'z(' + pMax + ') = ' + valTex }
+      ]},
+      { label: 'Classification at ' + pMin + ' (and the other points with an odd number of minus signs)', head: '', answer: 'global minimum', steps: [
+        { label: 'An odd number of minus signs gives the smallest value.', tex: 'z(' + pMin + ') = -' + valTex }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // C10. Maximum volume box with a vertex on a plane -- first-octant applied problem
+  addType(CONSTR_TYPES, 'Applied Optimization', 'Maximum Volume Box', function(){
+    var A = choice([1,2,3,4]);
+    var B = choice([1,2,3,4]);
+    var C = choice([1,2,3,4]);
+    var a = 3*A, b = 3*B, c = 3*C;
+    var stmt = '\\begin{aligned} & ' + T('A rectangular box in the first octant has one vertex at the origin and the opposite vertex on the plane') + NL +
+      '& ' + frac('x', String(a)) + ' + ' + frac('y', String(b)) + ' + ' + frac('z', String(c)) + ' = 1,\\qquad x,y,z>0.' + NL +
+      '& ' + T('Find the dimensions that maximize the volume V=xyz, using Lagrange multipliers.') + '\\end{aligned}';
+    var V = A*B*C;
+    var parts = [
+      { label: 'Critical point', head: '', answer: point3Tex(A,B,C), steps: [
+        { label: 'Set the gradient of V=xyz equal to λ times the gradient of the constraint.', tex: 'yz = ' + frac('\\lambda', String(a)) + ',\\qquad xz = ' + frac('\\lambda', String(b)) + ',\\qquad xy = ' + frac('\\lambda', String(c)) },
+        { label: 'Multiply the first equation by x, the second by y, the third by z: all three left-hand sides equal V=xyz, so (for λ≠0) x/' + a + ' = y/' + b + ' = z/' + c + '.', tex: frac('x', String(a)) + ' = ' + frac('y', String(b)) + ' = ' + frac('z', String(c)) + ' = t' },
+        { label: 'Substitute into the constraint.', tex: 't+t+t = 1\\ \\Rightarrow\\ t = ' + frac('1','3') },
+        { label: 'Recover the dimensions.', tex: '(x,y,z) = \\left(' + frac(String(a),'3') + ',\\ ' + frac(String(b),'3') + ',\\ ' + frac(String(c),'3') + '\\right) = ' + point3Tex(A,B,C) }
+      ]},
+      { label: 'Classification at ' + point3Tex(A,B,C), head: '', answer: 'global maximum, V = ' + V, steps: [
+        { label: 'The feasible region (x,y,z\\geq0 on the plane) is a closed, bounded triangle, so V is compact and attains a maximum on it.', tex: 'V = 0\\ ' + T('on the entire boundary (where some coordinate is 0)') },
+        { label: 'Since V>0 in the interior and V=0 on the boundary, the unique interior critical point is the global maximum.', tex: 'V(' + point3Tex(A,B,C) + ') = ' + A + '\\cdot' + B + '\\cdot' + C + ' = ' + V }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
+  // C11. Maximum-area rectangle for a fixed perimeter -- product objective, linear constraint
+  addType(CONSTR_TYPES, 'Applied Optimization', 'Maximum Area for Fixed Perimeter', function(){
+    var h = choice([2,3,4,5,6]);
+    var k = 2*h;
+    var stmt = '\\begin{aligned} & ' + T('A rectangle with sides') + '\\ x,y>0\\ ' + T('has perimeter') + '\\ 2(x+y) = ' + (2*k) + ',\\ ' + T('i.e.') + '\\ x+y = ' + k + '.' + NL +
+      '& ' + T('Find the dimensions that maximize the area') + '\\ z=xy,\\ ' + T('using Lagrange multipliers.') + '\\end{aligned}';
+    var area = h*h;
+    var parts = [
+      { label: 'Critical point', head: '', answer: pointTex(h,h), steps: [
+        { label: 'Set the gradient of z=xy equal to λ times the gradient of the constraint.', tex: 'y = \\lambda,\\qquad x = \\lambda,\\qquad x+y = ' + k },
+        { label: 'The first two equations give x=y.', tex: 'x = y' },
+        { label: 'Substitute into the constraint.', tex: '2x = ' + k + '\\ \\Rightarrow\\ x = y = ' + h }
+      ]},
+      { label: 'Classification at ' + pointTex(h,h), head: '', answer: 'global maximum, z = ' + area, steps: [
+        { label: 'On the segment x,y>0 with x+y=' + k + ', z=xy\\to0 as x\\to0^+ or x\\to' + k + '^-, while z>0 in between.', tex: 'z(' + pointTex(h,h) + ') = ' + area },
+        { label: 'Since z vanishes at both ends and is positive in between, the unique critical point is the global maximum.', tex: T('this is the square — the rectangle of maximum area for a given perimeter') }
+      ]}
+    ];
+    return { statement: stmt, parts: parts };
+  });
+
   // ===================== RENDERING =====================
 
   var mathQueue = Promise.resolve();
@@ -812,16 +1138,27 @@ window.MathJax = {
   var downloadBtn = document.getElementById('downloadBtn');
   var newBtn = document.getElementById('newBtn');
   var typeSelect = document.getElementById('typeSelect');
+  var mainTabRow = document.getElementById('mainTabRow');
   var tabRow = document.getElementById('tabRow');
+  var instructionEl = document.getElementById('instruction');
   var exnumEl = document.getElementById('exnum');
   var tagEl = document.getElementById('tag');
 
+  var INSTRUCTION_TEXT = {
+    free: 'Find all critical points of z = f(x,y), and classify each one (local minimum, local maximum or saddle point) using the Hessian criterion.',
+    constrained: 'Find the extrema of z = f(x,y) subject to one constraint, using Lagrange multipliers, and classify each candidate as a global maximum or minimum.'
+  };
+
   var mode = 'basic';
+  var lastFreeMode = 'basic';
   var exCount = 0;
   var current = null;
   var currentTypeIdx = 0;
 
-  function currentArr(){ return mode === 'basic' ? BASIC_TYPES : ADV_TYPES; }
+  function currentArr(){
+    if (mode === 'constrained') return CONSTR_TYPES;
+    return mode === 'basic' ? BASIC_TYPES : ADV_TYPES;
+  }
 
   function buildTypeOptions(){
     typeSelect.innerHTML = '';
@@ -944,7 +1281,26 @@ window.MathJax = {
   tabRow.addEventListener('click', function(e){
     var btn = e.target.closest('.tab-btn');
     if (!btn) return;
+    lastFreeMode = btn.dataset.mode;
     setMode(btn.dataset.mode);
+  });
+
+  mainTabRow.addEventListener('click', function(e){
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    var main = btn.dataset.main;
+    Array.prototype.forEach.call(mainTabRow.querySelectorAll('.tab-btn'), function(b){
+      b.classList.toggle('active', b === btn);
+    });
+    if (main === 'constrained'){
+      tabRow.hidden = true;
+      instructionEl.textContent = INSTRUCTION_TEXT.constrained;
+      setMode('constrained');
+    } else {
+      tabRow.hidden = false;
+      instructionEl.textContent = INSTRUCTION_TEXT.free;
+      setMode(lastFreeMode);
+    }
   });
 
   typeSelect.addEventListener('change', newExercise);
@@ -988,8 +1344,9 @@ window.MathJax = {
       var stepsHtml = stepsContent.innerHTML;
       var tagText = tagEl.textContent;
       var exText = exnumEl.textContent;
+      var instructionText = instructionEl.textContent;
 
-      return '<!doctype html>\n<meta charset="utf-8">\n<title>' + exText + ' — Free Extrema Drills</title>\n' +
+      return '<!doctype html>\n<meta charset="utf-8">\n<title>' + exText + ' — Extrema Drills</title>\n' +
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">\n' +
@@ -998,7 +1355,7 @@ window.MathJax = {
         mastheadHtml + '\n' +
         '<main class="card">\n' +
         '<div class="card-top"><div class="exnum">' + exText + '</div><div class="tag">' + tagText + '</div></div>\n' +
-        '<p class="instruction">Find all critical points of z = f(x,y), and classify each one (local minimum, local maximum or saddle point) using the Hessian criterion.</p>\n' +
+        '<p class="instruction">' + instructionText + '</p>\n' +
         problemHtml + '\n' +
         '<div class="answer-box"><p class="answer-title">Answer</p><div class="answer-content">' + answerHtml + '</div></div>\n' +
         '<div class="steps-box"><p class="steps-title">Step-by-Step Solution</p><div>' + stepsHtml + '</div></div>\n' +
